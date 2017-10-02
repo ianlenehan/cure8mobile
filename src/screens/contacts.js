@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { AsyncStorage, FlatList, View } from 'react-native'
+import { AsyncStorage, FlatList, View, KeyboardAvoidingView } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import ContactRow from '../components/contactRow'
+import NewContact from '../components/newContact'
 import Spinner from '../components/common/spinner'
 import { deleteContact, setEditMode } from '../redux/contact/actions'
 
@@ -84,16 +85,13 @@ class Contacts extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="padding"
+      >
         {this.renderContent()}
-        <Button
-          icon={{ name: 'plus', type: 'font-awesome' }}
-          title='New Contact'
-          backgroundColor='#27ae60'
-          onPress={() => this.props.navigation.navigate('contactSearch')}
-          buttonStyle={styles.button}
-        />
-      </View>
+        <NewContact />
+      </KeyboardAvoidingView>
     )
   }
 }
@@ -101,7 +99,8 @@ class Contacts extends Component {
 const styles = {
   container: {
     backgroundColor: 'white',
-    flex: 1
+    flex: 1,
+    justifyContent: 'space-between'
   },
   button: {
     margin: 10

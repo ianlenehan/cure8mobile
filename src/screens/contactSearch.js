@@ -44,7 +44,14 @@ class ContactSearch extends Component {
       }
       if (permission === 'authorized') {
         console.log('permission authorized')
-        status = permission
+        Contacts.getAll((err, contacts) => {
+          console.log('getting contacts');
+          if(err === 'denied'){
+            console.log("hmm you've been denied contacts access");
+          } else {
+            console.log('contacts', contacts);
+          }
+        })
       }
       if (permission === 'denied') {
         console.log('permission denied')
@@ -52,14 +59,7 @@ class ContactSearch extends Component {
       }
     })
     if (status === 'authorized') {
-      Contacts.getAll((err, contacts) => {
-        console.log('getting contacts');
-        if(err === 'denied'){
-          console.log("hmm you've been denied contacts access");
-        } else {
-          console.log('contacts', contacts);
-        }
-      })
+
       // const { data, total, hasNextPage } = contacts
       // const cleanContacts = data.filter(contact => {
       //   return contact.name && contact.phoneNumbers.length
