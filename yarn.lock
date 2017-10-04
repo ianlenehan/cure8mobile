@@ -3917,6 +3917,10 @@ react-native-contacts@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-native-contacts/-/react-native-contacts-1.0.2.tgz#58b3b0572e3972a320c731ff639091b013a3c4b0"
 
+react-native-custom-tabs@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/react-native-custom-tabs/-/react-native-custom-tabs-0.1.7.tgz#2dfb4028b0a443610d94792b2019810f68dde525"
+
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
@@ -3944,16 +3948,6 @@ react-native-elements@^0.16.0:
     react-native-side-menu "^1.0.2"
     react-native-tab-navigator "^0.3.3"
 
-react-native-loading-spinner-overlay@0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/react-native-loading-spinner-overlay/-/react-native-loading-spinner-overlay-0.4.1.tgz#f1ebc7df6a7f8b9d06588fb51b5554565bb3cddb"
-
-react-native-mobile-browser@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/react-native-mobile-browser/-/react-native-mobile-browser-0.2.1.tgz#3c44bba75a87fe2bb5fc56c3cfdedd6c08ada9ea"
-  dependencies:
-    react-native-loading-spinner-overlay "0.4.1"
-
 react-native-onesignal@^3.0.5:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-3.0.5.tgz#b048f4f77aa1f4166e0c9a88608cf2a8aa8c00da"
@@ -3963,6 +3957,10 @@ react-native-onesignal@^3.0.5:
 react-native-permissions@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-1.0.1.tgz#b45c369763c4e298ba52ff9392ca807cbcdd6424"
+
+react-native-safari-view@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-safari-view/-/react-native-safari-view-2.1.0.tgz#1e0cd12c62bce79bc1759c7e281646b08b61c959"
 
 react-native-side-menu@^1.0.2:
   version "1.1.3"

@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   LayoutAnimation,
   Linking,
-  Clipboard
+  Clipboard,
+  Platform
 } from 'react-native'
 import moment from 'moment'
 import { Icon } from 'react-native-elements'
-
+import SafariView from 'react-native-safari-view'
+import { CustomTabs } from 'react-native-custom-tabs'
 import Title from './title'
 import MyIcon from './icon'
 import CardSection from './cardSection'
@@ -39,8 +41,17 @@ class Card extends Component {
     this.props.onArchivePress(null)
   }
 
-  openInWebBrowser = async (url) => {
-    Linking.openURL(url)
+  openInWebBrowser = (url) => {
+    if (Platform.OS === 'ios') {
+      SafariView.show({
+        url: url,
+        readerMode: true,
+        tintColor: '#27ae60',
+        barColor: '#27ae60'
+      })
+    } else if (Platform.OS === 'android') {
+      CustomTabs.openURL(url)
+    }
   }
 
   formatDate(date) {
