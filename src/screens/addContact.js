@@ -10,9 +10,9 @@ import { saveContact, getContacts } from '../redux/contact/actions'
 
 class AddContact extends Component {
   static navigationOptions = ({ navigation }) => {
-    const { name } = navigation.state.params.contact
+    const { familyName, givenName } = navigation.state.params.contact
     return {
-      title: name,
+      title: `${givenName} ${familyName}`,
     }
   }
 
@@ -84,8 +84,8 @@ class AddContact extends Component {
   }
 
   render() {
-    const { phoneNumbers: numbers, name } = this.props.navigation.state.params.contact
-
+    const { phoneNumbers: numbers, givenName, familyName } = this.props.navigation.state.params.contact
+    const name = `${givenName} ${familyName}`
     return (
       <View>
         <H1 text={'Select a Number'} />
@@ -99,7 +99,7 @@ class AddContact extends Component {
                   title={number.number}
                   subtitle={this.numberLabel(number.label)}
                   rightIcon={{ name: 'plus', type: 'font-awesome' }}
-                  onPress={() => this.onAddPress(name, number.digits)}
+                  onPress={() => this.onAddPress(name, number.number)}
                 />
               ))
             }

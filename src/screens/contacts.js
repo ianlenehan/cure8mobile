@@ -84,13 +84,17 @@ class Contacts extends Component {
   }
 
   render() {
+    const { navigate, state } = this.props.navigation
     return (
       <KeyboardAvoidingView
         style={styles.container}
         behavior="padding"
       >
         {this.renderContent()}
-        <NewContact />
+        <NewContact
+          navigate={navigate}
+          navKey={state.key}
+        />
       </KeyboardAvoidingView>
     )
   }
