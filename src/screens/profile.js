@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, AsyncStorage, Switch } from 'react-native'
+import { Text, View, AsyncStorage, Switch, Platform } from 'react-native'
 import { Icon, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 
@@ -16,11 +16,12 @@ class Profile extends Component {
     }
   }
 
-  state = { token: null }
+  state = { token: null , readerMode: 'on' }
 
   async componentDidMount() {
     const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
+    let readerMode = await AsyncStorage.getItem('readerMode')
+    this.setState({ token, readerMode: readerMode || 'on' })
   }
 
   deleteToken = async () => {
@@ -36,6 +37,12 @@ class Profile extends Component {
     this.props.updateUser(token, value, field, this.props.info)
   }
 
+  setReaderMode = async () => {
+    const readerMode = this.state.readerMode === 'on' ? 'off' : 'on'
+    await AsyncStorage.setItem('readerMode', readerMode)
+    this.setState({ readerMode })
+  }
+
   renderStats() {
     const { stats } = this.props.info
     if (stats) {
@@ -48,10 +55,31 @@ class Profile extends Component {
     }
   }
 
+  readerMode() {
+    let switchPos = true
+    if (this.state.readerMode === 'off') {
+      switchPos = false
+    }
+    if (Platform.OS === 'ios') {
+      return (
+        <View style={styles.switchView}>
+          <Text style={styles.options}>Default Safari to Reader Mode</Text>
+          <Switch
+            tintColor='#dcdcdc'
+            onTintColor='#27ae60'
+            value={switchPos}
+            onValueChange={this.setReaderMode}
+          />
+        </View>
+      )
+    }
+  }
+
   renderOptions() {
     const { push, rating, curation } = this.props.info.notifications
     return (
       <View style={styles.optionsView}>
+        {this.readerMode()}
         <View style={styles.switchView}>
           <Text style={styles.options}>Push Notifications</Text>
           <Switch
@@ -124,7 +152,6 @@ const styles = {
   },
   name: {
     textAlign: 'center',
-    fontFamily: 'neuropol',
     color: '#fff',
     fontSize: 48,
     paddingTop: 30

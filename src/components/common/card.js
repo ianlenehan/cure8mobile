@@ -42,10 +42,11 @@ class Card extends Component {
   }
 
   openInWebBrowser = (url) => {
+    const readerMode = this.props.readerMode === 'on' ? true : false
     if (Platform.OS === 'ios') {
       SafariView.show({
-        url: url,
-        readerMode: true,
+        url,
+        readerMode,
         tintColor: '#27ae60',
         barColor: '#27ae60'
       })

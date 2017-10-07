@@ -12,10 +12,11 @@ import { createLink, archiveLink, shareLink, setArchiveMode, getLinks } from '..
 import Card from './common/card'
 
 class LinkView extends Component {
-  state = { links: [], refreshing: false, token: null }
+  state = { links: [], refreshing: false, token: null, readerMode: 'on' }
 
   async componentDidMount() {
     this.filterLinks()
+    this.checkReaderMode()
     const token = await AsyncStorage.getItem('token')
     this.setState({ token })
   }
@@ -26,8 +27,16 @@ class LinkView extends Component {
 
   async onRefresh() {
     this.setState({ refreshing: true })
+    await this.checkReaderMode()
     await this.props.refresh()
     this.setState({ refreshing: false })
+  }
+
+  async checkReaderMode() {
+    const readerMode = await AsyncStorage.getItem('readerMode')
+    if (readerMode) {
+      this.setState({ readerMode })
+    }
   }
 
   onSaveLinkPress = () => {
@@ -73,6 +82,7 @@ class LinkView extends Component {
         archiveLink={this.archiveLink.bind(this)}
         delete={this.deleteArchivedLink.bind(this)}
         loading={this.props.loading}
+        readerMode={this.state.readerMode}
       />
     )
   }
