@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
-// import OneSignal from 'react-native-onesignal'
+import OneSignal from 'react-native-onesignal'
 
 import { getLinks } from '../redux/link/actions'
 import { getUserInfo, updateUser } from '../redux/user/actions'
@@ -51,11 +51,11 @@ class Links extends Component {
   componentDidMount() {
     this.getUserData()
     // if (Platform.OS === 'ios') {
-    //   this.requestNotificationPermissions()
-    //
-    //   OneSignal.getPermissionSubscriptionState((status) => {
-    //     this.checkNotificationStatus(status)
-    //   })
+      this.requestNotificationPermissions()
+
+      OneSignal.getPermissionSubscriptionState((status) => {
+        this.checkNotificationStatus(status)
+      })
     // }
 
     // Font.loadAsync({
@@ -87,26 +87,26 @@ class Links extends Component {
     }
   }
 
-  // checkNotificationStatus = async (status) => {
-  //   const pushToken = await AsyncStorage.getItem('pushToken')
-  //   const token = await AsyncStorage.getItem('token')
-  //   if (pushToken !== status.userId) {
-  //     await AsyncStorage.setItem('pushToken', status.userId)
-  //   }
-  //   this.props.updateUser(token, status.userId, 'push')
-  //   // TODO move this back into the if statement once I'm done fiddling
-  // }
+  checkNotificationStatus = async (status) => {
+    const pushToken = await AsyncStorage.getItem('pushToken')
+    const token = await AsyncStorage.getItem('token')
+    if (pushToken !== status.userId) {
+      await AsyncStorage.setItem('pushToken', status.userId)
+    }
+    this.props.updateUser(token, status.userId, 'push')
+    // TODO move this back into the if statement once I'm done fiddling
+  }
 
-  // requestNotificationPermissions() {
-  //   if (Platform.OS === 'ios') {
-  //     const permissions = {
-  //       alert: true,
-  //       badge: true,
-  //       sound: true
-  //     }
-  //     OneSignal.requestPermissions(permissions)
-  //   }
-  // }
+  requestNotificationPermissions() {
+    if (Platform.OS === 'ios') {
+      const permissions = {
+        alert: true,
+        badge: true,
+        sound: true
+      }
+      OneSignal.requestPermissions(permissions)
+    }
+  }
 
   renderLinkView() {
     const { loading, links } = this.props

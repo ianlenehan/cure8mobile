@@ -91,7 +91,7 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.cure8mobile"
@@ -102,6 +102,10 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        manifestPlaceholders = [
+        onesignal_app_id: "5a76b673-d57e-423e-92b0-e1375989bcb0",
+        onesignal_google_project_number: "REMOTE"
+        ]
     }
     splits {
         abi {
@@ -133,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-onesignal')
     compile project(':react-native-custom-tabs')
     compile project(':react-native-vector-icons')
     compile project(':react-native-contacts')
