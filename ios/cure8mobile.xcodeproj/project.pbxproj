@@ -42,6 +42,7 @@
 		6F324F61544846988F458EDD /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E845483ABA224650B04ACA7B /* Entypo.ttf */; };
 		7A806F476B9648B9A81945AC /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0DD30A94434466838AAEBE /* libRNVectorIcons.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		98A458C3A61C4B4F8F7F7AFC /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EB7DEE2779A6429E8BED83F7 /* Feather.ttf */; };
 		98CECDE6F6584ACB93812C43 /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 974EE124D41E477D81AF3BA9 /* libSafariViewManager.a */; };
 		AAF9AE793D4148EDBAEF3BF6 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F00CBA7E5D04E38B5FD7503 /* MaterialIcons.ttf */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -49,9 +50,11 @@
 		C09BE5F70039438B84252BD9 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64A8CE11738C4019B07B9865 /* Ionicons.ttf */; };
 		CA46029B02B242E2A0E52E58 /* libRCTOneSignal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F652E95BFF72468ABDE18BA4 /* libRCTOneSignal.a */; };
 		D55B6B38E6C143C6B6D93448 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CFCECD600DE341B1934D2624 /* libRCTContacts.a */; };
+		D8911BBB76AB4F88843F6AD5 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE548B458F4C4142B3B2B716 /* libReactNativePermissions.a */; };
 		DB0DD2146B8549C9823D586F /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F40A5E8723B47BA989D197E /* Foundation.ttf */; };
 		E409FF65F26341A3A0B2377E /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AE94217F26804D66B856E09E /* Octicons.ttf */; };
 		E5F1B049EB494EF982A6C22F /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 397AC3EC44F041F6BBDD6C49 /* EvilIcons.ttf */; };
+		EC4F678B15964BF285D8B97A /* NEUROPOL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 460CB8E70263478395BDC8D8 /* NEUROPOL.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +99,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = cure8mobile;
+		};
+		060DC2341F88C39500F1474D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37C295D624EC48BBB4DF9609 /* ReactNativePermissions.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9D23B34F1C767B80008B4819;
+			remoteInfo = ReactNativePermissions;
 		};
 		06C403781F811F6B00ADC70B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -349,7 +359,9 @@
 		2A3F25B81EB94DABB6A40F7A /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* cure8mobile-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "cure8mobile-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* cure8mobile-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "cure8mobile-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		37C295D624EC48BBB4DF9609 /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		397AC3EC44F041F6BBDD6C49 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		460CB8E70263478395BDC8D8 /* NEUROPOL.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = NEUROPOL.ttf; path = ../assets/fonts/NEUROPOL.ttf; sourceTree = "<group>"; };
 		4F00CBA7E5D04E38B5FD7503 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		4F40A5E8723B47BA989D197E /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		506B20D416494676A09F31F6 /* libDBCustomTabs.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libDBCustomTabs.a; sourceTree = "<group>"; };
@@ -363,10 +375,12 @@
 		A62A582072F64191981B36F7 /* ReactNativeCustomTabs.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeCustomTabs.xcodeproj; path = "../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		AE94217F26804D66B856E09E /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		CE548B458F4C4142B3B2B716 /* libReactNativePermissions.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativePermissions.a; sourceTree = "<group>"; };
 		CFCECD600DE341B1934D2624 /* libRCTContacts.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTContacts.a; sourceTree = "<group>"; };
 		E136A48DDCBC4B4AA1AE091A /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		E34465F2874D4B5797972D1B /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
 		E845483ABA224650B04ACA7B /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
+		EB7DEE2779A6429E8BED83F7 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		EC4E34D08B784C009ECE048B /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		F652E95BFF72468ABDE18BA4 /* libRCTOneSignal.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTOneSignal.a; sourceTree = "<group>"; };
 		FC463EFB486A4DD1865049F7 /* RCTOneSignal.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTOneSignal.xcodeproj; path = "../node_modules/react-native-onesignal/ios/RCTOneSignal.xcodeproj"; sourceTree = "<group>"; };
@@ -403,6 +417,7 @@
 				98CECDE6F6584ACB93812C43 /* libSafariViewManager.a in Frameworks */,
 				4FD173C0490E454B9BDCE3EB /* libDBCustomTabs.a in Frameworks */,
 				CA46029B02B242E2A0E52E58 /* libRCTOneSignal.a in Frameworks */,
+				D8911BBB76AB4F88843F6AD5 /* libReactNativePermissions.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,6 +505,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		060DC2311F88C39400F1474D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				060DC2351F88C39500F1474D /* libReactNativePermissions.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		06C403721F811F6600ADC70B /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -498,6 +521,7 @@
 				974EE124D41E477D81AF3BA9 /* libSafariViewManager.a */,
 				506B20D416494676A09F31F6 /* libDBCustomTabs.a */,
 				F652E95BFF72468ABDE18BA4 /* libRCTOneSignal.a */,
+				CE548B458F4C4142B3B2B716 /* libReactNativePermissions.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -632,6 +656,7 @@
 				E34465F2874D4B5797972D1B /* SafariViewManager.xcodeproj */,
 				A62A582072F64191981B36F7 /* ReactNativeCustomTabs.xcodeproj */,
 				FC463EFB486A4DD1865049F7 /* RCTOneSignal.xcodeproj */,
+				37C295D624EC48BBB4DF9609 /* ReactNativePermissions.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -693,6 +718,8 @@
 				AE94217F26804D66B856E09E /* Octicons.ttf */,
 				EC4E34D08B784C009ECE048B /* SimpleLineIcons.ttf */,
 				0E48B1C0C26045B9A13DE65E /* Zocial.ttf */,
+				460CB8E70263478395BDC8D8 /* NEUROPOL.ttf */,
+				EB7DEE2779A6429E8BED83F7 /* Feather.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -880,6 +907,10 @@
 					ProjectRef = A62A582072F64191981B36F7 /* ReactNativeCustomTabs.xcodeproj */;
 				},
 				{
+					ProductGroup = 060DC2311F88C39400F1474D /* Products */;
+					ProjectRef = 37C295D624EC48BBB4DF9609 /* ReactNativePermissions.xcodeproj */;
+				},
+				{
 					ProductGroup = 06C403C21F821E2300ADC70B /* Products */;
 					ProjectRef = 8FC66049A749420CAF76BC92 /* RNVectorIcons.xcodeproj */;
 				},
@@ -932,6 +963,13 @@
 			fileType = archive.ar;
 			path = libRCTVibration.a;
 			remoteRef = 00C302E31ABCB9EE00DB3ED1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		060DC2351F88C39500F1474D /* libReactNativePermissions.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativePermissions.a;
+			remoteRef = 060DC2341F88C39500F1474D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		06C403791F811F6B00ADC70B /* libRCTBlob-tvOS.a */ = {
@@ -1177,6 +1215,8 @@
 				E409FF65F26341A3A0B2377E /* Octicons.ttf in Resources */,
 				41B0A79ED7D94014A14FE019 /* SimpleLineIcons.ttf in Resources */,
 				BF0ECAC98953451FACC39768 /* Zocial.ttf in Resources */,
+				EC4F678B15964BF285D8B97A /* NEUROPOL.ttf in Resources */,
+				98A458C3A61C4B4F8F7F7AFC /* Feather.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1306,12 +1346,14 @@
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
+					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 				);
 				INFOPLIST_FILE = cure8mobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1339,12 +1381,14 @@
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
+					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 				);
 				INFOPLIST_FILE = cure8mobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1376,6 +1420,7 @@
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 				);
 				INFOPLIST_FILE = cure8mobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -1406,6 +1451,7 @@
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 				);
 				INFOPLIST_FILE = cure8mobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -1440,11 +1486,13 @@
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
+					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 				);
 				INFOPLIST_FILE = "cure8mobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1482,11 +1530,13 @@
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
+					"$(SRCROOT)/../node_modules/react-native-permissions/**",
 				);
 				INFOPLIST_FILE = "cure8mobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1525,6 +1575,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.cure8mobile-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1549,6 +1600,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

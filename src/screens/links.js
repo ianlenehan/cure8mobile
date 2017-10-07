@@ -50,13 +50,11 @@ class Links extends Component {
 
   componentDidMount() {
     this.getUserData()
-    // if (Platform.OS === 'ios') {
-      this.requestNotificationPermissions()
+    this.requestNotificationPermissions()
 
-      OneSignal.getPermissionSubscriptionState((status) => {
-        this.checkNotificationStatus(status)
-      })
-    // }
+    OneSignal.getPermissionSubscriptionState((status) => {
+      this.checkNotificationStatus(status)
+    })
 
     // Font.loadAsync({
     //   neuropol: require('../../assets/fonts/NEUROPOL.ttf'),
