@@ -178,7 +178,7 @@ class Login extends Component {
             green
           />
         {this.loginOrCreateAccount(this.props.buttonText)}
-        <Text style={styles.error}>{this.props.error}</Text>
+
           <Button
             title={this.props.buttonText}
             backgroundColor='#fff'
@@ -204,6 +204,7 @@ class Login extends Component {
           Enter that code on the next screen to proceed.
         </Text>
         {this.renderPicker()}
+        <Text style={styles.error}>{this.props.error}</Text>
         <Button
           title={this.buttonText()}
           disabled={this.props.loading}
@@ -277,7 +278,7 @@ const styles = {
   error: {
     color: 'white',
     textAlign: 'center',
-    marginTop: 5
+    margin: 5
   },
   resendPwd: {
     color: 'white',

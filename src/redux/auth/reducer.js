@@ -3,6 +3,7 @@ import {
   CODE_CHANGED,
   CODE_REQUESTED,
   GET_CODE,
+  GET_CODE_ERROR,
   LOGIN_USER,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
@@ -40,6 +41,8 @@ export default (state = initialState, action) => {
       return { ...state, loading: true }
     case GET_CODE:
       return { ...state, loading: false, buttonText: action.payload }
+    case GET_CODE_ERROR:
+      return { ...state, loading: false, buttonText: '', error: action.payload }
     case LOGIN_USER:
       return { ...state, loading: true, error: '' }
     case LOGGED_OUT:

@@ -8,6 +8,7 @@ import {
   LOGIN_USER_FAIL,
   LOGGED_OUT,
   GET_CODE,
+  GET_CODE_ERROR,
   FIRST_NAME_CHANGED,
   LAST_NAME_CHANGED,
   CREATE_ACCOUNT_FAIL,
@@ -67,13 +68,17 @@ export const getTemporaryCode = (formattedPhone) => {
             type: GET_CODE,
             payload: res.data.buttonText
           })
+        } else {
+          dispatch({
+            type: GET_CODE_ERROR,
+            payload: "So... something's wrong. Have you entered a valid phone number?"
+          })
         }
       })
       .catch((err) => {
-        console.log(err)
         dispatch({
-          type: GET_CODE,
-          payload: false
+          type: GET_CODE_ERROR,
+          payload: `So... something's wrong. Have you entered a valid phone number? (${err})`
         })
       })
   }
