@@ -7,7 +7,9 @@ import {
   LayoutAnimation,
   Linking,
   Clipboard,
-  Platform
+  Platform,
+  AsyncStorage,
+  Alert
 } from 'react-native'
 import moment from 'moment'
 import { Icon } from 'react-native-elements'
@@ -19,7 +21,12 @@ import CardSection from './cardSection'
 import Spinner from './spinner'
 
 class Card extends Component {
-  state = { morePressed: null }
+  state = { morePressed: null, alertMsgCurator: null }
+
+  async componentDidMount() {
+    const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
+    this.setState({ alertMsgCurator })
+  }
 
   getBillMurray() {
     const sizes = [150, 160, 170, 180, 190, 200]
@@ -30,10 +37,21 @@ class Card extends Component {
     return `http://fillmurray.com/300/${size}`
   }
 
-  messageOwner = (phone) => {
+  messageOwner = async (phone) => {
     const { title } = this.props.link
     Clipboard.setString(`Re: "${title}" from cure8.`);
-    Linking.openURL(`sms:${phone}`);
+    if (!this.state.alertMsgCurator) {
+      Alert.alert(
+        'Did you know?',
+        'From here, pressing paste into your message app will add the curated link title to your message.',
+        [
+          { text: 'Cool!', onPress: () => Linking.openURL(`sms:${phone}`) }
+        ]
+      )
+      await AsyncStorage.setItem('alertMsgCurator', 'yes')
+    } else {
+      Linking.openURL(`sms:${phone}`)
+    }
   }
 
   expandLess = () => {
@@ -215,7 +233,6 @@ class Card extends Component {
     const formattedComment = comment ? `"${comment}"` : ''
     const placeholder = this.getBillMurray()
     const image = this.props.link.image || placeholder
-
     return (
       <CardSection style={{ flex: 1 }}>
         <TouchableOpacity key={id} onPress={() => this.openInWebBrowser(url)}>

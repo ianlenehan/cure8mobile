@@ -146,7 +146,7 @@ const styles = {
     shadowOpacity: 0.6,
     shadowRadius: 4,
     elevation: 3,
-    marginTop: 10
+    paddingTop: 5
   },
   button: {
     margin: 10

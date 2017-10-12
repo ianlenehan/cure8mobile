@@ -22,6 +22,7 @@ class LinkView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    this.checkReaderMode()
     this.filterLinks(nextProps.links)
   }
 

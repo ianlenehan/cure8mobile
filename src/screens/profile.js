@@ -41,6 +41,7 @@ class Profile extends Component {
     const readerMode = this.state.readerMode === 'on' ? 'off' : 'on'
     await AsyncStorage.setItem('readerMode', readerMode)
     this.setState({ readerMode })
+    this.props.getUserInfo(this.state.token)
   }
 
   renderStats() {

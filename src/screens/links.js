@@ -56,10 +56,6 @@ class Links extends Component {
       this.checkNotificationStatus(status)
     })
 
-    // Font.loadAsync({
-    //   neuropol: require('../../assets/fonts/NEUROPOL.ttf'),
-    // })
-
     this.showTour()
   }
 
