@@ -1,5 +1,13 @@
 import React, { Component } from 'react'
-import { Text, View, AsyncStorage, Switch, Platform, Alert } from 'react-native'
+import {
+  Text,
+  View,
+  AsyncStorage,
+  Switch,
+  Platform,
+  Alert,
+  NativeModules
+} from 'react-native'
 import { Icon, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 
@@ -16,12 +24,23 @@ class Profile extends Component {
     }
   }
 
-  state = { token: null , readerMode: 'on' }
+  state = { token: null , readerMode: 'on', products: [] }
 
   async componentDidMount() {
+    this.inAppPurchaseSteps()
     const token = await AsyncStorage.getItem('token')
     let readerMode = await AsyncStorage.getItem('readerMode')
     this.setState({ token, readerMode: readerMode || 'on' })
+  }
+
+  inAppPurchaseSteps() {
+    const { InAppUtils } = NativeModules
+    const products = ['com.cure8.cure8app.premium']
+
+    InAppUtils.loadProducts(products, (error, products) => {
+      console.log('products', products);
+       this.setState({ products })
+    });
   }
 
   deleteToken = async () => {

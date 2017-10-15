@@ -15,6 +15,7 @@
 		"react-native-contacts": "^1.0.2",
 		"react-native-custom-tabs": "^0.1.7",
 		"react-native-elements": "^0.16.0",
+		"react-native-in-app-utils": "^6.0.0",
 		"react-native-onesignal": "^3.0.5",
 		"react-native-permissions": "^1.0.1",
 		"react-native-safari-view": "^2.1.0",
@@ -39,6 +40,8 @@
 		"preset": "react-native"
 	},
 	"rnpm": {
-   "assets": ["./assets/fonts"]
-}
+		"assets": [
+			"./assets/fonts"
+		]
+	}
 }

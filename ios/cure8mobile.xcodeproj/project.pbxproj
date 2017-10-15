@@ -13,6 +13,7 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* cure8mobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* cure8mobileTests.m */; };
+		060FC0391F936A220015C45B /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 060FC0381F936A220015C45B /* StoreKit.framework */; };
 		06929FA41F8B8E03006CE897 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06929FA31F8B8E03006CE897 /* Media.xcassets */; };
 		06929FA61F8CDDAF006CE897 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB61A68108700A75B9A /* Info.plist */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -39,6 +40,7 @@
 		4FD173C0490E454B9BDCE3EB /* libDBCustomTabs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 506B20D416494676A09F31F6 /* libDBCustomTabs.a */; };
 		51EAE9C8691F4756BBEB2CAE /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8832AF37B7AB4EAC9D06ADE3 /* MaterialCommunityIcons.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		6A74177C98EB4404A4574AB9 /* libInAppUtils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 775457C239CE4D9F9FC677D0 /* libInAppUtils.a */; };
 		6AF190931AA24F908A52CD89 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E136A48DDCBC4B4AA1AE091A /* FontAwesome.ttf */; };
 		6F324F61544846988F458EDD /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E845483ABA224650B04ACA7B /* Entypo.ttf */; };
 		7A806F476B9648B9A81945AC /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A0DD30A94434466838AAEBE /* libRNVectorIcons.a */; };
@@ -50,6 +52,7 @@
 		BF0ECAC98953451FACC39768 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0E48B1C0C26045B9A13DE65E /* Zocial.ttf */; };
 		C09BE5F70039438B84252BD9 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64A8CE11738C4019B07B9865 /* Ionicons.ttf */; };
 		CA46029B02B242E2A0E52E58 /* libRCTOneSignal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F652E95BFF72468ABDE18BA4 /* libRCTOneSignal.a */; };
+		D10A09F628674FC794EFB863 /* Neuropol.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8D82BED9E0B2448499C6A3E8 /* Neuropol.ttf */; };
 		D55B6B38E6C143C6B6D93448 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CFCECD600DE341B1934D2624 /* libRCTContacts.a */; };
 		D8911BBB76AB4F88843F6AD5 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE548B458F4C4142B3B2B716 /* libReactNativePermissions.a */; };
 		DB0DD2146B8549C9823D586F /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F40A5E8723B47BA989D197E /* Foundation.ttf */; };
@@ -107,6 +110,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 9D23B34F1C767B80008B4819;
 			remoteInfo = ReactNativePermissions;
+		};
+		060FC0751F936D2B0015C45B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 361771C5EA864ED69680CBE3 /* InAppUtils.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 46E694321B289730000B634E;
+			remoteInfo = InAppUtils;
+		};
+		060FC0771F936D2B0015C45B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 361771C5EA864ED69680CBE3 /* InAppUtils.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 46E6943D1B289730000B634E;
+			remoteInfo = InAppUtilsTests;
 		};
 		06C403781F811F6B00ADC70B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -344,6 +361,7 @@
 		00E356EE1AD99517003FC87E /* cure8mobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cure8mobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* cure8mobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = cure8mobileTests.m; sourceTree = "<group>"; };
+		060FC0381F936A220015C45B /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		06929FA31F8B8E03006CE897 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		06C404691F88621600ADC70B /* cure8mobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = cure8mobile.entitlements; path = cure8mobile/cure8mobile.entitlements; sourceTree = "<group>"; };
 		0E48B1C0C26045B9A13DE65E /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
@@ -361,6 +379,7 @@
 		2A3F25B81EB94DABB6A40F7A /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* cure8mobile-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "cure8mobile-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* cure8mobile-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "cure8mobile-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		361771C5EA864ED69680CBE3 /* InAppUtils.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = InAppUtils.xcodeproj; path = "../node_modules/react-native-in-app-utils/InAppUtils.xcodeproj"; sourceTree = "<group>"; };
 		37C295D624EC48BBB4DF9609 /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		397AC3EC44F041F6BBDD6C49 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		460CB8E70263478395BDC8D8 /* NEUROPOL.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = NEUROPOL.ttf; path = ../assets/fonts/NEUROPOL.ttf; sourceTree = "<group>"; };
@@ -369,9 +388,11 @@
 		506B20D416494676A09F31F6 /* libDBCustomTabs.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libDBCustomTabs.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		64A8CE11738C4019B07B9865 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		775457C239CE4D9F9FC677D0 /* libInAppUtils.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libInAppUtils.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8832AF37B7AB4EAC9D06ADE3 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
+		8D82BED9E0B2448499C6A3E8 /* Neuropol.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Neuropol.ttf; path = ../assets/fonts/Neuropol.ttf; sourceTree = "<group>"; };
 		8FC66049A749420CAF76BC92 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		974EE124D41E477D81AF3BA9 /* libSafariViewManager.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libSafariViewManager.a; sourceTree = "<group>"; };
 		A62A582072F64191981B36F7 /* ReactNativeCustomTabs.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeCustomTabs.xcodeproj; path = "../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs.xcodeproj"; sourceTree = "<group>"; };
@@ -408,6 +429,7 @@
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
+				060FC0391F936A220015C45B /* StoreKit.framework in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
@@ -420,6 +442,7 @@
 				4FD173C0490E454B9BDCE3EB /* libDBCustomTabs.a in Frameworks */,
 				CA46029B02B242E2A0E52E58 /* libRCTOneSignal.a in Frameworks */,
 				D8911BBB76AB4F88843F6AD5 /* libReactNativePermissions.a in Frameworks */,
+				6A74177C98EB4404A4574AB9 /* libInAppUtils.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -515,6 +538,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		060FC0371F936A220015C45B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				060FC0381F936A220015C45B /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		060FC0711F936D2B0015C45B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				060FC0761F936D2B0015C45B /* libInAppUtils.a */,
+				060FC0781F936D2B0015C45B /* InAppUtilsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		06C403721F811F6600ADC70B /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -524,6 +564,7 @@
 				506B20D416494676A09F31F6 /* libDBCustomTabs.a */,
 				F652E95BFF72468ABDE18BA4 /* libRCTOneSignal.a */,
 				CE548B458F4C4142B3B2B716 /* libReactNativePermissions.a */,
+				775457C239CE4D9F9FC677D0 /* libInAppUtils.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -659,6 +700,7 @@
 				A62A582072F64191981B36F7 /* ReactNativeCustomTabs.xcodeproj */,
 				FC463EFB486A4DD1865049F7 /* RCTOneSignal.xcodeproj */,
 				37C295D624EC48BBB4DF9609 /* ReactNativePermissions.xcodeproj */,
+				361771C5EA864ED69680CBE3 /* InAppUtils.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -682,6 +724,7 @@
 				06929FA31F8B8E03006CE897 /* Media.xcassets */,
 				06C403721F811F6600ADC70B /* Recovered References */,
 				BDA80CBE64584D2D9189EEE9 /* Resources */,
+				060FC0371F936A220015C45B /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -723,6 +766,7 @@
 				0E48B1C0C26045B9A13DE65E /* Zocial.ttf */,
 				460CB8E70263478395BDC8D8 /* NEUROPOL.ttf */,
 				EB7DEE2779A6429E8BED83F7 /* Feather.ttf */,
+				8D82BED9E0B2448499C6A3E8 /* Neuropol.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -821,6 +865,9 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -849,6 +896,10 @@
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
+				{
+					ProductGroup = 060FC0711F936D2B0015C45B /* Products */;
+					ProjectRef = 361771C5EA864ED69680CBE3 /* InAppUtils.xcodeproj */;
+				},
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
@@ -973,6 +1024,20 @@
 			fileType = archive.ar;
 			path = libReactNativePermissions.a;
 			remoteRef = 060DC2341F88C39500F1474D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		060FC0761F936D2B0015C45B /* libInAppUtils.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libInAppUtils.a;
+			remoteRef = 060FC0751F936D2B0015C45B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		060FC0781F936D2B0015C45B /* InAppUtilsTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = InAppUtilsTests.xctest;
+			remoteRef = 060FC0771F936D2B0015C45B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		06C403791F811F6B00ADC70B /* libRCTBlob-tvOS.a */ = {
@@ -1222,6 +1287,7 @@
 				BF0ECAC98953451FACC39768 /* Zocial.ttf in Resources */,
 				EC4F678B15964BF285D8B97A /* NEUROPOL.ttf in Resources */,
 				98A458C3A61C4B4F8F7F7AFC /* Feather.ttf in Resources */,
+				D10A09F628674FC794EFB863 /* Neuropol.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1351,12 +1417,14 @@
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
+					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 				);
 				INFOPLIST_FILE = cure8mobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1386,12 +1454,14 @@
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
+					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 				);
 				INFOPLIST_FILE = cure8mobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1425,6 +1495,7 @@
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
+					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 				);
 				INFOPLIST_FILE = cure8mobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -1456,6 +1527,7 @@
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
+					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 				);
 				INFOPLIST_FILE = cure8mobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -1491,11 +1563,13 @@
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
+					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 				);
 				INFOPLIST_FILE = "cure8mobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1535,11 +1609,13 @@
 					"$(SRCROOT)/../node_modules/react-native-custom-tabs/ios/ReactNativeCustomTabs",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/RCTOneSignal/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/**",
+					"$(SRCROOT)/../node_modules/react-native-in-app-utils/InAppUtils",
 				);
 				INFOPLIST_FILE = "cure8mobile-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1580,6 +1656,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.cure8mobile-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1604,6 +1681,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
