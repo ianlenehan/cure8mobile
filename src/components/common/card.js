@@ -88,21 +88,21 @@ class Card extends Component {
       return (
         <View style={styles.icons}>
           <MyIcon
-            size={20}
+            size={24}
             name='delete'
             color="#27ae60"
             onPress={() => this.props.onArchivePress(curation, 'deleted')}
             text='Delete'
           />
           <MyIcon
-            size={20}
+            size={24}
             name='archive'
             color="#27ae60"
             onPress={() => this.props.onArchivePress(curation, 'archived')}
             text='Archive'
           />
           <MyIcon
-            size={20}
+            size={24}
             name='comment'
             type='font-awesome'
             color="#27ae60"
@@ -110,7 +110,7 @@ class Card extends Component {
             text={`Msg ${firstName}`}
           />
           <MyIcon
-            size={20}
+            size={24}
             type='font-awesome'
             name='share'
             color="#27ae60"
@@ -126,14 +126,14 @@ class Card extends Component {
       return (
         <View style={styles.icons}>
           <MyIcon
-            size={20}
+            size={24}
             name='delete'
             color="#27ae60"
             onPress={() => this.props.delete(curation, rating)}
             text='Delete'
           />
           <MyIcon
-            size={20}
+            size={24}
             name='comment'
             type='font-awesome'
             color="#27ae60"
@@ -141,7 +141,7 @@ class Card extends Component {
             text={`Msg ${firstName}`}
           />
           <MyIcon
-            size={20}
+            size={24}
             type='font-awesome'
             name='share'
             color="#27ae60"
@@ -159,7 +159,7 @@ class Card extends Component {
       return (
         <View style={styles.icon}>
           <Icon
-            size={24}
+            size={32}
             name='expand-less'
             color='#27ae60'
             onPress={this.expandLess}
@@ -170,7 +170,7 @@ class Card extends Component {
     return (
       <View style={styles.icon}>
         <Icon
-          size={24}
+          size={32}
           name='expand-more'
           color='#27ae60'
           onPress={() => this.setState({ morePressed: curation })}
@@ -265,7 +265,7 @@ const styles = {
     textAlign: 'center'
   },
   image: {
-    height: 160,
+    height: 200,
     paddingBottom: 5
   },
   subtitle: {

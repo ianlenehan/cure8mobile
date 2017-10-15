@@ -27,7 +27,7 @@ const styles = {
     color: '#27ae60'
   },
   small: {
-    fontSize: 14,
+    fontSize: 16,
     padding: 5,
     fontWeight: 'bold',
     textAlign: 'center'
