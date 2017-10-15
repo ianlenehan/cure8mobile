@@ -55,15 +55,10 @@ class Links extends Component {
     OneSignal.getPermissionSubscriptionState((status) => {
       this.checkNotificationStatus(status)
     })
-
-    this.showTour()
   }
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.authorized) this.props.navigation.navigate('auth')
-    if (nextProps.userInfo.notifications && nextProps.userInfo.notifications.show_tour) {
-      this.props.navigation.navigate('tour')
-    }
   }
 
   getUserData = async () => {
@@ -71,14 +66,6 @@ class Links extends Component {
     this.props.getLinks(token)
     this.props.getContacts(token)
     this.props.getUserInfo(token)
-  }
-
-  async showTour() {
-    const tourShown = await AsyncStorage.getItem('tourShown')
-    if (tourShown !== 'yes') {
-      await AsyncStorage.setItem('tourShown', 'yes')
-      this.props.navigation.navigate('tour')
-    }
   }
 
   checkNotificationStatus = async (status) => {

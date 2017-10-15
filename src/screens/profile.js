@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, AsyncStorage, Switch, Platform } from 'react-native'
+import { Text, View, AsyncStorage, Switch, Platform, Alert } from 'react-native'
 import { Icon, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 
@@ -44,13 +44,30 @@ class Profile extends Component {
     this.props.getUserInfo(this.state.token)
   }
 
+  statsAlert = () => {
+    Alert.alert(
+      'What is this?',
+      'This number is calculated as the percentage of curations your friends have rated with a thumbs up.'
+    )
+  }
+
   renderStats() {
     const { stats } = this.props.info
     if (stats) {
       return (
         <View style={styles.stats}>
           <Text style={styles.stat}>Curations: {stats.curations}</Text>
-          <Text style={styles.stat}>Score: {stats.score * 100}%</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <Text style={styles.stat}>Score: {stats.score * 100}%</Text>
+            <Icon
+              name='question-circle'
+              type='font-awesome'
+              size={18}
+              color='white'
+              containerStyle={{ paddingLeft: 5 }}
+              onPress={this.statsAlert}
+            />
+            </View>
         </View>
       )
     }

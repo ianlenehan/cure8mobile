@@ -73,7 +73,6 @@ class NewContact extends Component {
   }
 
   renderNames() {
-    console.log('render names', this.state.contacts);
     return this.state.contacts.map(contact => {
       const name = `${contact.givenName} ${contact.familyName}`
       return (
