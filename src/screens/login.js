@@ -111,12 +111,11 @@ class Login extends Component {
 
   buttonText() {
     const { loading, formattedPhone, phone } = this.props
-    let prefix = 'Get code'
-    if (loading) { prefix = 'Generating code' }
+    if (loading) { return 'Generating code...' }
     if (phone !== '') {
-      return `${prefix} for ${formattedPhone}`
+      return `Get code for ${formattedPhone}`
     }
-    return prefix
+    return 'Get code'
   }
 
   renderPicker() {

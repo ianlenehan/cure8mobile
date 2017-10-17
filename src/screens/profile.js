@@ -24,22 +24,23 @@ class Profile extends Component {
     }
   }
 
-  state = { token: null , readerMode: 'on', products: [] }
+  state = { token: null , readerMode: 'on', inAppPurchase: null, membership: null }
 
   async componentDidMount() {
-    this.inAppPurchaseSteps()
+    this.loadInAppPurchaseProducts()
     const token = await AsyncStorage.getItem('token')
-    let readerMode = await AsyncStorage.getItem('readerMode')
-    this.setState({ token, readerMode: readerMode || 'on' })
+    const readerMode = await AsyncStorage.getItem('readerMode')
+    const membership = await AsyncStorage.getItem('membership')
+    this.setState({ token, membership, readerMode: readerMode || 'on' })
   }
 
-  inAppPurchaseSteps() {
-    const { InAppUtils } = NativeModules
-    const products = ['com.cure8.cure8app.premium']
+  loadInAppPurchaseProducts() {
+    const productList = ['com.cure8.cure8app.premium']
 
-    InAppUtils.loadProducts(products, (error, products) => {
-      console.log('products', products);
-       this.setState({ products })
+    NativeModules.InAppUtils.loadProducts(productList, (error, products) => {
+      if (products.length) {
+        this.setState({ inAppPurchase: products[0] })
+      }
     });
   }
 
@@ -68,6 +69,24 @@ class Profile extends Component {
       'What is this?',
       'This number is calculated as the percentage of curations your friends have rated with a thumbs up.'
     )
+  }
+
+  upgradeHelp = () => {
+    Alert.alert(
+      'What is Premium Membership?',
+      'The free version of this app allows you to create and receive five curations. Premium Membership removes these restrictions.'
+    )
+  }
+
+  upgradeMembership = () => {
+    const { identifier } = this.state.inAppPurchase
+    NativeModules.InAppUtils.purchaseProduct(identifier, async (error, response) => {
+      if(response && response.productIdentifier) {
+        Alert.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier);
+        await AsyncStorage.setItem('membership', 'premium')
+        this.props.getUserInfo(this.state.token)
+      }
+    })
   }
 
   renderStats() {
@@ -106,6 +125,35 @@ class Profile extends Component {
             onTintColor='#27ae60'
             value={switchPos}
             onValueChange={this.setReaderMode}
+          />
+        </View>
+      )
+    }
+  }
+
+  renderUpgradeButton() {
+    const { inAppPurchase, membership } = this.state
+    if (inAppPurchase && !membership) {
+      return (
+        <View style={[styles.upgradeView, styles.switchView]}>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.options}>Upgrade membership</Text>
+            <Icon
+              name='question-circle'
+              type='font-awesome'
+              size={18}
+              color='#27ae60'
+              containerStyle={{ paddingLeft: 10 }}
+              onPress={this.upgradeHelp}
+              />
+          </View>
+          <Button
+            title={this.state.inAppPurchase.priceString}
+            fontSize={12}
+            backgroundColor='#27ae60'
+            buttonStyle={styles.buyButton}
+            borderRadius={5}
+            onPress={this.upgradeMembership}
           />
         </View>
       )
@@ -163,6 +211,7 @@ class Profile extends Component {
           <Text style={styles.name}>{this.props.info.name}</Text>
           <Text style={styles.phone}>{this.props.info.phone}</Text>
           {this.renderStats()}
+          {this.renderUpgradeButton()}
           {this.renderOptions()}
         </View>
       </View>
@@ -215,6 +264,9 @@ const styles = {
     borderColor: '#ddd',
     borderBottomWidth: 1,
   },
+  upgradeView: {
+    backgroundColor: '#fff',
+  },
   optionsView: {
     backgroundColor: '#fff',
     paddingBottom: 10,
@@ -229,6 +281,10 @@ const styles = {
   optionsTitle: {
     fontSize: 20,
     textAlign: 'center',
+  },
+  buyButton: {
+    padding: 10,
+    marginRight: -10
   }
 }
 

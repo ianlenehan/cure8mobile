@@ -4,7 +4,8 @@ import {
   StatusBar,
   FlatList,
   RefreshControl,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 
@@ -12,31 +13,33 @@ import { createLink, archiveLink, shareLink, setArchiveMode, getLinks } from '..
 import Card from './common/card'
 
 class LinkView extends Component {
-  state = { links: [], refreshing: false, token: null, readerMode: 'on' }
+  state = { links: [], refreshing: false, token: null, readerMode: 'on', membership: null }
 
   async componentDidMount() {
     this.filterLinks()
-    this.checkReaderMode()
+    this.checkReaderModeAndMembership()
     const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
+    const membership = await AsyncStorage.getItem('membership')
+    this.setState({ token, membership })
   }
 
   componentWillReceiveProps(nextProps) {
-    this.checkReaderMode()
+    this.checkReaderModeAndMembership()
     this.filterLinks(nextProps.links)
   }
 
   async onRefresh() {
     this.setState({ refreshing: true })
-    await this.checkReaderMode()
+    await this.checkReaderModeAndMembership()
     await this.props.refresh()
     this.setState({ refreshing: false })
   }
 
-  async checkReaderMode() {
+  async checkReaderModeAndMembership() {
     const readerMode = await AsyncStorage.getItem('readerMode')
+    const membership = await AsyncStorage.getItem('membership')
     if (readerMode) {
-      this.setState({ readerMode })
+      this.setState({ readerMode, membership })
     }
   }
 
@@ -49,13 +52,29 @@ class LinkView extends Component {
     this.props.setArchiveMode(curation, action)
   }
 
-  filterLinks(links = this.props.links) {
+  membershipAlert() {
+    Alert.alert('Your Membership', "Thank you for trying Cure8! You have reached the limit for the free version of this app. If you've enjoyed using the app, please consider upgrading from the profile tab.")
+  }
+
+  async filterLinks(links = this.props.links) {
     const { status } = this.props
     const filtered = links.filter((link) => {
       return link.status === status
     })
 
-    this.setState({ links: filtered })
+    const linksCount = filtered.length
+    let allLinks = filtered
+
+    const membership = await AsyncStorage.getItem('membership')
+    const membershipAlert = await AsyncStorage.getItem('membershipAlert')
+    if (!membership) {
+      allLinks = filtered.splice(-5)
+      if (linksCount >= 5 && !membershipAlert) {
+        this.membershipAlert()
+        await AsyncStorage.setItem('membershipAlert', 'yes')
+      }
+    }
+    this.setState({ links: allLinks })
   }
 
   archiveLink = (curation, rating) => {
@@ -69,7 +88,12 @@ class LinkView extends Component {
   }
 
   shareLink(link) {
-    this.props.navigate('addLink', { url: link.url })
+    const membership = await AsyncStorage.getItem('membership')
+    if (membership) {
+      this.props.navigate('addLink', { url: link.url })
+    } else {
+      this.membershipAlert()
+    }
   }
 
   renderItem = ({ item }) => {
