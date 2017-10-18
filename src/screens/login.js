@@ -224,7 +224,7 @@ class Login extends Component {
         keyboardVerticalOffset={keyboardVerticalOffset}
         style={styles.container}
       >
-        <Text style={styles.header}>cure8</Text>
+        <Text style={styles.header}>Cure8</Text>
         <StatusBar hidden />
           <View style={styles.form}>
             {this.renderPhoneInput()}

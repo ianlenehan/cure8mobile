@@ -27,7 +27,7 @@ class Profile extends Component {
   state = { token: null , readerMode: 'on', inAppPurchase: null, membership: null }
 
   async componentDidMount() {
-    this.loadInAppPurchaseProducts()
+    if (Platform.OS === 'ios') { this.loadInAppPurchaseProducts() }
     const token = await AsyncStorage.getItem('token')
     const readerMode = await AsyncStorage.getItem('readerMode')
     const membership = await AsyncStorage.getItem('membership')
@@ -84,6 +84,7 @@ class Profile extends Component {
       if(response && response.productIdentifier) {
         Alert.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier);
         await AsyncStorage.setItem('membership', 'premium')
+        await AsyncStorage.removeItem('membershipAlert')
         this.props.getUserInfo(this.state.token)
       }
     })
@@ -133,7 +134,8 @@ class Profile extends Component {
 
   renderUpgradeButton() {
     const { inAppPurchase, membership } = this.state
-    if (inAppPurchase && !membership) {
+    const isIOS = Platform.OS === 'ios'
+    if (inAppPurchase && !membership && isIOS) {
       return (
         <View style={[styles.upgradeView, styles.switchView]}>
           <View style={{ flexDirection: 'row' }}>

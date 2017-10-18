@@ -4,7 +4,7 @@ import { View, Text } from 'react-native'
 const Header = (props) => {
   return (
     <View style={[styles.header, props.style]}>
-      <Text style={[styles.headerText, props.textStyle]}>cure8</Text>
+      <Text style={[styles.headerText, props.textStyle]}>Cure8</Text>
     </View>
   )
 }

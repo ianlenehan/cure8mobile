@@ -39,7 +39,7 @@ class Card extends Component {
 
   messageOwner = async (phone) => {
     const { title } = this.props.link
-    Clipboard.setString(`Re: "${title}" from cure8.`);
+    Clipboard.setString(`Re: "${title}" from Cure8.`);
     if (!this.state.alertMsgCurator) {
       Alert.alert(
         'Did you know?',

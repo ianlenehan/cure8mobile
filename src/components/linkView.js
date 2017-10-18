@@ -5,7 +5,8 @@ import {
   FlatList,
   RefreshControl,
   AsyncStorage,
-  Alert
+  Alert,
+  Platform
 } from 'react-native'
 import { connect } from 'react-redux'
 
@@ -67,7 +68,8 @@ class LinkView extends Component {
 
     const membership = await AsyncStorage.getItem('membership')
     const membershipAlert = await AsyncStorage.getItem('membershipAlert')
-    if (!membership) {
+    const isIOS = Platform.OS === 'ios'
+    if (!membership && isIOS) {
       allLinks = filtered.splice(-5)
       if (linksCount >= 5 && !membershipAlert) {
         this.membershipAlert()
@@ -87,7 +89,7 @@ class LinkView extends Component {
     this.props.archiveLink(curation, rating, 'deleted', this.state.token)
   }
 
-  shareLink(link) {
+  async shareLink(link) {
     const membership = await AsyncStorage.getItem('membership')
     if (membership) {
       this.props.navigate('addLink', { url: link.url })

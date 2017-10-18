@@ -16,12 +16,8 @@ class Welcome extends Component {
   }
 
   render() {
-    // if (this.state.loading) {
-    //   return <AppLoading />
-    // }
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>cure8</Text>
         <ActivityIndicator size={'large'} color='white' />
       </View>
     )

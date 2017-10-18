@@ -6,7 +6,8 @@ import {
   TouchableHighlight,
   Image,
   StatusBar,
-  Platform
+  Platform,
+  Alert
 } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -34,7 +35,18 @@ class Links extends Component {
           icon={{ name: 'plus', type: 'font-awesome' }}
           iconRight
           backgroundColor='rgba(0,0,0,0)'
-          onPress={() => navigate('addLink')}
+          onPress={
+            async () => {
+              const membership = await AsyncStorage.getItem('membership')
+              const membershipAlert = await AsyncStorage.getItem('membershipAlert')
+              const isIOS = Platform.OS === 'ios'
+              if (!membership && membershipAlert && isIOS) {
+                Alert.alert('Your Membership', "Thank you for trying the free version of Cure8! You have reached the limit of 5 curations and can no longer create new links. If you've enjoyed using the app, please consider upgrading from the profile tab.")
+              } else {
+                navigate('addLink')
+              }
+            }
+          }
         />
       ),
       headerLeft: (
