@@ -82,6 +82,7 @@ class Profile extends Component {
     const { identifier } = this.state.inAppPurchase
     NativeModules.InAppUtils.purchaseProduct(identifier, async (error, response) => {
       if(response && response.productIdentifier) {
+        this.setState({ membership: 'premium' })
         Alert.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier);
         await AsyncStorage.setItem('membership', 'premium')
         await AsyncStorage.removeItem('membershipAlert')
