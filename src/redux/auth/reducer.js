@@ -38,7 +38,7 @@ export default (state = initialState, action) => {
     case CODE_CHANGED:
       return { ...state, code: action.payload }
     case CODE_REQUESTED:
-      return { ...state, loading: true }
+      return { ...state, loading: true, error: '' }
     case GET_CODE:
       return { ...state, loading: false, buttonText: action.payload }
     case GET_CODE_ERROR:

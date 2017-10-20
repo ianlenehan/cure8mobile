@@ -1,5 +1,5 @@
 {
- # "extends": "airbnb",
+ "extends": "airbnb",
  "rules": {
    "arrow-body-style": 0,
    "semi": 0,

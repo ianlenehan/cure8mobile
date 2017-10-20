@@ -63,22 +63,22 @@ export const getTemporaryCode = (formattedPhone) => {
 
     axios.post(`${rootURL}users/request`, { user: { phone: formattedPhone } })
       .then((res) => {
-        if (res.status === 200) {
+        if (res.data.status === 200) {
           dispatch({
             type: GET_CODE,
-            payload: res.data.buttonText
+            payload: res.data.message
           })
         } else {
           dispatch({
             type: GET_CODE_ERROR,
-            payload: "So... something's wrong. Have you entered a valid phone number?"
+            payload: res.data.message
           })
         }
       })
       .catch((err) => {
         dispatch({
           type: GET_CODE_ERROR,
-          payload: `So... something's wrong. Have you entered a valid phone number? (${err})`
+          payload: `So... something's wrong. (${err})`
         })
       })
   }
