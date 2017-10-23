@@ -54,7 +54,7 @@ class LinkView extends Component {
   }
 
   membershipAlert() {
-    Alert.alert('Your Membership', "Thank you for trying Cure8! You have reached the limit for the free version of this app. If you've enjoyed using the app, please consider upgrading from the profile tab.")
+    Alert.alert('Free Trial', "Thank you for trying Cure8! You have reached the limit for the free version of this app. If you've enjoyed using the app, please consider upgrading from the profile tab. If you have previously upgraded to the full version of this app, you can restore your purchase from the profile tab by tapping on the question mark.")
   }
 
   async filterLinks(links = this.props.links) {
