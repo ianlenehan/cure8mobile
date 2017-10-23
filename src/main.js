@@ -19,6 +19,7 @@ import Groups from './screens/groups'
 import NewGroup from './screens/newGroup'
 import AddContact from './screens/addContact'
 import Tour from './screens/tour'
+import Notifications from './screens/notifications'
 
 const contactsNavigator = StackNavigator({
   myContacts: { screen: Contacts },
@@ -59,6 +60,7 @@ const linksNavigator = StackNavigator({
 const mainTabNavigator = TabNavigator({
   linksNavigator: { screen: linksNavigator },
   contacts: { screen: contactsNavigator },
+  notifications: { screen: Notifications },
   profile: { screen: Profile }
 }, {
   tabBarOptions: {
