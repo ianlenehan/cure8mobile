@@ -19,7 +19,7 @@ class Profile extends Component {
     return {
       tabBarLabel: 'Profile',
       tabBarIcon: ({ tintColor }) => {
-        return <Icon name="user" type="font-awesome" size={24} color={tintColor} />;
+        return <Icon name="user" type="font-awesome" size={24} color={tintColor} />
       }
     }
   }
@@ -81,7 +81,33 @@ class Profile extends Component {
   upgradeHelp = () => {
     Alert.alert(
       'What is Premium Membership?',
-      'The free version of this app allows you to create and receive five curations. Premium Membership removes these restrictions.'
+      'The free version of this app allows you to create and receive five curations. Premium Membership removes these restrictions.',
+      [
+        { text: 'OK' },
+        { text: 'Restore', onPress: () => {
+          NativeModules.InAppUtils.restorePurchases((error, response) => {
+            if(error) {
+              Alert.alert('itunes Error', 'Could not connect to itunes store.')
+            } else {
+              Alert.alert('Restore Successful', 'Successfully restores all your purchases.')
+
+              if (response.length === 0) {
+                Alert.alert('No Purchases', "We didn't find any purchases to restore.")
+                return
+              }
+
+              response.forEach(async (purchase) => {
+                if (purchase.productIdentifier === 'com.cure8.cure8app.premium') {
+                  this.setState({ membership: 'premium' })
+                  await AsyncStorage.setItem('membership', 'premium')
+                  await AsyncStorage.removeItem('membershipAlert')
+                  this.props.getUserInfo(this.state.token)
+                }
+              })
+            }
+          })
+        }}
+      ]
     )
   }
 
@@ -90,7 +116,7 @@ class Profile extends Component {
     NativeModules.InAppUtils.purchaseProduct(identifier, async (error, response) => {
       if(response && response.productIdentifier) {
         this.setState({ membership: 'premium' })
-        Alert.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier);
+        Alert.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier)
         await AsyncStorage.setItem('membership', 'premium')
         await AsyncStorage.removeItem('membershipAlert')
         this.props.getUserInfo(this.state.token)
