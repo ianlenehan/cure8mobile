@@ -101,14 +101,6 @@ class LinkView extends Component {
     }
   }
 
-  if (!membership && isIOS) {
-    allLinks = filtered.splice(-5)
-    if (linksCount >= 5 && !membershipAlert) {
-      this.membershipAlert()
-      await AsyncStorage.setItem('membershipAlert', 'yes')
-    }
-  }
-
   renderItem = ({ item }) => {
     return (
       <Card

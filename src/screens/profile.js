@@ -26,22 +26,30 @@ class Profile extends Component {
 
   state = { token: null , readerMode: 'on', inAppPurchase: null, membership: null }
 
-  async componentDidMount() {
-    if (Platform.OS === 'ios') { this.loadInAppPurchaseProducts() }
+  componentDidMount() {
+    this.loadInAppPurchaseProducts()
+    this.setStateVariables()
+  }
+
+  async setStateVariables() {
     const token = await AsyncStorage.getItem('token')
-    const readerMode = await AsyncStorage.getItem('readerMode')
     const membership = await AsyncStorage.getItem('membership')
-    this.setState({ token, membership, readerMode: readerMode || 'on' })
+    const readerModeFromStorage = await AsyncStorage.getItem('readerMode')
+    const readerMode = readerModeFromStorage || 'on'
+    this.setState({ token, membership, readerMode })
+    this.props.getUserInfo()
   }
 
   loadInAppPurchaseProducts() {
-    const productList = ['com.cure8.cure8app.premium']
+    if (Platform.OS === 'ios') {
+      const productList = ['com.cure8.cure8app.premium']
 
-    NativeModules.InAppUtils.loadProducts(productList, (error, products) => {
-      if (products.length) {
-        this.setState({ inAppPurchase: products[0] })
-      }
-    });
+      NativeModules.InAppUtils.loadProducts(productList, (error, products) => {
+        if (products.length) {
+          this.setState({ inAppPurchase: products[0] })
+        }
+      })
+    }
   }
 
   deleteToken = async () => {
@@ -49,7 +57,6 @@ class Profile extends Component {
     await AsyncStorage.removeItem('token')
     this.props.logUserOut(token)
     this.props.navigation.navigate('auth')
-    console.log('Token Deleted')
   }
 
   toggleSwitch = (value, field) => {
@@ -164,47 +171,49 @@ class Profile extends Component {
   }
 
   renderOptions() {
-    const { push, rating, curation } = this.props.info.notifications
-    return (
-      <View style={styles.optionsView}>
-        {this.readerMode()}
-        <View style={styles.switchView}>
-          <Text style={styles.options}>Push Notifications</Text>
-          <Switch
-            tintColor='#dcdcdc'
-            onTintColor='#27ae60'
-            value={push}
-            onValueChange={(val) => this.toggleSwitch(val, 'notifications')}
-          />
+    if (this.props.info.notifications) {
+      const { push, rating, curation } = this.props.info.notifications
+      return (
+        <View style={styles.optionsView}>
+          {this.readerMode()}
+          <View style={styles.switchView}>
+            <Text style={styles.options}>Push Notifications</Text>
+            <Switch
+              tintColor='#dcdcdc'
+              onTintColor='#27ae60'
+              value={push}
+              onValueChange={(val) => this.toggleSwitch(val, 'notifications')}
+              />
+          </View>
+          <View style={styles.switchView}>
+            <Text style={styles.options}>Rating Notifications</Text>
+            <Switch
+              tintColor='#dcdcdc'
+              onTintColor='#27ae60'
+              value={push ? rating : push}
+              onValueChange={(val) => this.toggleSwitch(val, 'getRatingNotifications')}
+              />
+          </View>
+          <View style={styles.switchView}>
+            <Text style={styles.options}>New Curation Notifications</Text>
+            <Switch
+              tintColor='#dcdcdc'
+              onTintColor='#27ae60'
+              value={push ? curation : push}
+              onValueChange={(val) => this.toggleSwitch(val, 'getCurationNotifications')}
+              />
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <Button
+              onPress={this.deleteToken}
+              title="Log out"
+              backgroundColor='#27ae60'
+              color='#fff'
+              />
+          </View>
         </View>
-        <View style={styles.switchView}>
-          <Text style={styles.options}>Rating Notifications</Text>
-          <Switch
-            tintColor='#dcdcdc'
-            onTintColor='#27ae60'
-            value={push ? rating : push}
-            onValueChange={(val) => this.toggleSwitch(val, 'getRatingNotifications')}
-          />
-        </View>
-        <View style={styles.switchView}>
-          <Text style={styles.options}>New Curation Notifications</Text>
-          <Switch
-            tintColor='#dcdcdc'
-            onTintColor='#27ae60'
-            value={push ? curation : push}
-            onValueChange={(val) => this.toggleSwitch(val, 'getCurationNotifications')}
-          />
-        </View>
-        <View style={{ marginTop: 10 }}>
-          <Button
-            onPress={this.deleteToken}
-            title="Log out"
-            backgroundColor='#27ae60'
-            color='#fff'
-          />
-        </View>
-      </View>
-    )
+      )
+    }
   }
 
   render() {
