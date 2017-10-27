@@ -20,8 +20,7 @@ class LinkView extends Component {
     this.filterLinks()
     this.checkReaderModeAndMembership()
     const token = await AsyncStorage.getItem('token')
-    const membership = await AsyncStorage.getItem('membership')
-    this.setState({ token, membership })
+    this.setState({ token })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -41,6 +40,8 @@ class LinkView extends Component {
     const membership = await AsyncStorage.getItem('membership')
     if (readerMode) {
       this.setState({ readerMode, membership })
+    } else {
+      this.setState({ membership })
     }
   }
 
@@ -54,7 +55,7 @@ class LinkView extends Component {
   }
 
   membershipAlert() {
-    Alert.alert('Your Membership', "Thank you for trying Cure8! You have reached the limit for the free version of this app. If you've enjoyed using the app, please consider upgrading from the profile tab.")
+    Alert.alert('Free Trial', "Thank you for trying Cure8! You have reached the limit for the free version of this app. If you've enjoyed using the app, please consider upgrading from the profile tab. If you have previously upgraded to the full version of this app, you can restore your purchase from the profile tab by tapping on the question mark.")
   }
 
   async filterLinks(links = this.props.links) {
@@ -90,11 +91,13 @@ class LinkView extends Component {
   }
 
   async shareLink(link) {
+    const membershipAlert = await AsyncStorage.getItem('membershipAlert')
     const membership = await AsyncStorage.getItem('membership')
-    if (membership) {
-      this.props.navigate('addLink', { url: link.url })
-    } else {
+
+    if (!membership && Platform.OS == 'ios' && membershipAlert === 'yes') {
       this.membershipAlert()
+    } else {
+      this.props.navigate('addLink', { url: link.url })
     }
   }
 
