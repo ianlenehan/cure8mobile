@@ -20,8 +20,7 @@ class LinkView extends Component {
     this.filterLinks()
     this.checkReaderModeAndMembership()
     const token = await AsyncStorage.getItem('token')
-    const membership = await AsyncStorage.getItem('membership')
-    this.setState({ token, membership })
+    this.setState({ token })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -41,6 +40,8 @@ class LinkView extends Component {
     const membership = await AsyncStorage.getItem('membership')
     if (readerMode) {
       this.setState({ readerMode, membership })
+    } else {
+      this.setState({ membership })
     }
   }
 
@@ -90,11 +91,21 @@ class LinkView extends Component {
   }
 
   async shareLink(link) {
+    const membershipAlert = await AsyncStorage.getItem('membershipAlert')
     const membership = await AsyncStorage.getItem('membership')
-    if (membership) {
-      this.props.navigate('addLink', { url: link.url })
-    } else {
+
+    if (!membership && Platform.OS == 'ios' && membershipAlert === 'yes') {
       this.membershipAlert()
+    } else {
+      this.props.navigate('addLink', { url: link.url })
+    }
+  }
+
+  if (!membership && isIOS) {
+    allLinks = filtered.splice(-5)
+    if (linksCount >= 5 && !membershipAlert) {
+      this.membershipAlert()
+      await AsyncStorage.setItem('membershipAlert', 'yes')
     }
   }
 
