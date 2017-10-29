@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
   LayoutAnimation,
+  ScrollView
 } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -86,32 +87,27 @@ class NewContact extends Component {
     })
   }
 
-  renderContent() {
+  renderButton() {
     if (this.state.searchMode) {
       return (
-        <View>
-          {this.renderNames()}
+        <View style={{ height: 250 }}>
           <Input
             placeholder={'Type a name'}
             value={this.props.name}
             onChangeText={this.contactNameChanged}
             returnKeyType={'done'}
             disableReturnKey={false}
-          />
+            />
+          <Button
+            icon={{ name: 'chevron-down', type: 'font-awesome' }}
+            backgroundColor='#27ae60'
+            onPress={this.onButtonPress}
+            buttonStyle={styles.button}
+            />
+          <ScrollView>
+            {this.renderNames()}
+          </ScrollView>
         </View>
-      )
-    }
-  }
-
-  renderButton() {
-    if (this.state.searchMode) {
-      return (
-        <Button
-          icon={{ name: 'chevron-down', type: 'font-awesome' }}
-          backgroundColor='#27ae60'
-          onPress={this.onButtonPress}
-          buttonStyle={styles.button}
-        />
       )
     }
     return (
@@ -128,7 +124,6 @@ class NewContact extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.renderContent()}
         {this.renderButton()}
       </View>
     )

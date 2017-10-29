@@ -37,7 +37,7 @@ class Profile extends Component {
     const readerModeFromStorage = await AsyncStorage.getItem('readerMode')
     const readerMode = readerModeFromStorage || 'on'
     this.setState({ token, membership, readerMode })
-    this.props.getUserInfo()
+    this.props.getUserInfo(token)
   }
 
   loadInAppPurchaseProducts() {
@@ -80,14 +80,14 @@ class Profile extends Component {
 
   upgradeHelp = () => {
     Alert.alert(
-      'What is Premium Membership?',
-      'The free version of this app allows you to create and receive five curations. Premium Membership removes these restrictions.',
+      'Why purchase the full version?',
+      'The free version of this app allows you to create and receive five curations. The full version removes these restrictions. Press "Restore" if you have already upgraded the app.',
       [
         { text: 'OK' },
         { text: 'Restore', onPress: () => {
           NativeModules.InAppUtils.restorePurchases((error, response) => {
             if(error) {
-              Alert.alert('itunes Error', 'Could not connect to itunes store.')
+              Alert.alert('iTunes Error', 'Could not connect to iTunes store.')
             } else {
               Alert.alert('Restore Successful', 'Successfully restores all your purchases.')
 
@@ -173,7 +173,7 @@ class Profile extends Component {
       return (
         <View style={[styles.upgradeView, styles.switchView]}>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.options}>Upgrade membership</Text>
+            <Text style={styles.options}>Purchase full version</Text>
             <Icon
               name='question-circle'
               type='font-awesome'
