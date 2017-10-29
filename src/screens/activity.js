@@ -5,15 +5,17 @@ import {
 } from 'react-native'
 import { Icon, Button } from 'react-native-elements'
 
-export default class Notifications extends Component {
+export default class Activity extends Component {
   static navigationOptions = () => {
     return {
-      tabBarLabel: 'Notifications',
+      headerTitle: 'Activity',
+      tabBarLabel: 'Activity',
       tabBarIcon: ({ tintColor }) => {
         return <Icon name="bell-o" type="font-awesome" size={24} color={tintColor} />;
       }
     }
   }
+
   render() {
     return (
       <View>
