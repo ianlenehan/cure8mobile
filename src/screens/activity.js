@@ -3,9 +3,16 @@ import {
   Text,
   View,
   ScrollView,
-  Image
+  Image,
+  TouchableOpacity,
+  Platform,
+  AsyncStorage,
+  Alert
 } from 'react-native'
+import moment from 'moment'
 import { connect } from 'react-redux'
+import SafariView from 'react-native-safari-view'
+import { CustomTabs } from 'react-native-custom-tabs'
 import { Icon, Button } from 'react-native-elements'
 
 class Activity extends Component {
@@ -16,6 +23,23 @@ class Activity extends Component {
       tabBarIcon: ({ tintColor }) => {
         return <Icon name="bell-o" type="font-awesome" size={24} color={tintColor} />;
       }
+    }
+  }
+
+  formatDate(date) {
+    const currentDate = moment()
+    return moment(date).local().from(currentDate)
+  }
+
+  openInWebBrowser = (url) => {
+    if (Platform.OS === 'ios') {
+      SafariView.show({
+        url,
+        tintColor: '#27ae60',
+        barColor: '#27ae60'
+      })
+    } else if (Platform.OS === 'android') {
+      CustomTabs.openURL(url)
     }
   }
 
@@ -42,28 +66,38 @@ class Activity extends Component {
 
   renderItems() {
     const { activity } = this.props
-    return activity.map(item => {
+    return activity.map((item, i) => {
       if (item.type === 'rating') {
         return (
-          <View key={item.id} style={styles.activityView}>
+          <TouchableOpacity
+            key={i}
+            style={styles.activityView}
+            onPress={() => this.openInWebBrowser(item.url)}
+          >
             {this.getRatingIcon(item)}
-            <View>
-              <Text style={styles.activityTitle}>{item.title}</Text>
-              <Text>{item.friend}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.activityTitle}>{item.title.trim()}</Text>
+              <View style={styles.bottomText}>
+                <Text style={styles.friendName}>{item.friend}</Text>
+                <Text style={styles.date}>{this.formatDate(item.date)}</Text>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         )
       }
       return (
-        <View key={item.id} style={styles.activityView}>
+        <View key={i} style={styles.activityView}>
           <Image
             style={{ width: 22, height: 22, borderRadius: 11, margin: 5 }}
             resizeMode='contain'
             source={require('../../assets/icons/app.png')}
           />
-        <View>
-          <Text style={styles.activityTitle}>{item.title}</Text>
-          <Text>{item.friends.join(', ')}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.activityTitle}>{item.title.trim()}</Text>
+            <View style={styles.bottomText}>
+              <Text style={styles.friendName}>{item.friends.join(', ')}</Text>
+              <Text style={styles.date}>{this.formatDate(item.date)}</Text>
+            </View>
         </View>
         </View>
       )
@@ -96,8 +130,25 @@ const styles = {
     alignItems: 'center'
   },
   activityTitle: {
-    fontSize: 18,
-  }
+    fontSize: 14,
+  },
+  friendName: {
+    fontSize: 10,
+    flex: 2
+  },
+  bottomText: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flex: 1,
+    marginTop: 3,
+    alignItems: 'flex-end'
+  },
+  date: {
+    fontSize: 8,
+    color: 'grey',
+    flex: 1,
+    textAlign: 'right',
+  },
 }
 
 const mapStateToProps = ({ user }) => {

@@ -236,7 +236,7 @@ class Card extends Component {
     return (
       <CardSection style={{ flex: 1 }}>
         <TouchableOpacity key={id} onPress={() => this.openInWebBrowser(url)}>
-          <Title title={title} size='small' />
+          <Title title={title.trim()} size='small' />
           <Image source={{ uri: image }} style={styles.image} />
         </TouchableOpacity>
         <View style={styles.subtitle}>
