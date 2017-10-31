@@ -4,7 +4,7 @@ import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import ContactRow from '../components/contactRow'
 import Spinner from '../components/common/spinner'
-import { deleteContact, setEditMode } from '../redux/contact/actions'
+import { deleteContact, setEditMode, updateGroup } from '../redux/contact/actions'
 
 class Groups extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -30,7 +30,7 @@ class Groups extends Component {
     })
 
     const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
+    this.setState({ token, groups: this.props.groups })
   }
 
   onDeletePress = (group) => {
@@ -64,6 +64,11 @@ class Groups extends Component {
     }
   }
 
+  onEditPress = (group) => {
+    const { contacts } = this.props
+    this.props.navigation.navigate('newGroup', { group, contacts })
+  }
+
   renderContent() {
     if (this.props.loading) {
       return <Spinner size='large' text='Loading groups...' />
@@ -73,11 +78,13 @@ class Groups extends Component {
         <View key={group.id}>
           <ContactRow
             contact={group}
+            group
             title={group.name}
             rightTitle={group.members ? `${group.members.length} Members` : null}
             onPress={() => this.onGroupPress(group)}
             editMode={this.props.editMode}
             onDeletePress={() => this.onDeletePress(group)}
+            onEditPress={() => this.onEditPress(group)}
           />
         {this.renderGroupMembers(group)}
       </View>
@@ -115,8 +122,8 @@ const styles = {
   groupMembers: {
     backgroundColor: '#ecf0f1',
     paddingLeft: 20,
-    paddingTop: 3,
-    paddingBottom: 3
+    fontSize: 16,
+    padding: 5
   }
 }
 

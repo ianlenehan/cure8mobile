@@ -3,7 +3,23 @@ import { Text, View, TouchableWithoutFeedback } from 'react-native'
 import { Icon } from 'react-native-elements'
 
 const getRightTitle = (props) => {
-  if (props.editMode) {
+  if (props.editMode && props.group) {
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <Icon
+          name='mode-edit'
+          color='#ddd'
+          onPress={props.onEditPress}
+          containerStyle={{ paddingRight: 15 }}
+        />
+        <Icon
+          name='delete'
+          color='#ddd'
+          onPress={props.onDeletePress}
+        />
+      </View>
+    )
+  } else if (props.editMode) {
     return (
       <Icon
         name='delete'

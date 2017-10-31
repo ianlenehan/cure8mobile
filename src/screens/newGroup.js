@@ -3,13 +3,17 @@ import { Text, View, AsyncStorage, ScrollView } from 'react-native'
 import { List, ListItem, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import Input from '../components/common/input'
-import { nameChanged, saveGroup } from '../redux/contact/actions'
+import {
+  nameChanged,
+  saveGroup,
+  updateGroup
+} from '../redux/contact/actions'
 
 class NewGroup extends Component {
-  static navigationOptions = () => {
-    return {
-      title: 'Create Group',
-    }
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state
+    const title = params.group ? 'Edit Group' : 'Create Group'
+    return { title }
   }
 
   state = { members: [], token: null }
@@ -17,18 +21,29 @@ class NewGroup extends Component {
   async componentDidMount() {
     const token = await AsyncStorage.getItem('token')
     this.setState({ token })
-    this.onNameChange('')
+    let groupName = ''
+    const { params } = this.props.navigation.state
+    if (params.group) {
+      this.setGroupMembers(params.group)
+      groupName = params.group.name
+    }
+    this.onNameChange(groupName)
   }
 
-  onContactPress = async (contactId) => {
-    if (this.state.members.includes(contactId)) {
-      const newState = this.state.members.filter(member => {
-        return member !== contactId
+  setGroupMembers(group) {
+    const members = group.members.map(member => member.group_id)
+    this.setState({ members })
+  }
+
+  onContactPress = async (contact) => {
+    if (this.state.members.includes(contact.id)) {
+      const newState = this.state.members.filter(memberId => {
+        return memberId !== contact.id
       })
       await this.setState({ members: newState })
       return
     }
-    this.setState({ members: [...this.state.members, contactId] })
+    this.setState({ members: [...this.state.members, contact.id] })
   }
 
   onNameChange = (name) => {
@@ -37,14 +52,19 @@ class NewGroup extends Component {
 
   onSavePress = () => {
     const { members, token } = this.state
-    this.props.saveGroup(this.props.name, members, token)
+    const { params } = this.props.navigation.state
+    if (params.group) {
+      this.props.updateGroup(params.group.id, this.props.name, members, token)
+    } else {
+      this.props.saveGroup(this.props.name, members, token)
+    }
     if (this.props.name) {
       this.props.navigation.goBack()
     }
   }
 
-  getRightIcon(contactId) {
-    if (this.state.members.includes(contactId)) {
+  getRightIcon(contact) {
+    if (this.state.members.includes(contact.id)) {
       return { name: 'circle', type: 'font-awesome', color: '#27ae60' }
     }
     return { name: 'circle', type: 'font-awesome', color: '#dcdcdc' }
@@ -52,7 +72,6 @@ class NewGroup extends Component {
 
   render() {
     const { contacts } = this.props.navigation.state.params
-
     return (
       <View style={styles.container}>
         <View style={styles.inputView}>
@@ -72,9 +91,9 @@ class NewGroup extends Component {
                   key={i}
                   title={contact.name}
                   subtitle={contact.phone}
-                  onPress={() => this.onContactPress(contact.id)}
+                  onPress={() => this.onContactPress(contact)}
                   rightTitleStyle={styles.subtitle}
-                  rightIcon={this.getRightIcon(contact.id)}
+                  rightIcon={this.getRightIcon(contact)}
                 />
               ))
             }
@@ -93,11 +112,13 @@ class NewGroup extends Component {
 }
 
 const mapStateToProps = ({ contact }) => {
-  const { name, error } = contact
-  return { name, error }
+  const { name, error, editMode } = contact
+  return { name, error, editMode }
 }
 
-export default connect(mapStateToProps, { nameChanged, saveGroup })(NewGroup)
+export default connect(mapStateToProps,
+  { nameChanged, saveGroup, updateGroup }
+)(NewGroup)
 
 const styles = {
   container: {
