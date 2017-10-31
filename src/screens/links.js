@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 import OneSignal from 'react-native-onesignal'
 
 import { getLinks } from '../redux/link/actions'
-import { getUserInfo, updateUser } from '../redux/user/actions'
+import { getUserInfo, updateUser, getUserActivity } from '../redux/user/actions'
 import { getContacts } from '../redux/contact/actions'
 import LinkView from '../components/linkView'
 import Spinner from '../components/common/spinner'
@@ -78,6 +78,7 @@ class Links extends Component {
     this.props.getLinks(token)
     this.props.getContacts(token)
     this.props.getUserInfo(token)
+    this.props.getUserActivity(token)
   }
 
   checkNotificationStatus = async (status) => {
@@ -159,4 +160,10 @@ const mapStateToProps = ({ link, user }) => {
   return { links, loading, authorized, userInfo }
 }
 
-export default connect(mapStateToProps, { getLinks, getContacts, getUserInfo, updateUser })(Links)
+export default connect(mapStateToProps, {
+  getLinks,
+  getContacts,
+  getUserInfo,
+  updateUser,
+  getUserActivity
+})(Links)

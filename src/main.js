@@ -19,6 +19,7 @@ import Groups from './screens/groups'
 import NewGroup from './screens/newGroup'
 import AddContact from './screens/addContact'
 import Tour from './screens/tour'
+import Activity from './screens/activity'
 
 const contactsNavigator = StackNavigator({
   myContacts: { screen: Contacts },
@@ -56,9 +57,21 @@ const linksNavigator = StackNavigator({
   }
 })
 
+const activityNav = StackNavigator({
+  activity: { screen: Activity },
+}, {
+  navigationOptions: {
+    headerTintColor: 'white',
+    headerStyle: {
+      backgroundColor: primaryGreen,
+    },
+  }
+})
+
 const mainTabNavigator = TabNavigator({
   linksNavigator: { screen: linksNavigator },
   contacts: { screen: contactsNavigator },
+  activity: { screen: activityNav },
   profile: { screen: Profile }
 }, {
   tabBarOptions: {

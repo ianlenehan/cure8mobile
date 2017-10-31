@@ -46,6 +46,36 @@ export const saveGroup = (name, contacts, token) => {
   return { type: GROUP_NAME_MISSING }
 }
 
+export const updateGroup = (id, name, contacts, token) => {
+  if (name) {
+    return (dispatch) => {
+      dispatch({ type: GET_CONTACTS })
+
+      axios.post(`${rootURL}groups/update`, {
+        group: { id, name, members: contacts }, user: { token }
+      })
+      .then(res => {
+        let payload
+        if (res.data.status === 200) {
+          payload = { ...res.data }
+        } else if (res.data.status === 401) {
+          dispatch({ type: NOT_AUTHORIZED })
+        } else {
+          payload = { ...res.data }
+        }
+        dispatch({
+          type: GOT_CONTACTS,
+          payload
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+  }
+  return { type: GROUP_NAME_MISSING }
+}
+
 export const saveContact = (name, phone, token) => {
   return (dispatch) => {
     dispatch({ type: GET_CONTACTS })

@@ -57,3 +57,22 @@ export const getUserInfo = (token) => {
     })
   }
 }
+
+export const getUserActivity = (token) => {
+  return (dispatch) => {
+    axios.post(`${rootURL}user/activity`, {
+      user: { token },
+    })
+    .then(res => {
+      if (res.data.status === 200) {
+        dispatch({
+          type: types.GOT_ACTIVITY,
+          payload: res.data.data
+        })
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+}
