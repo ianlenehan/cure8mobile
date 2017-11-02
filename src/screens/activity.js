@@ -86,20 +86,24 @@ class Activity extends Component {
         )
       }
       return (
-        <View key={i} style={styles.activityView}>
+        <TouchableOpacity
+          key={i}
+          style={styles.activityView}
+          onPress={() => this.openInWebBrowser(item.url)}
+        >
           <Image
             style={{ width: 22, height: 22, borderRadius: 11, margin: 5 }}
             resizeMode='contain'
             source={require('../../assets/icons/app.png')}
           />
-        <View style={{ flex: 1 }}>
-          <Text style={styles.activityTitle}>{item.title.trim()}</Text>
-            <View style={styles.bottomText}>
-              <Text style={styles.friendName}>{item.friends.join(', ')}</Text>
-              <Text style={styles.date}>{this.formatDate(item.date)}</Text>
-            </View>
-        </View>
-        </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.activityTitle}>{item.title.trim()}</Text>
+              <View style={styles.bottomText}>
+                <Text style={styles.friendName}>{item.friends.join(', ')}</Text>
+                <Text style={styles.date}>{this.formatDate(item.date)}</Text>
+              </View>
+          </View>
+        </TouchableOpacity>
       )
     })
   }
@@ -111,7 +115,6 @@ class Activity extends Component {
           {this.renderItems()}
         </ScrollView>
       )
-
     }
   }
 }
@@ -134,7 +137,8 @@ const styles = {
   },
   friendName: {
     fontSize: 10,
-    flex: 2
+    flex: 2,
+    color: 'grey'
   },
   bottomText: {
     flexDirection: 'row',

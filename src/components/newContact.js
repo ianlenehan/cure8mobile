@@ -69,13 +69,12 @@ class NewContact extends Component {
 
   onContactPress = (contact) => {
     const { navigate, key } = this.props
-    console.log('contact', contact);
     navigate('addContact', { contact, key })
   }
 
   renderNames() {
     return this.state.contacts.map(contact => {
-      const name = `${contact.givenName} ${contact.familyName}`
+      const name = `${contact.givenName || ''} ${contact.familyName || ''}`
       return (
         <TouchableOpacity
           key={contact.recordID}
