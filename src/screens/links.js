@@ -38,9 +38,9 @@ class Links extends Component {
           onPress={
             async () => {
               const membership = await AsyncStorage.getItem('membership')
-              const membershipAlert = await AsyncStorage.getItem('membershipAlert')
+              const limitReached = await AsyncStorage.getItem('limitReached')
               const isIOS = Platform.OS === 'ios'
-              if (!membership && membershipAlert && isIOS) {
+              if (!membership && limitReached && isIOS) {
                 Alert.alert('Your Membership', "Thank you for trying the free version of Cure8! You have reached the limit of 5 curations and can no longer create new links. If you've enjoyed using the app, please consider upgrading from the profile tab.")
               } else {
                 navigate('addLink')

@@ -74,7 +74,10 @@ class LinkView extends Component {
       allLinks = filtered.splice(-5)
       if (linksCount >= 5 && !membershipAlert) {
         this.membershipAlert()
-        await AsyncStorage.setItem('membershipAlert', 'yes')
+        await AsyncStorage.multiSet([
+          ['membershipAlert', 'yes'],
+          ['limitReached', 'yes'],
+        ])
       }
     }
     this.setState({ links: allLinks })
@@ -86,8 +89,8 @@ class LinkView extends Component {
     this.onArchivePress(null)
   }
 
-  deleteArchivedLink = (curation, rating) => {
-    this.props.archiveLink(curation, rating, 'deleted', this.state.token)
+  archiveWithoutRating = (curation, rating, action) => {
+    this.props.archiveLink(curation, rating, action, this.state.token)
   }
 
   async shareLink(link) {
@@ -110,7 +113,7 @@ class LinkView extends Component {
         status={this.props.status}
         archiveMode={this.props.archiveMode}
         archiveLink={this.archiveLink.bind(this)}
-        delete={this.deleteArchivedLink.bind(this)}
+        justArchive={this.archiveWithoutRating.bind(this)}
         loading={this.props.loading}
         readerMode={this.state.readerMode}
       />

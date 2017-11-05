@@ -21,11 +21,13 @@ import CardSection from './cardSection'
 import Spinner from './spinner'
 
 class Card extends Component {
-  state = { morePressed: null, alertMsgCurator: null }
+  state = { morePressed: null, alertMsgCurator: null, phone: null }
 
   async componentDidMount() {
     const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
-    this.setState({ alertMsgCurator })
+    const phone = await AsyncStorage.getItem('currentUserPhone')
+
+    this.setState({ alertMsgCurator, phone })
   }
 
   getBillMurray() {
@@ -59,6 +61,21 @@ class Card extends Component {
     this.props.onArchivePress(null)
   }
 
+  renderMsgOwner(ownerPhone, firstName) {
+    if (ownerPhone !== this.state.phone) {
+      return (
+        <MyIcon
+          size={24}
+          name='comment'
+          type='font-awesome'
+          color="#27ae60"
+          onPress={() => this.messageOwner(ownerPhone)}
+          text={`Msg ${firstName}`}
+        />
+      )
+    }
+  }
+
   openInWebBrowser = (url) => {
     const readerMode = this.props.readerMode === 'on' ? true : false
     if (Platform.OS === 'ios') {
@@ -70,6 +87,14 @@ class Card extends Component {
       })
     } else if (Platform.OS === 'android') {
       CustomTabs.openURL(url)
+    }
+  }
+
+  onArchivePress(owner, curation, action) {
+    if (owner.phone === this.state.phone) {
+      this.props.justArchive(curation, 1, action)
+    } else {
+      this.props.onArchivePress(curation, action)
     }
   }
 
@@ -91,24 +116,17 @@ class Card extends Component {
             size={24}
             name='delete'
             color="#27ae60"
-            onPress={() => this.props.onArchivePress(curation, 'deleted')}
+            onPress={() => this.onArchivePress(owner, curation, 'deleted')}
             text='Delete'
           />
           <MyIcon
             size={24}
             name='archive'
             color="#27ae60"
-            onPress={() => this.props.onArchivePress(curation, 'archived')}
+            onPress={() => this.onArchivePress(owner, curation, 'archived')}
             text='Archive'
           />
-          <MyIcon
-            size={24}
-            name='comment'
-            type='font-awesome'
-            color="#27ae60"
-            onPress={() => this.messageOwner(ownerPhone)}
-            text={`Msg ${firstName}`}
-          />
+          {this.renderMsgOwner(ownerPhone, firstName)}
           <MyIcon
             size={24}
             type='font-awesome'
@@ -129,17 +147,10 @@ class Card extends Component {
             size={24}
             name='delete'
             color="#27ae60"
-            onPress={() => this.props.delete(curation, rating)}
+            onPress={() => this.props.justArchive(curation, rating, 'deleted')}
             text='Delete'
           />
-          <MyIcon
-            size={24}
-            name='comment'
-            type='font-awesome'
-            color="#27ae60"
-            onPress={() => this.messageOwner(ownerPhone)}
-            text={`Msg ${firstName}`}
-          />
+          {this.renderMsgOwner(ownerPhone, firstName)}
           <MyIcon
             size={24}
             type='font-awesome'
