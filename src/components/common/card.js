@@ -12,16 +12,24 @@ import {
   Alert
 } from 'react-native'
 import moment from 'moment'
-import { Icon } from 'react-native-elements'
+import { Icon, Button } from 'react-native-elements'
 import SafariView from 'react-native-safari-view'
 import { CustomTabs } from 'react-native-custom-tabs'
 import Title from './title'
 import MyIcon from './icon'
 import CardSection from './cardSection'
 import Spinner from './spinner'
+import Input from './input'
 
 class Card extends Component {
-  state = { morePressed: null, alertMsgCurator: null, phone: null }
+  state = {
+    morePressed: null,
+    alertMsgCurator: null,
+    phone: null,
+    tags: ['code', 'nutrition', 'sports'],
+    selectedTags: [],
+    tagSearchQuery: ''
+  }
 
   async componentDidMount() {
     const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
@@ -190,32 +198,99 @@ class Card extends Component {
     )
   }
 
+  toggleTag = (tag) => {
+    const { selectedTags } = this.state
+    if (selectedTags.includes(tag)) {
+      const newTags = selectedTags.filter(selectedTag => {
+        return selectedTag !== tag
+      })
+      this.setState({ selectedTags: newTags })
+    } else {
+      this.setState({ selectedTags: [...selectedTags, tag] })
+    }
+  }
+
+  renderTags() {
+    const { selectedTags, tags } = this.state
+    return tags.map(tag => {
+      const tagColour = selectedTags.includes(tag) ? '#27ae60' : '#ccc'
+      return (
+        <TouchableOpacity
+          style={[styles.tagView, { backgroundColor: tagColour }]}
+          key={tag}
+          onPress={() => this.toggleTag(tag)}
+        >
+          <Text style={styles.tag}>{tag}</Text>
+        </TouchableOpacity>
+      )
+    })
+  }
+
+  tagSearch = (query) => {
+    console.log('tag search', query);
+    this.setState({ tagSearchQuery: query })
+
+    if (query.length > 3) {
+      const filteredTags = this.state.tags.filter(tag => {
+        return tag.includes(query)
+      })
+      this.setState({ tags: filteredTags })
+    }
+  }
+
+  addTagInput() {
+    return (
+      <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+        <Input
+          placeholder='Search tags or add new tag'
+          style={{ flex: 1 }}
+          onChangeText={this.tagSearch}
+          value={this.state.tagSearchQuery}
+        />
+          <Icon
+            reverse
+            name='plus'
+            type='font-awesome'
+            backgroundColor='green'
+            size={14}
+          />
+      </View>
+    )
+  }
+
   renderIcons(curation, owner, rating) {
     const { archiveMode } = this.props
+    const tags = ['code', 'nutrition', 'sports']
     if (archiveMode.curation === curation) {
       return (
-        <View style={styles.icons}>
-          <Icon
-            size={24}
-            containerStyle={{ margin: 5 }}
-            name='thumb-up'
-            color='#3498db'
-            onPress={() => this.props.archiveLink(curation, 1)}
-          />
-          <Icon
-            size={24}
-            containerStyle={{ margin: 5 }}
-            name='thumb-down'
-            color='#e67e22'
-            onPress={() => this.props.archiveLink(curation, 0)}
-          />
-          <Icon
-            size={24}
-            containerStyle={{ margin: 5 }}
-            name='cancel'
-            color='#ccc'
-            onPress={() => this.props.onArchivePress(null)}
-          />
+        <View>
+          <View style={styles.icons}>
+            <Icon
+              size={24}
+              containerStyle={{ margin: 5 }}
+              name='thumb-up'
+              color='#3498db'
+              onPress={() => this.props.archiveLink(curation, 1)}
+              />
+            <Icon
+              size={24}
+              containerStyle={{ margin: 5 }}
+              name='thumb-down'
+              color='#e67e22'
+              onPress={() => this.props.archiveLink(curation, 0)}
+              />
+            <Icon
+              size={24}
+              containerStyle={{ margin: 5 }}
+              name='cancel'
+              color='#ccc'
+              onPress={() => this.props.onArchivePress(null)}
+              />
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            {this.renderTags(tags)}
+          </View>
+          {this.addTagInput()}
         </View>
       )
     }
@@ -330,6 +405,18 @@ const styles = {
   ratings: {
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  tagView: {
+    padding: 3,
+    backgroundColor: '#ccc',
+    margin: 4,
+    borderRadius: 30,
+    marginBottom: 5
+  },
+  tag: {
+    paddingRight: 6,
+    paddingLeft: 6,
+    color: 'white'
   }
 }
 
