@@ -30,12 +30,12 @@ export const setArchiveMode = (curation, action) => {
   }
 }
 
-export const archiveLink = (id, rating, action, token) => {
+export const archiveLink = ({ id, rating, action, token, tags }) => {
   return (dispatch) => {
     dispatch({ type: types.REQUESTED_LINKS })
 
     axios.post(`${rootURL}links/archive`, {
-      curation: { id, rating, action },
+      curation: { id, rating, action, tags },
       user: { token }
     })
     .then((res) => {

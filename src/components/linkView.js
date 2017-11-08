@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {
   View,
+  ScrollView,
+  Text,
   StatusBar,
   FlatList,
   RefreshControl,
@@ -12,6 +14,7 @@ import { connect } from 'react-redux'
 
 import { createLink, archiveLink, shareLink, setArchiveMode, getLinks } from '../redux/link/actions'
 import Card from './common/card'
+import Tag from './common/tag'
 
 class LinkView extends Component {
   state = { links: [], refreshing: false, token: null, readerMode: 'on', membership: null }
@@ -83,9 +86,10 @@ class LinkView extends Component {
     this.setState({ links: allLinks })
   }
 
-  archiveLink = (curation, rating) => {
+  archiveLink = (id, rating, tags = []) => {
     const { action } = this.props.archiveMode
-    this.props.archiveLink(curation, rating, action, this.state.token)
+    const { token } = this.state
+    this.props.archiveLink({ id, rating, action, token, tags })
     this.onArchivePress(null)
   }
 
@@ -104,6 +108,16 @@ class LinkView extends Component {
     }
   }
 
+  renderTagFilterList = () => {
+    if (this.props.status === 'archived') {
+      return this.props.tags.map(tag => {
+        return (
+          <Tag key={tag} tag={tag }/>
+        )
+      })
+    }
+  }
+
   renderItem = ({ item }) => {
     return (
       <Card
@@ -116,6 +130,7 @@ class LinkView extends Component {
         justArchive={this.archiveWithoutRating.bind(this)}
         loading={this.props.loading}
         readerMode={this.state.readerMode}
+        tags={this.props.tags}
       />
     )
   }
@@ -124,6 +139,14 @@ class LinkView extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
+          <View style={{ flex: 1 }}>
+            <ScrollView
+              style={{ flex: 1 }}
+              horizontal
+              >
+              {this.renderTagFilterList()}
+            </ScrollView>
+          </View>
         <FlatList
           data={this.state.links}
           extraData={this.props}
@@ -165,9 +188,10 @@ const styles = {
   }
 }
 
-const mapStateToProps = ({ link }) => {
+const mapStateToProps = ({ link, user }) => {
   const { archiveMode, links, loading } = link
-  return { archiveMode, links, loading }
+  const { tags } = user.info
+  return { archiveMode, links, loading, tags }
 }
 
 export default connect(mapStateToProps, {

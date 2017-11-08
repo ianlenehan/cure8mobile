@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {
   View,
+  ScrollView,
   Text,
   Image,
   TouchableOpacity,
@@ -17,6 +18,7 @@ import SafariView from 'react-native-safari-view'
 import { CustomTabs } from 'react-native-custom-tabs'
 import Title from './title'
 import MyIcon from './icon'
+import Tag from './tag'
 import CardSection from './cardSection'
 import Spinner from './spinner'
 import Input from './input'
@@ -26,7 +28,7 @@ class Card extends Component {
     morePressed: null,
     alertMsgCurator: null,
     phone: null,
-    tags: ['code', 'nutrition', 'sports'],
+    tags: [],
     selectedTags: [],
     tagSearchQuery: ''
   }
@@ -34,8 +36,11 @@ class Card extends Component {
   async componentDidMount() {
     const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
     const phone = await AsyncStorage.getItem('currentUserPhone')
-
-    this.setState({ alertMsgCurator, phone })
+    this.setState({
+      alertMsgCurator,
+      phone,
+      tags: this.props.tags
+    })
   }
 
   getBillMurray() {
@@ -99,8 +104,9 @@ class Card extends Component {
   }
 
   onArchivePress(owner, curation, action) {
+    const { selectedTags } = this.state
     if (owner.phone === this.state.phone) {
-      this.props.justArchive(curation, 1, action)
+      this.props.justArchive(curation, 1, action, selectedTags)
     } else {
       this.props.onArchivePress(curation, action)
     }
@@ -215,27 +221,27 @@ class Card extends Component {
     return tags.map(tag => {
       const tagColour = selectedTags.includes(tag) ? '#27ae60' : '#ccc'
       return (
-        <TouchableOpacity
-          style={[styles.tagView, { backgroundColor: tagColour }]}
+        <Tag
+          style={{ backgroundColor: tagColour }}
+          toggleTag={this.toggleTag.bind(this)}
+          tag={tag}
           key={tag}
-          onPress={() => this.toggleTag(tag)}
-        >
-          <Text style={styles.tag}>{tag}</Text>
-        </TouchableOpacity>
+        />
       )
     })
   }
 
-  tagSearch = (query) => {
-    console.log('tag search', query);
-    this.setState({ tagSearchQuery: query })
+  addNewTag = () => {
+    const { tags, selectedTags, tagSearchQuery } = this.state
+    console.log('add new tag', tagSearchQuery);
+    this.setState({
+      selectedTags: [...selectedTags, tagSearchQuery],
+      tags: [tagSearchQuery, ...tags]
+    })
+  }
 
-    if (query.length > 3) {
-      const filteredTags = this.state.tags.filter(tag => {
-        return tag.includes(query)
-      })
-      this.setState({ tags: filteredTags })
-    }
+  tagSearch = (query) => {
+    this.setState({ tagSearchQuery: query })
   }
 
   addTagInput() {
@@ -246,11 +252,13 @@ class Card extends Component {
           style={{ flex: 1 }}
           onChangeText={this.tagSearch}
           value={this.state.tagSearchQuery}
+          autoCapitalize={'none'}
         />
           <Icon
             reverse
             name='plus'
             type='font-awesome'
+            onPress={this.addNewTag}
             backgroundColor='green'
             size={14}
           />
@@ -260,7 +268,7 @@ class Card extends Component {
 
   renderIcons(curation, owner, rating) {
     const { archiveMode } = this.props
-    const tags = ['code', 'nutrition', 'sports']
+    const { tags, selectedTags } = this.state
     if (archiveMode.curation === curation) {
       return (
         <View>
@@ -270,7 +278,7 @@ class Card extends Component {
               containerStyle={{ margin: 5 }}
               name='thumb-up'
               color='#3498db'
-              onPress={() => this.props.archiveLink(curation, 1)}
+              onPress={() => this.props.archiveLink(curation, 1, selectedTags)}
               />
             <Icon
               size={24}
@@ -287,8 +295,13 @@ class Card extends Component {
               onPress={() => this.props.onArchivePress(null)}
               />
           </View>
-          <View style={{ flexDirection: 'row' }}>
-            {this.renderTags(tags)}
+          <View style={{ flex: 1 }}>
+            <ScrollView
+              style={{ flex: 1 }}
+              horizontal
+              >
+              {this.renderTags()}
+            </ScrollView>
           </View>
           {this.addTagInput()}
         </View>
@@ -303,6 +316,16 @@ class Card extends Component {
     }
   }
 
+  renderCurationTags = (tags, status) => {
+    if (tags.length && status === 'archived') {
+      return tags.map(tag => {
+        return (
+          <Tag key={tag.id} tag={tag.name} tagStyle={{ fontSize: 10 }} />
+        )
+      })
+    }
+  }
+
   render() {
     const {
       title,
@@ -313,7 +336,9 @@ class Card extends Component {
       link_id: id,
       curation_id: curation,
       shared_with: sharedWith,
-      rating
+      rating,
+      tags,
+      status
     } = this.props.link
 
     const formattedComment = comment ? `"${comment}"` : ''
@@ -332,6 +357,9 @@ class Card extends Component {
             <Text style={styles.count}> {sharedWith}</Text>
           </View>
           <Text style={styles.date}>{this.formatDate(date)}</Text>
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+          {this.renderCurationTags(tags, status)}
         </View>
         <View style={styles.subtitle}>
           <Text style={styles.comment}>{formattedComment}</Text>
@@ -406,18 +434,6 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
-  tagView: {
-    padding: 3,
-    backgroundColor: '#ccc',
-    margin: 4,
-    borderRadius: 30,
-    marginBottom: 5
-  },
-  tag: {
-    paddingRight: 6,
-    paddingLeft: 6,
-    color: 'white'
-  }
 }
 
 export default Card
