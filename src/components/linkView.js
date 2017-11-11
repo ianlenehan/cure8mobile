@@ -11,13 +11,20 @@ import {
   Platform
 } from 'react-native'
 import { connect } from 'react-redux'
-
+import { Icon } from 'react-native-elements'
 import { createLink, archiveLink, shareLink, setArchiveMode, getLinks } from '../redux/link/actions'
 import Card from './common/card'
 import Tag from './common/tag'
 
 class LinkView extends Component {
-  state = { links: [], refreshing: false, token: null, readerMode: 'on', membership: null }
+  state = {
+    links: [],
+    refreshing: false,
+    token: null,
+    readerMode: 'on',
+    membership: null,
+    filterTerms: []
+  }
 
   async componentDidMount() {
     this.filterLinks()
@@ -75,6 +82,7 @@ class LinkView extends Component {
     const isIOS = Platform.OS === 'ios'
     if (!membership && isIOS) {
       allLinks = filtered.splice(-5)
+      // allLinks = filtered
       if (linksCount >= 5 && !membershipAlert) {
         this.membershipAlert()
         await AsyncStorage.multiSet([
@@ -108,13 +116,60 @@ class LinkView extends Component {
     }
   }
 
+  containsTag(linkTags, tag) {
+    return linkTags.some(linkTag => {
+      return linkTag.name === tag
+    })
+  }
+
+  filterByTag = (tag) => {
+    this.setState({ filterTerms: [tag, ...this.state.filterTerms] })
+    const { filterTerms, links } = this.state
+
+    const filtered = links.filter(link => {
+      if (this.containsTag(link.tags, tag)) {
+        return link
+      }
+    })
+    this.setState({ links: filtered })
+  }
+
+  filterTagList() {
+    const { filterTerms } = this.state
+    return this.props.tags.map(tag => {
+      const tagColour = filterTerms.includes(tag) ? '#27ae60' : '#ccc'
+      return (
+        <Tag
+          key={tag}
+          tag={tag}
+          onPress={this.filterByTag.bind(this)}
+          style={{ backgroundColor: tagColour }}
+        />
+      )
+    })
+  }
+
+  resetLinks = () => {
+    this.setState({ filterTerms: [] })
+    this.filterLinks()
+  }
+
   renderTagFilterList = () => {
     if (this.props.status === 'archived') {
-      return this.props.tags.map(tag => {
-        return (
-          <Tag key={tag} tag={tag }/>
-        )
-      })
+      return (
+        <View style={styles.tagList}>
+          <ScrollView horizontal>
+            {this.filterTagList()}
+          </ScrollView>
+          <Icon
+            size={24}
+            containerStyle={{ margin: 5 }}
+            name='cancel'
+            color='#ccc'
+            onPress={this.resetLinks}
+            />
+        </View>
+      )
     }
   }
 
@@ -139,14 +194,7 @@ class LinkView extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-          <View style={{ flex: 1 }}>
-            <ScrollView
-              style={{ flex: 1 }}
-              horizontal
-              >
-              {this.renderTagFilterList()}
-            </ScrollView>
-          </View>
+        {this.renderTagFilterList()}
         <FlatList
           data={this.state.links}
           extraData={this.props}
@@ -185,6 +233,10 @@ const styles = {
     right: 5,
     opacity: 0.8,
     backgroundColor: 'transparent'
+  },
+  tagList: {
+    backgroundColor: 'white',
+    flexDirection: 'row'
   }
 }
 

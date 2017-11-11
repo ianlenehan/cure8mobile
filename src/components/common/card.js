@@ -23,13 +23,17 @@ import Spinner from './spinner'
 import Input from './input'
 
 class Card extends Component {
-  state = {
-    morePressed: null,
-    alertMsgCurator: null,
-    phone: null,
-    tags: [],
-    selectedTags: [],
-    tagSearchQuery: ''
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      morePressed: null,
+      alertMsgCurator: null,
+      phone: null,
+      tags: props.tags,
+      selectedTags: [],
+      tagSearchQuery: ''
+    }
   }
 
   async componentDidMount() {
@@ -37,8 +41,7 @@ class Card extends Component {
     const phone = await AsyncStorage.getItem('currentUserPhone')
     this.setState({
       alertMsgCurator,
-      phone,
-      tags: this.props.tags
+      phone
     })
   }
 
@@ -221,7 +224,7 @@ class Card extends Component {
       return (
         <Tag
           style={{ backgroundColor: tagColour }}
-          toggleTag={this.toggleTag.bind(this)}
+          onPress={this.toggleTag.bind(this)}
           tag={tag}
           key={tag}
         />
@@ -277,21 +280,21 @@ class Card extends Component {
               name='thumb-up'
               color='#3498db'
               onPress={() => this.props.archiveLink(curation, 1, selectedTags)}
-              />
+            />
             <Icon
               size={24}
               containerStyle={{ margin: 5 }}
               name='thumb-down'
               color='#e67e22'
               onPress={() => this.props.archiveLink(curation, 0)}
-              />
+            />
             <Icon
               size={24}
               containerStyle={{ margin: 5 }}
               name='cancel'
               color='#ccc'
               onPress={() => this.props.onArchivePress(null)}
-              />
+            />
           </View>
           <View style={{ flex: 1 }}>
             <ScrollView
