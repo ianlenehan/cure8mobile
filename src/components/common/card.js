@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  LayoutAnimation,
   Linking,
   Clipboard,
   Platform,
@@ -179,7 +178,6 @@ class Card extends Component {
   }
 
   renderMoreIcon(curation) {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
     if (this.state.morePressed) {
       return (
         <View style={styles.icon}>

@@ -71,6 +71,7 @@ class Links extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.authorized) this.props.navigation.navigate('auth')
+    if (nextProps.links.length > this.props.links.length) this.getUserData()
   }
 
   getUserData = async () => {
