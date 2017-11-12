@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {
   View,
+  ScrollView,
+  Text,
   StatusBar,
   FlatList,
   RefreshControl,
@@ -9,12 +11,22 @@ import {
   Platform
 } from 'react-native'
 import { connect } from 'react-redux'
-
+import { Icon } from 'react-native-elements'
+import _ from 'lodash'
 import { createLink, archiveLink, shareLink, setArchiveMode, getLinks } from '../redux/link/actions'
+import { getUserInfo } from '../redux/user/actions'
 import Card from './common/card'
+import Tag from './common/tag'
 
 class LinkView extends Component {
-  state = { links: [], refreshing: false, token: null, readerMode: 'on', membership: null }
+  state = {
+    links: [],
+    refreshing: false,
+    token: null,
+    readerMode: 'on',
+    membership: null,
+    filterTerms: []
+  }
 
   async componentDidMount() {
     this.filterLinks()
@@ -26,6 +38,11 @@ class LinkView extends Component {
   componentWillReceiveProps(nextProps) {
     this.checkReaderModeAndMembership()
     this.filterLinks(nextProps.links)
+    if (nextProps.links && this.props.links) {
+      if (!_.isEqual(nextProps.links, this.props.links)) {
+        this.props.getUserInfo(this.state.token)
+      }
+    }
   }
 
   async onRefresh() {
@@ -72,6 +89,7 @@ class LinkView extends Component {
     const isIOS = Platform.OS === 'ios'
     if (!membership && isIOS) {
       allLinks = filtered.splice(-5)
+      // allLinks = filtered //for local testing
       if (linksCount >= 5 && !membershipAlert) {
         this.membershipAlert()
         await AsyncStorage.multiSet([
@@ -83,14 +101,16 @@ class LinkView extends Component {
     this.setState({ links: allLinks })
   }
 
-  archiveLink = (curation, rating) => {
+  archiveLink = (id, rating, tags = []) => {
     const { action } = this.props.archiveMode
-    this.props.archiveLink(curation, rating, action, this.state.token)
+    const { token } = this.state
+    this.props.archiveLink({ id, rating, action, token, tags })
     this.onArchivePress(null)
   }
 
-  archiveWithoutRating = (curation, rating, action) => {
-    this.props.archiveLink(curation, rating, action, this.state.token)
+  archiveWithoutRating = (id, rating, action) => {
+    const { token } = this.state
+    this.props.archiveLink({ id, rating, action, token })
   }
 
   async shareLink(link) {
@@ -101,6 +121,64 @@ class LinkView extends Component {
       this.membershipAlert()
     } else {
       this.props.navigate('addLink', { url: link.url })
+    }
+  }
+
+  containsTag(linkTags, tag) {
+    return linkTags.some(linkTag => {
+      return linkTag.name === tag
+    })
+  }
+
+  filterByTag = (tag) => {
+    this.setState({ filterTerms: [tag, ...this.state.filterTerms] })
+    const { filterTerms, links } = this.state
+
+    const filtered = links.filter(link => {
+      if (this.containsTag(link.tags, tag)) {
+        return link
+      }
+    })
+    this.setState({ links: filtered })
+  }
+
+  filterTagList() {
+    const { filterTerms } = this.state
+    const tags = this.props.tags.sort()
+    return tags.map(tag => {
+      const tagColour = filterTerms.includes(tag) ? '#27ae60' : '#ccc'
+      return (
+        <Tag
+          key={tag}
+          tag={tag}
+          onPress={this.filterByTag.bind(this)}
+          style={{ backgroundColor: tagColour }}
+        />
+      )
+    })
+  }
+
+  resetLinks = () => {
+    this.setState({ filterTerms: [] })
+    this.filterLinks()
+  }
+
+  renderTagFilterList = () => {
+    if (this.props.status === 'archived') {
+      return (
+        <View style={styles.tagList}>
+          <ScrollView horizontal>
+            {this.filterTagList()}
+          </ScrollView>
+          <Icon
+            size={24}
+            containerStyle={{ margin: 5 }}
+            name='cancel'
+            color='#ccc'
+            onPress={this.resetLinks}
+            />
+        </View>
+      )
     }
   }
 
@@ -116,6 +194,7 @@ class LinkView extends Component {
         justArchive={this.archiveWithoutRating.bind(this)}
         loading={this.props.loading}
         readerMode={this.state.readerMode}
+        tags={this.props.tags}
       />
     )
   }
@@ -124,6 +203,7 @@ class LinkView extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
+        {this.renderTagFilterList()}
         <FlatList
           data={this.state.links}
           extraData={this.props}
@@ -162,14 +242,19 @@ const styles = {
     right: 5,
     opacity: 0.8,
     backgroundColor: 'transparent'
+  },
+  tagList: {
+    backgroundColor: 'white',
+    flexDirection: 'row'
   }
 }
 
-const mapStateToProps = ({ link }) => {
+const mapStateToProps = ({ link, user }) => {
   const { archiveMode, links, loading } = link
-  return { archiveMode, links, loading }
+  const { tags } = user.info
+  return { archiveMode, links, loading, tags }
 }
 
 export default connect(mapStateToProps, {
-  getLinks, createLink, archiveLink, shareLink, setArchiveMode
+  getLinks, createLink, archiveLink, shareLink, setArchiveMode, getUserInfo
 })(LinkView)

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import {
   View,
+  ScrollView,
   Text,
   Image,
   TouchableOpacity,
-  LayoutAnimation,
   Linking,
   Clipboard,
   Platform,
@@ -12,22 +12,42 @@ import {
   Alert
 } from 'react-native'
 import moment from 'moment'
-import { Icon } from 'react-native-elements'
+import swearjar from 'swearjar'
+import { Icon, Button } from 'react-native-elements'
 import SafariView from 'react-native-safari-view'
 import { CustomTabs } from 'react-native-custom-tabs'
 import Title from './title'
 import MyIcon from './icon'
+import Tag from './tag'
 import CardSection from './cardSection'
 import Spinner from './spinner'
+import Input from './input'
 
 class Card extends Component {
-  state = { morePressed: null, alertMsgCurator: null, phone: null }
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      morePressed: null,
+      alertMsgCurator: null,
+      phone: null,
+      tags: [],
+      selectedTags: [],
+      tagSearchQuery: ''
+    }
+  }
 
   async componentDidMount() {
     const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
     const phone = await AsyncStorage.getItem('currentUserPhone')
-
-    this.setState({ alertMsgCurator, phone })
+    let tags = []
+    if (this.props.tags) tags = this.props.tags.sort()
+    
+    this.setState({
+      alertMsgCurator,
+      phone,
+      tags
+    })
   }
 
   getBillMurray() {
@@ -91,7 +111,8 @@ class Card extends Component {
   }
 
   onArchivePress(owner, curation, action) {
-    if (owner.phone === this.state.phone) {
+    const { selectedTags } = this.state
+    if (owner.phone === this.state.phone && action === 'deleted') {
       this.props.justArchive(curation, 1, action)
     } else {
       this.props.onArchivePress(curation, action)
@@ -165,7 +186,6 @@ class Card extends Component {
   }
 
   renderMoreIcon(curation) {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
     if (this.state.morePressed) {
       return (
         <View style={styles.icon}>
@@ -190,32 +210,128 @@ class Card extends Component {
     )
   }
 
+  toggleTag = (tag) => {
+    const { selectedTags } = this.state
+    if (selectedTags.includes(tag)) {
+      const newTags = selectedTags.filter(selectedTag => {
+        return selectedTag !== tag
+      })
+      this.setState({ selectedTags: newTags })
+    } else {
+      this.setState({ selectedTags: [...selectedTags, tag] })
+    }
+  }
+
+  renderTags() {
+    const { selectedTags, tags } = this.state
+    if (tags) {
+      return tags.map(tag => {
+        const tagColour = selectedTags.includes(tag) ? '#27ae60' : '#ccc'
+        return (
+          <Tag
+            style={{ backgroundColor: tagColour }}
+            onPress={this.toggleTag.bind(this)}
+            tag={tag}
+            key={tag}
+          />
+        )
+      })
+    }
+  }
+
+  addNewTag = () => {
+    const { tags, selectedTags, tagSearchQuery } = this.state
+    const cleanTag = tagSearchQuery.toLowerCase().trim()
+    if (swearjar.profane(cleanTag)) {
+      Alert.alert(
+        'Oops',
+        "Let's keep this clean, we might use tags publicy in a later release.",
+        [{ text: 'Sorry' }]
+      )
+    } else {
+      if (tags.includes(cleanTag)) {
+        this.setState({ selectedTags: [...selectedTags, cleanTag] })
+      } else {
+        this.setState({
+          selectedTags: [...selectedTags, cleanTag],
+          tags: [cleanTag, ...tags]
+        })
+      }
+    }
+  }
+
+  tagSearch = (query) => {
+    this.setState({ tagSearchQuery: query })
+  }
+
+  addTagInput() {
+    return (
+      <View style={{ flexDirection: 'row', margin: 10 }}>
+        <Input
+          placeholder='type to add new tag'
+          style={{ flex: 1, fontSize: 12, height: 30 }}
+          onChangeText={this.tagSearch}
+          value={this.state.tagSearchQuery}
+          autoCapitalize={'none'}
+        />
+        <Icon
+          color='#27ae60'
+          reverse
+          name='plus'
+          type='font-awesome'
+          onPress={this.addNewTag}
+          size={12}
+        />
+      </View>
+    )
+  }
+
+  renderThumbsDownIcon(owner) {
+    if (owner.phone !== this.state.phone) {
+      return(
+        <Icon
+          size={24}
+          containerStyle={{ margin: 5 }}
+          name='thumb-down'
+          color='#e67e22'
+          onPress={() => this.props.archiveLink(curation, 0)}
+        />
+      )
+    }
+  }
+
   renderIcons(curation, owner, rating) {
     const { archiveMode } = this.props
+    const { tags, selectedTags } = this.state
     if (archiveMode.curation === curation) {
       return (
-        <View style={styles.icons}>
-          <Icon
-            size={24}
-            containerStyle={{ margin: 5 }}
-            name='thumb-up'
-            color='#3498db'
-            onPress={() => this.props.archiveLink(curation, 1)}
-          />
-          <Icon
-            size={24}
-            containerStyle={{ margin: 5 }}
-            name='thumb-down'
-            color='#e67e22'
-            onPress={() => this.props.archiveLink(curation, 0)}
-          />
-          <Icon
-            size={24}
-            containerStyle={{ margin: 5 }}
-            name='cancel'
-            color='#ccc'
-            onPress={() => this.props.onArchivePress(null)}
-          />
+        <View>
+          <View style={{ flex: 1 }}>
+            <ScrollView
+              style={{ flex: 1 }}
+              horizontal
+              >
+              {this.renderTags()}
+            </ScrollView>
+          </View>
+          {this.addTagInput()}
+          <View style={styles.icons}>
+            <Icon
+              size={24}
+              containerStyle={{ margin: 5 }}
+              name='thumb-up'
+              color='#3498db'
+              onPress={() => this.props.archiveLink(curation, 1, selectedTags)}
+            />
+          {this.renderThumbsDownIcon(owner)}
+            <Icon
+              size={24}
+              containerStyle={{ margin: 5 }}
+              name='cancel'
+              color='#ccc'
+              onPress={() => this.props.onArchivePress(null)}
+            />
+          </View>
         </View>
       )
     }
@@ -225,6 +341,16 @@ class Card extends Component {
   renderImage(image) {
     if (image) {
       return <Image source={{ uri: image }} style={styles.image} />
+    }
+  }
+
+  renderCurationTags = (tags, status) => {
+    if (tags.length && status === 'archived') {
+      return tags.map(tag => {
+        return (
+          <Tag key={tag.id} tag={tag.name} tagStyle={{ fontSize: 10 }} />
+        )
+      })
     }
   }
 
@@ -238,7 +364,9 @@ class Card extends Component {
       link_id: id,
       curation_id: curation,
       shared_with: sharedWith,
-      rating
+      rating,
+      tags,
+      status
     } = this.props.link
 
     const formattedComment = comment ? `"${comment}"` : ''
@@ -257,6 +385,9 @@ class Card extends Component {
             <Text style={styles.count}> {sharedWith}</Text>
           </View>
           <Text style={styles.date}>{this.formatDate(date)}</Text>
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+          {this.renderCurationTags(tags, status)}
         </View>
         <View style={styles.subtitle}>
           <Text style={styles.comment}>{formattedComment}</Text>
@@ -330,7 +461,7 @@ const styles = {
   ratings: {
     flexDirection: 'row',
     justifyContent: 'space-between'
-  }
+  },
 }
 
 export default Card
