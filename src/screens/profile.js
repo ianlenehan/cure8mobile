@@ -45,7 +45,7 @@ class Profile extends Component {
       const productList = ['com.cure8.cure8app.premium']
 
       NativeModules.InAppUtils.loadProducts(productList, (error, products) => {
-        if (products.length) {
+        if (products && products.length) {
           this.setState({ inAppPurchase: products[0] })
         }
       })
@@ -277,7 +277,7 @@ const styles = {
   name: {
     textAlign: 'center',
     color: '#fff',
-    fontSize: 48,
+    fontSize: 38,
     paddingTop: 30
   },
   phone: {

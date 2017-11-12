@@ -29,7 +29,7 @@
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>New item</key>
-			<string></string>
+			<string/>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
@@ -61,6 +61,9 @@
 		<string>Zocial.ttf</string>
 		<string>Neuropol.ttf</string>
 		<string>Feather.ttf</string>
+		<string>Roboto_medium.ttf</string>
+		<string>Roboto.ttf</string>
+		<string>rubicon-icon-font.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

@@ -12,7 +12,9 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
+import _ from 'lodash'
 import { createLink, archiveLink, shareLink, setArchiveMode, getLinks } from '../redux/link/actions'
+import { getUserInfo } from '../redux/user/actions'
 import Card from './common/card'
 import Tag from './common/tag'
 
@@ -36,6 +38,11 @@ class LinkView extends Component {
   componentWillReceiveProps(nextProps) {
     this.checkReaderModeAndMembership()
     this.filterLinks(nextProps.links)
+    if (nextProps.links && this.props.links) {
+      if (!_.isEqual(nextProps.links, this.props.links)) {
+        this.props.getUserInfo(this.state.token)
+      }
+    }
   }
 
   async onRefresh() {
@@ -82,7 +89,7 @@ class LinkView extends Component {
     const isIOS = Platform.OS === 'ios'
     if (!membership && isIOS) {
       allLinks = filtered.splice(-5)
-      // allLinks = filtered
+      // allLinks = filtered //for local testing
       if (linksCount >= 5 && !membershipAlert) {
         this.membershipAlert()
         await AsyncStorage.multiSet([
@@ -101,8 +108,9 @@ class LinkView extends Component {
     this.onArchivePress(null)
   }
 
-  archiveWithoutRating = (curation, rating, action) => {
-    this.props.archiveLink(curation, rating, action, this.state.token)
+  archiveWithoutRating = (id, rating, action) => {
+    const { token } = this.state
+    this.props.archiveLink({ id, rating, action, token })
   }
 
   async shareLink(link) {
@@ -136,7 +144,8 @@ class LinkView extends Component {
 
   filterTagList() {
     const { filterTerms } = this.state
-    return this.props.tags.map(tag => {
+    const tags = this.props.tags.sort()
+    return tags.map(tag => {
       const tagColour = filterTerms.includes(tag) ? '#27ae60' : '#ccc'
       return (
         <Tag
@@ -247,5 +256,5 @@ const mapStateToProps = ({ link, user }) => {
 }
 
 export default connect(mapStateToProps, {
-  getLinks, createLink, archiveLink, shareLink, setArchiveMode
+  getLinks, createLink, archiveLink, shareLink, setArchiveMode, getUserInfo
 })(LinkView)

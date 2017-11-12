@@ -6,14 +6,15 @@ import {
 
 export default class Tag extends Component {
   render() {
-
     return (
       <TouchableOpacity
         style={[styles.tagView, this.props.style]}
         key={this.props.tag}
         onPress={() => this.props.onPress(this.props.tag)}
       >
-        <Text style={[styles.tag, this.props.tagStyle]}>{this.props.tag}</Text>
+        <Text style={[styles.tag, this.props.tagStyle]}>
+          {this.props.tag}
+        </Text>
       </TouchableOpacity>
     )
   }

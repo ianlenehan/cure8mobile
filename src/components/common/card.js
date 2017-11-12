@@ -12,6 +12,7 @@ import {
   Alert
 } from 'react-native'
 import moment from 'moment'
+import swearjar from 'swearjar'
 import { Icon, Button } from 'react-native-elements'
 import SafariView from 'react-native-safari-view'
 import { CustomTabs } from 'react-native-custom-tabs'
@@ -30,7 +31,7 @@ class Card extends Component {
       morePressed: null,
       alertMsgCurator: null,
       phone: null,
-      tags: props.tags,
+      tags: [],
       selectedTags: [],
       tagSearchQuery: ''
     }
@@ -39,9 +40,13 @@ class Card extends Component {
   async componentDidMount() {
     const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
     const phone = await AsyncStorage.getItem('currentUserPhone')
+    let tags = []
+    if (this.props.tags) tags = this.props.tags.sort()
+    
     this.setState({
       alertMsgCurator,
-      phone
+      phone,
+      tags
     })
   }
 
@@ -107,8 +112,8 @@ class Card extends Component {
 
   onArchivePress(owner, curation, action) {
     const { selectedTags } = this.state
-    if (owner.phone === this.state.phone) {
-      this.props.justArchive(curation, 1, action, selectedTags)
+    if (owner.phone === this.state.phone && action === 'deleted') {
+      this.props.justArchive(curation, 1, action)
     } else {
       this.props.onArchivePress(curation, action)
     }
@@ -219,26 +224,40 @@ class Card extends Component {
 
   renderTags() {
     const { selectedTags, tags } = this.state
-    return tags.map(tag => {
-      const tagColour = selectedTags.includes(tag) ? '#27ae60' : '#ccc'
-      return (
-        <Tag
-          style={{ backgroundColor: tagColour }}
-          onPress={this.toggleTag.bind(this)}
-          tag={tag}
-          key={tag}
-        />
-      )
-    })
+    if (tags) {
+      return tags.map(tag => {
+        const tagColour = selectedTags.includes(tag) ? '#27ae60' : '#ccc'
+        return (
+          <Tag
+            style={{ backgroundColor: tagColour }}
+            onPress={this.toggleTag.bind(this)}
+            tag={tag}
+            key={tag}
+          />
+        )
+      })
+    }
   }
 
   addNewTag = () => {
     const { tags, selectedTags, tagSearchQuery } = this.state
-    console.log('add new tag', tagSearchQuery);
-    this.setState({
-      selectedTags: [...selectedTags, tagSearchQuery],
-      tags: [tagSearchQuery, ...tags]
-    })
+    const cleanTag = tagSearchQuery.toLowerCase().trim()
+    if (swearjar.profane(cleanTag)) {
+      Alert.alert(
+        'Oops',
+        "Let's keep this clean, we might use tags publicy in a later release.",
+        [{ text: 'Sorry' }]
+      )
+    } else {
+      if (tags.includes(cleanTag)) {
+        this.setState({ selectedTags: [...selectedTags, cleanTag] })
+      } else {
+        this.setState({
+          selectedTags: [...selectedTags, cleanTag],
+          tags: [cleanTag, ...tags]
+        })
+      }
+    }
   }
 
   tagSearch = (query) => {
@@ -247,24 +266,38 @@ class Card extends Component {
 
   addTagInput() {
     return (
-      <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+      <View style={{ flexDirection: 'row', margin: 10 }}>
         <Input
-          placeholder='Search tags or add new tag'
-          style={{ flex: 1 }}
+          placeholder='type to add new tag'
+          style={{ flex: 1, fontSize: 12, height: 30 }}
           onChangeText={this.tagSearch}
           value={this.state.tagSearchQuery}
           autoCapitalize={'none'}
         />
-          <Icon
-            reverse
-            name='plus'
-            type='font-awesome'
-            onPress={this.addNewTag}
-            backgroundColor='green'
-            size={14}
-          />
+        <Icon
+          color='#27ae60'
+          reverse
+          name='plus'
+          type='font-awesome'
+          onPress={this.addNewTag}
+          size={12}
+        />
       </View>
     )
+  }
+
+  renderThumbsDownIcon(owner) {
+    if (owner.phone !== this.state.phone) {
+      return(
+        <Icon
+          size={24}
+          containerStyle={{ margin: 5 }}
+          name='thumb-down'
+          color='#e67e22'
+          onPress={() => this.props.archiveLink(curation, 0)}
+        />
+      )
+    }
   }
 
   renderIcons(curation, owner, rating) {
@@ -273,29 +306,6 @@ class Card extends Component {
     if (archiveMode.curation === curation) {
       return (
         <View>
-          <View style={styles.icons}>
-            <Icon
-              size={24}
-              containerStyle={{ margin: 5 }}
-              name='thumb-up'
-              color='#3498db'
-              onPress={() => this.props.archiveLink(curation, 1, selectedTags)}
-            />
-            <Icon
-              size={24}
-              containerStyle={{ margin: 5 }}
-              name='thumb-down'
-              color='#e67e22'
-              onPress={() => this.props.archiveLink(curation, 0)}
-            />
-            <Icon
-              size={24}
-              containerStyle={{ margin: 5 }}
-              name='cancel'
-              color='#ccc'
-              onPress={() => this.props.onArchivePress(null)}
-            />
-          </View>
           <View style={{ flex: 1 }}>
             <ScrollView
               style={{ flex: 1 }}
@@ -305,6 +315,23 @@ class Card extends Component {
             </ScrollView>
           </View>
           {this.addTagInput()}
+          <View style={styles.icons}>
+            <Icon
+              size={24}
+              containerStyle={{ margin: 5 }}
+              name='thumb-up'
+              color='#3498db'
+              onPress={() => this.props.archiveLink(curation, 1, selectedTags)}
+            />
+          {this.renderThumbsDownIcon(owner)}
+            <Icon
+              size={24}
+              containerStyle={{ margin: 5 }}
+              name='cancel'
+              color='#ccc'
+              onPress={() => this.props.onArchivePress(null)}
+            />
+          </View>
         </View>
       )
     }
