@@ -25,7 +25,9 @@ class LinkView extends Component {
     token: null,
     readerMode: 'on',
     membership: null,
-    filterTerms: []
+    filterTerms: [],
+    tags: [],
+    morePressed: null
   }
 
   async componentDidMount() {
@@ -38,10 +40,15 @@ class LinkView extends Component {
   componentWillReceiveProps(nextProps) {
     this.checkReaderModeAndMembership()
     this.filterLinks(nextProps.links)
+
     if (nextProps.links && this.props.links) {
       if (!_.isEqual(nextProps.links, this.props.links)) {
         this.props.getUserInfo(this.state.token)
       }
+    }
+
+    if (nextProps.tags) {
+      this.setState({ tags: nextProps.tags })
     }
   }
 
@@ -158,6 +165,10 @@ class LinkView extends Component {
     })
   }
 
+  expandCardDrawer = (curation) => {
+    this.setState({ morePressed: curation })
+  }
+
   resetLinks = () => {
     this.setState({ filterTerms: [] })
     this.filterLinks()
@@ -186,6 +197,8 @@ class LinkView extends Component {
     return (
       <Card
         link={item}
+        morePressed={this.state.morePressed}
+        onDrawerPress={(curation) => this.expandCardDrawer(curation)}
         onArchivePress={this.onArchivePress.bind(this)}
         onSharePress={(link) => this.shareLink(link)}
         status={this.props.status}
@@ -194,7 +207,7 @@ class LinkView extends Component {
         justArchive={this.archiveWithoutRating.bind(this)}
         loading={this.props.loading}
         readerMode={this.state.readerMode}
-        tags={this.props.tags}
+        tags={this.state.tags}
       />
     )
   }

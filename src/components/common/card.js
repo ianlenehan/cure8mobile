@@ -13,7 +13,7 @@ import {
 } from 'react-native'
 import moment from 'moment'
 import swearjar from 'swearjar'
-import { Icon, Button } from 'react-native-elements'
+import { Icon } from 'react-native-elements'
 import SafariView from 'react-native-safari-view'
 import { CustomTabs } from 'react-native-custom-tabs'
 import Title from './title'
@@ -28,7 +28,6 @@ class Card extends Component {
     super(props)
 
     this.state = {
-      morePressed: null,
       alertMsgCurator: null,
       phone: null,
       tags: [],
@@ -40,14 +39,17 @@ class Card extends Component {
   async componentDidMount() {
     const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
     const phone = await AsyncStorage.getItem('currentUserPhone')
-    let tags = []
-    if (this.props.tags) tags = this.props.tags.sort()
-    
     this.setState({
       alertMsgCurator,
-      phone,
-      tags
+      phone
     })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.tags) {
+      tags = this.props.tags.sort()
+      this.setState({ tags })
+    }
   }
 
   getBillMurray() {
@@ -77,8 +79,12 @@ class Card extends Component {
   }
 
   expandLess = () => {
-    this.setState({ morePressed: null })
+    this.props.onDrawerPress(null)
     this.props.onArchivePress(null)
+  }
+
+  expandMore = (curation) => {
+    this.props.onDrawerPress(curation)
   }
 
   renderMsgOwner(ownerPhone, firstName) {
@@ -127,7 +133,7 @@ class Card extends Component {
   renderMainIcons(curation, owner, rating) {
     const { name, phone: ownerPhone } = owner
     const firstName = name.split(' ')[0]
-    if (this.props.status === 'new' && this.state.morePressed === curation) {
+    if (this.props.status === 'new' && this.props.morePressed === curation) {
       if (this.props.loading) {
         return <Spinner size="small" />
       }
@@ -158,7 +164,7 @@ class Card extends Component {
           />
         </View>
       )
-    } else if (this.state.morePressed === curation) {
+    } else if (this.props.morePressed === curation) {
       if (this.props.loading) {
         return <Spinner size="small" />
       }
@@ -186,7 +192,7 @@ class Card extends Component {
   }
 
   renderMoreIcon(curation) {
-    if (this.state.morePressed) {
+    if (this.props.morePressed === curation) {
       return (
         <View style={styles.icon}>
           <Icon
@@ -204,7 +210,7 @@ class Card extends Component {
           size={32}
           name='expand-more'
           color='#27ae60'
-          onPress={() => this.setState({ morePressed: curation })}
+          onPress={() => this.expandMore(curation)}
         />
       </View>
     )
@@ -239,6 +245,10 @@ class Card extends Component {
     }
   }
 
+  tagSearch = (query) => {
+    this.setState({ tagSearchQuery: query })
+  }
+
   addNewTag = () => {
     const { tags, selectedTags, tagSearchQuery } = this.state
     const cleanTag = tagSearchQuery.toLowerCase().trim()
@@ -258,10 +268,7 @@ class Card extends Component {
         })
       }
     }
-  }
-
-  tagSearch = (query) => {
-    this.setState({ tagSearchQuery: query })
+    this.tagSearch('')
   }
 
   addTagInput() {
