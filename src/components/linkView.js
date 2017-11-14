@@ -84,18 +84,18 @@ class LinkView extends Component {
 
   async filterLinks(links = this.props.links) {
     const { status } = this.props
-    const filtered = links.filter((link) => {
+    const filteredByStatus = links.filter((link) => {
       return link.status === status
     })
 
-    const linksCount = filtered.length
-    let allLinks = filtered
+    const linksCount = filteredByStatus.length
+    let allLinks = filteredByStatus
 
     const membership = await AsyncStorage.getItem('membership')
     const membershipAlert = await AsyncStorage.getItem('membershipAlert')
     const isIOS = Platform.OS === 'ios'
     if (!membership && isIOS) {
-      allLinks = filtered.splice(-5)
+      allLinks = filteredByStatus.splice(-5)
       // allLinks = filtered //for local testing
       if (linksCount >= 5 && !membershipAlert) {
         this.membershipAlert()
@@ -105,7 +105,11 @@ class LinkView extends Component {
         ])
       }
     }
-    this.setState({ links: allLinks })
+    let res = allLinks
+    if (this.state.filterTerms.length) {
+      res = this.filterByTags(allLinks)
+    }
+    this.setState({ links: res })
   }
 
   archiveLink = (id, rating, tags = []) => {
@@ -131,22 +135,29 @@ class LinkView extends Component {
     }
   }
 
-  containsTag(linkTags, tag) {
-    return linkTags.some(linkTag => {
-      return linkTag.name === tag
-    })
+  filterByTag = async (tag) => {
+    const { filterTerms } = this.state
+    let newFilterTerms = [tag, ...filterTerms]
+    if (filterTerms.includes(tag)) {
+      newFilterTerms = filterTerms.filter(term => term !== tag)
+    }
+    await this.setState({ filterTerms: newFilterTerms })
+    this.filterLinks()
   }
 
-  filterByTag = (tag) => {
-    this.setState({ filterTerms: [tag, ...this.state.filterTerms] })
-    const { filterTerms, links } = this.state
+  filterByTags(links) {
+    const { filterTerms } = this.state
 
-    const filtered = links.filter(link => {
-      if (this.containsTag(link.tags, tag)) {
-        return link
-      }
+    const mappedLinks = links.map(link => {
+      const tags = link.tags.map(tag => tag.name)
+
+      const filteredLinks = filterTerms.every(term => {
+        return tags.includes(term)
+      })
+      if (filteredLinks) { return link }
     })
-    this.setState({ links: filtered })
+
+    return mappedLinks.filter(mappedLink => !!mappedLink)
   }
 
   filterTagList() {
