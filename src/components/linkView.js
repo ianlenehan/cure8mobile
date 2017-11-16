@@ -13,21 +13,32 @@ import {
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
 import _ from 'lodash'
-import { createLink, archiveLink, shareLink, setArchiveMode, getLinks } from '../redux/link/actions'
+import {
+  createLink,
+  archiveLink,
+  shareLink,
+  setArchiveMode,
+  getLinks,
+  addTags
+} from '../redux/link/actions'
 import { getUserInfo } from '../redux/user/actions'
 import Card from './common/card'
 import Tag from './common/tag'
 
 class LinkView extends Component {
-  state = {
-    links: [],
-    refreshing: false,
-    token: null,
-    readerMode: 'on',
-    membership: null,
-    filterTerms: [],
-    tags: [],
-    morePressed: null
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      links: [],
+      refreshing: false,
+      token: null,
+      readerMode: 'on',
+      membership: null,
+      filterTerms: [],
+      tags: [],
+      morePressed: null
+    }
   }
 
   async componentDidMount() {
@@ -35,6 +46,7 @@ class LinkView extends Component {
     this.checkReaderModeAndMembership()
     const token = await AsyncStorage.getItem('token')
     this.setState({ token })
+    this.props.getUserInfo(token)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -96,7 +108,7 @@ class LinkView extends Component {
     const isIOS = Platform.OS === 'ios'
     if (!membership && isIOS) {
       allLinks = filteredByStatus.splice(-5)
-      // allLinks = filtered //for local testing
+      // allLinks = filteredByStatus //for local testing
       if (linksCount >= 5 && !membershipAlert) {
         this.membershipAlert()
         await AsyncStorage.multiSet([
@@ -185,6 +197,10 @@ class LinkView extends Component {
     this.filterLinks()
   }
 
+  addTags = (curationId, tags) => {
+    this.props.addTags(curationId, tags, this.state.token)
+  }
+
   renderTagFilterList = () => {
     if (this.props.status === 'archived') {
       return (
@@ -219,6 +235,7 @@ class LinkView extends Component {
         loading={this.props.loading}
         readerMode={this.state.readerMode}
         tags={this.state.tags}
+        addTags={this.addTags.bind(this)}
       />
     )
   }
@@ -280,5 +297,11 @@ const mapStateToProps = ({ link, user }) => {
 }
 
 export default connect(mapStateToProps, {
-  getLinks, createLink, archiveLink, shareLink, setArchiveMode, getUserInfo
+  getLinks,
+  createLink,
+  archiveLink,
+  shareLink,
+  setArchiveMode,
+  getUserInfo,
+  addTags
 })(LinkView)

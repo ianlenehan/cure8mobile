@@ -54,6 +54,30 @@ export const archiveLink = ({ id, rating, action, token, tags }) => {
   }
 }
 
+export const addTags = (id, tags, token) => {
+  return (dispatch) => {
+    dispatch({ type: types.REQUESTED_LINKS })
+
+    axios.post(`${rootURL}links/update_tags`, {
+      curation: { id, tags },
+      user: { token },
+    })
+      .then((res) => {
+        if (res.data.status === 200) {
+          dispatch({
+            type: types.GET_LINKS,
+            payload: res.data.links,
+          })
+        } else if (res.data.status === 401) {
+          dispatch({ type: types.NOT_AUTHORIZED })
+        }
+      })
+      .catch((err) => {
+        console.warn(err)
+      })
+  }
+}
+
 export const shareLink = () => {
   return {
     type: types.SHARE_LINK

@@ -13,7 +13,7 @@ import {
 } from 'react-native'
 import moment from 'moment'
 import swearjar from 'swearjar'
-import { Icon } from 'react-native-elements'
+import { Icon, Button } from 'react-native-elements'
 import SafariView from 'react-native-safari-view'
 import { CustomTabs } from 'react-native-custom-tabs'
 import Title from './title'
@@ -43,19 +43,24 @@ class Card extends Component {
       alertMsgCurator,
       phone
     })
+
+    if (this.props.link.status === 'archived') {
+      const tags = this.props.link.tags.map(tag => tag.name)
+      this.setState({ selectedTags: [...tags, ...this.state.selectedTags] })
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tags) {
-      tags = this.props.tags.sort()
+    if (nextProps.tags && nextProps.tags.length) {
+      tags = nextProps.tags.sort()
       this.setState({ tags })
     }
   }
 
   getBillMurray() {
     const sizes = [150, 160, 170, 180, 190, 200]
-    const min = Math.ceil(0);
-    const max = Math.floor(5);
+    const min = Math.ceil(0)
+    const max = Math.floor(5)
     const number = Math.floor(Math.random() * (max - min)) + min
     const size = sizes[number]
     return `http://fillmurray.com/300/${size}`
@@ -63,7 +68,7 @@ class Card extends Component {
 
   messageOwner = async (phone) => {
     const { title } = this.props.link
-    Clipboard.setString(`Re: "${title}" from Cure8.`);
+    Clipboard.setString(`Re: "${title}" from Cure8.`)
     if (!this.state.alertMsgCurator) {
       Alert.alert(
         'Did you know?',
@@ -169,23 +174,34 @@ class Card extends Component {
         return <Spinner size="small" />
       }
       return (
-        <View style={styles.icons}>
-          <MyIcon
-            size={24}
-            name='delete'
-            color="#27ae60"
-            onPress={() => this.props.justArchive(curation, rating, 'deleted')}
-            text='Delete'
-          />
-          {this.renderMsgOwner(ownerPhone, firstName)}
-          <MyIcon
-            size={24}
-            type='font-awesome'
-            name='share'
-            color="#27ae60"
-            onPress={() => this.props.onSharePress(this.props.link)}
-            text='Share'
-          />
+        <View>
+          <View style={styles.icons}>
+            <MyIcon
+              size={24}
+              name='delete'
+              color="#27ae60"
+              onPress={() => this.props.justArchive(curation, rating, 'deleted')}
+              text='Delete'
+              />
+            {this.renderMsgOwner(ownerPhone, firstName)}
+            <MyIcon
+              size={24}
+              type='font-awesome'
+              name='share'
+              color="#27ae60"
+              onPress={() => this.props.onSharePress(this.props.link)}
+              text='Share'
+              />
+          </View>
+          <View style={styles.tagContainer}>
+            <ScrollView
+              style={{ flex: 1 }}
+              horizontal
+              >
+              {this.renderTags()}
+            </ScrollView>
+          </View>
+          {this.addTagInput()}
         </View>
       )
     }
@@ -229,8 +245,9 @@ class Card extends Component {
   }
 
   renderTags() {
-    const { selectedTags, tags } = this.state
-    if (tags) {
+    const { tags, selectedTags } = this.state
+    const { archiveMode, status } = this.props
+    if (tags && (archiveMode.action === 'archived' || status === 'archived')) {
       return tags.map(tag => {
         const tagColour = selectedTags.includes(tag) ? '#27ae60' : '#ccc'
         return (
@@ -242,6 +259,50 @@ class Card extends Component {
           />
         )
       })
+    }
+  }
+
+  renderUpdateButton(status) {
+    const { curation_id } = this.props.link
+    const { selectedTags } = this.state
+    if (status === 'archived') {
+      return (
+        <Button
+          title='Update tags'
+          backgroundColor='#27ae60'
+          buttonStyle={{ marginBottom: 10, width: 150, padding: 8 }}
+          fontSize={12}
+          onPress={() => this.props.addTags(curation_id, selectedTags)}
+        />
+      )
+    }
+  }
+
+  addTagInput() {
+    const { archiveMode, status } = this.props
+    if (archiveMode.action === 'archived' || status === 'archived') {
+      return (
+        <View style={{ alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', margin: 10 }}>
+            <Input
+              placeholder='type to add new tag'
+              style={{ flex: 1, fontSize: 12, height: 30 }}
+              onChangeText={this.tagSearch}
+              value={this.state.tagSearchQuery}
+              autoCapitalize={'none'}
+            />
+            <Icon
+              color='#27ae60'
+              reverse
+              name='plus'
+              type='font-awesome'
+              onPress={this.addNewTag}
+              size={12}
+            />
+          </View>
+          {this.renderUpdateButton(status)}
+        </View>
+      )
     }
   }
 
@@ -269,28 +330,6 @@ class Card extends Component {
       }
     }
     this.tagSearch('')
-  }
-
-  addTagInput() {
-    return (
-      <View style={{ flexDirection: 'row', margin: 10 }}>
-        <Input
-          placeholder='type to add new tag'
-          style={{ flex: 1, fontSize: 12, height: 30 }}
-          onChangeText={this.tagSearch}
-          value={this.state.tagSearchQuery}
-          autoCapitalize={'none'}
-        />
-        <Icon
-          color='#27ae60'
-          reverse
-          name='plus'
-          type='font-awesome'
-          onPress={this.addNewTag}
-          size={12}
-        />
-      </View>
-    )
   }
 
   renderThumbsDownIcon(owner) {
@@ -469,6 +508,13 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+  tagContainer: {
+    flex: 1,
+    borderTopWidth: 0.5,
+    borderColor: '#ccc',
+    marginTop: 5,
+    paddingTop: 5
+  }
 }
 
 export default Card

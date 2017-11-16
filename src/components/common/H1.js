@@ -12,6 +12,6 @@ const styles = {
     fontSize: 22,
     textAlign: 'center',
     padding: 10,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
 }
