@@ -14,6 +14,7 @@ import { connect } from 'react-redux'
 import SafariView from 'react-native-safari-view'
 import { CustomTabs } from 'react-native-custom-tabs'
 import { Icon, Button } from 'react-native-elements'
+import Spinner from '../components/common/spinner'
 
 class Activity extends Component {
   static navigationOptions = () => {
@@ -115,6 +116,12 @@ class Activity extends Component {
           {this.renderItems()}
         </ScrollView>
       )
+    } else {
+      return (
+        <View style={styles.loading}>
+          <Spinner size='large' text='Loading recent activity...' />
+        </View>
+      )
     }
   }
 }
@@ -152,6 +159,10 @@ const styles = {
     color: 'grey',
     flex: 1,
     textAlign: 'right',
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center'
   },
 }
 
