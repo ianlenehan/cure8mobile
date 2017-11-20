@@ -1,6 +1,7 @@
 import axios from 'axios'
+import { Platform, AsyncStorage } from 'react-native'
 import * as types from '../types'
-import rootURL from '../../../environment.js'
+import rootURL from '../../../environment'
 
 export const updateUser = (token, value, field, userInfo = {}) => {
   let fieldName
@@ -73,6 +74,22 @@ export const getUserActivity = (token) => {
     })
     .catch(err => {
       console.log(err)
+    })
+  }
+}
+
+export const isUserAMember = () => {
+  return async (dispatch) => {
+    const membership = await AsyncStorage.getItem('membership')
+    const isIOS = Platform.OS === 'ios'
+    let isAMember = !!membership
+    if (!isIOS) {
+      isAMember = true
+    }
+    if (isAMember) await AsyncStorage.removeItem('limitReached')
+    dispatch({
+      type: types.GOT_MEMBERSHIP,
+      payload: isAMember,
     })
   }
 }

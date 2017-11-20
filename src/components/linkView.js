@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
+import { Toast } from 'native-base'
 import _ from 'lodash'
 import {
   createLink,
@@ -34,7 +35,6 @@ class LinkView extends Component {
       refreshing: false,
       token: null,
       readerMode: 'on',
-      membership: null,
       filterTerms: [],
       tags: [],
       morePressed: null
@@ -43,18 +43,18 @@ class LinkView extends Component {
 
   async componentDidMount() {
     this.filterLinks()
-    this.checkReaderModeAndMembership()
+    this.checkReaderMode()
     const token = await AsyncStorage.getItem('token')
     this.setState({ token })
     this.props.getUserInfo(token)
   }
 
   componentWillReceiveProps(nextProps) {
-    this.checkReaderModeAndMembership()
-    this.filterLinks(nextProps.links)
+    this.checkReaderMode()
 
     if (nextProps.links && this.props.links) {
       if (!_.isEqual(nextProps.links, this.props.links)) {
+        this.filterLinks(nextProps.links)
         this.props.getUserInfo(this.state.token)
       }
     }
@@ -66,18 +66,15 @@ class LinkView extends Component {
 
   async onRefresh() {
     this.setState({ refreshing: true })
-    await this.checkReaderModeAndMembership()
+    await this.checkReaderMode()
     await this.props.refresh()
     this.setState({ refreshing: false })
   }
 
-  async checkReaderModeAndMembership() {
+  async checkReaderMode() {
     const readerMode = await AsyncStorage.getItem('readerMode')
-    const membership = await AsyncStorage.getItem('membership')
     if (readerMode) {
-      this.setState({ readerMode, membership })
-    } else {
-      this.setState({ membership })
+      this.setState({ readerMode })
     }
   }
 
@@ -90,33 +87,30 @@ class LinkView extends Component {
     this.props.setArchiveMode(curation, action)
   }
 
-  membershipAlert() {
-    Alert.alert('Free Trial', "Thank you for trying Cure8! You have reached the limit for the free version of this app. If you've enjoyed using the app, please consider upgrading from the profile tab. If you have previously upgraded to the full version of this app, you can restore your purchase from the profile tab by tapping on the question mark.")
+  async membershipAlert() {
+    await AsyncStorage.setItem('limitReached', 'true')
+    Toast.show({
+      text: "Thanks for trying Cure8! This is the free version of the app and you won't see more than 5 links until you upgrade. You can do this from the profile tab.",
+      position: 'bottom',
+      buttonText: 'OK',
+      type: 'warning',
+    })
   }
 
   async filterLinks(links = this.props.links) {
-    const { status } = this.props
+    const { status, isMember } = this.props
     const filteredByStatus = links.filter((link) => {
       return link.status === status
     })
 
     const linksCount = filteredByStatus.length
     let allLinks = filteredByStatus
-
-    const membership = await AsyncStorage.getItem('membership')
-    const membershipAlert = await AsyncStorage.getItem('membershipAlert')
-    const isIOS = Platform.OS === 'ios'
-    if (!membership && isIOS) {
+    if (!isMember) {
       allLinks = filteredByStatus.splice(-5)
       // allLinks = filteredByStatus //for local testing
-      if (linksCount >= 5 && !membershipAlert) {
-        this.membershipAlert()
-        await AsyncStorage.multiSet([
-          ['membershipAlert', 'yes'],
-          ['limitReached', 'yes'],
-        ])
-      }
+      if (allLinks.length === 5) { this.membershipAlert() }
     }
+
     let res = allLinks
     if (this.state.filterTerms.length) {
       res = this.filterByTags(allLinks)
@@ -136,12 +130,13 @@ class LinkView extends Component {
     this.props.archiveLink({ id, rating, action, token })
   }
 
-  async shareLink(link) {
-    const membershipAlert = await AsyncStorage.getItem('membershipAlert')
-    const membership = await AsyncStorage.getItem('membership')
-
-    if (!membership && Platform.OS == 'ios' && membershipAlert === 'yes') {
-      this.membershipAlert()
+  shareLink(link) {
+    const atMaxLinks = this.state.links.length >= 5
+    if (!this.props.isMember && atMaxLinks) {
+      Alert.alert(
+        'Sorry!',
+        "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Profile tab."
+      )
     } else {
       this.props.navigate('addLink', { url: link.url })
     }
@@ -214,7 +209,7 @@ class LinkView extends Component {
             name='cancel'
             color='#ccc'
             onPress={this.resetLinks}
-            />
+          />
         </View>
       )
     }
@@ -292,8 +287,9 @@ const styles = {
 
 const mapStateToProps = ({ link, user }) => {
   const { archiveMode, links, loading } = link
+  const { isMember } = user
   const { tags } = user.info
-  return { archiveMode, links, loading, tags }
+  return { archiveMode, links, loading, tags, isMember }
 }
 
 export default connect(mapStateToProps, {

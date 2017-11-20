@@ -11,7 +11,7 @@ import {
 import { Icon, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 
-import { getUserInfo, updateUser } from '../redux/user/actions'
+import { getUserInfo, updateUser, isUserAMember } from '../redux/user/actions'
 import { logUserOut } from '../redux/auth/actions'
 
 class Profile extends Component {
@@ -100,7 +100,7 @@ class Profile extends Component {
                 if (purchase.productIdentifier === 'com.cure8.cure8app.premium') {
                   this.setState({ membership: 'premium' })
                   await AsyncStorage.setItem('membership', 'premium')
-                  await AsyncStorage.removeItem('membershipAlert')
+                  await AsyncStorage.removeItem('limitReached')
                   this.props.getUserInfo(this.state.token)
                 }
               })
@@ -118,8 +118,9 @@ class Profile extends Component {
         this.setState({ membership: 'premium' })
         Alert.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier)
         await AsyncStorage.setItem('membership', 'premium')
-        await AsyncStorage.removeItem('membershipAlert')
+        await AsyncStorage.removeItem('limitReached')
         this.props.getUserInfo(this.state.token)
+        this.props.isUserAMember()
       }
     })
   }
@@ -331,4 +332,9 @@ const mapStateToProps = ({ user }) => {
   return { info }
 }
 
-export default connect(mapStateToProps, { getUserInfo, updateUser, logUserOut })(Profile)
+export default connect(mapStateToProps, {
+  getUserInfo,
+  updateUser,
+  logUserOut,
+  isUserAMember
+})(Profile)

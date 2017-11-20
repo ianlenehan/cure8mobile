@@ -332,7 +332,7 @@ class Card extends Component {
     this.tagSearch('')
   }
 
-  renderThumbsDownIcon(owner) {
+  renderThumbsDownIcon(owner, curation) {
     if (owner.phone !== this.state.phone) {
       return(
         <Icon
@@ -369,7 +369,7 @@ class Card extends Component {
               color='#3498db'
               onPress={() => this.props.archiveLink(curation, 1, selectedTags)}
             />
-          {this.renderThumbsDownIcon(owner)}
+          {this.renderThumbsDownIcon(owner, curation)}
             <Icon
               size={24}
               containerStyle={{ margin: 5 }}

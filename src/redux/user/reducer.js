@@ -2,7 +2,8 @@ import * as types from '../types'
 
 const initialState = {
   info: {},
-  activity: []
+  activity: [],
+  isMember: true,
 }
 
 export default (state = initialState, action) => {
@@ -13,6 +14,8 @@ export default (state = initialState, action) => {
       return { ...state, info: false }
     case types.GOT_ACTIVITY:
       return { ...state, activity: action.payload }
+    case types.GOT_MEMBERSHIP:
+      return { ...state, isMember: action.payload }
     default:
       return state
   }

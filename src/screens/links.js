@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 import OneSignal from 'react-native-onesignal'
 
 import { getLinks } from '../redux/link/actions'
-import { getUserInfo, updateUser, getUserActivity } from '../redux/user/actions'
+import { getUserInfo, updateUser, getUserActivity, isUserAMember } from '../redux/user/actions'
 import { getContacts } from '../redux/contact/actions'
 import LinkView from '../components/linkView'
 import Spinner from '../components/common/spinner'
@@ -37,11 +37,9 @@ class Links extends Component {
           backgroundColor='rgba(0,0,0,0)'
           onPress={
             async () => {
-              const membership = await AsyncStorage.getItem('membership')
               const limitReached = await AsyncStorage.getItem('limitReached')
-              const isIOS = Platform.OS === 'ios'
-              if (!membership && limitReached && isIOS) {
-                Alert.alert('Your Membership', "Thank you for trying the free version of Cure8! You have reached the limit of 5 curations and can no longer create new links. If you've enjoyed using the app, please consider upgrading from the profile tab.")
+              if (limitReached) {
+                Alert.alert('Sorry!', "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Profile tab.")
               } else {
                 navigate('addLink')
               }
@@ -82,6 +80,7 @@ class Links extends Component {
     this.props.getContacts(token)
     this.props.getUserInfo(token)
     this.props.getUserActivity(token)
+    this.props.isUserAMember()
   }
 
   checkNotificationStatus = async (status) => {
@@ -168,5 +167,6 @@ export default connect(mapStateToProps, {
   getContacts,
   getUserInfo,
   updateUser,
-  getUserActivity
+  getUserActivity,
+  isUserAMember
 })(Links)

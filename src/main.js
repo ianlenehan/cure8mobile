@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { TabNavigator, StackNavigator } from 'react-navigation'
 import { Image } from 'react-native'
 import { Icon } from 'react-native-elements'
+import { Root } from 'native-base'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import ReduxThunk from 'redux-thunk'
@@ -122,9 +123,11 @@ export default class App extends Component {
     })
 
     return (
-      <Provider store={createStore(reducers, {}, applyMiddleware(ReduxThunk))}>
-        <MainNavigator />
-      </Provider>
+      <Root>
+        <Provider store={createStore(reducers, {}, applyMiddleware(ReduxThunk))}>
+          <MainNavigator />
+        </Provider>
+      </Root>
     )
   }
 }
