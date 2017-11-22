@@ -510,8 +510,8 @@ const styles = {
   },
   tagContainer: {
     flex: 1,
-    borderTopWidth: 0.5,
-    borderColor: '#ccc',
+    borderTopWidth: 1,
+    borderColor: '#dcdcdc',
     marginTop: 5,
     paddingTop: 5
   }

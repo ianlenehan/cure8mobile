@@ -14,7 +14,7 @@ const Input = (props) => {
     autoCapitalize,
     returnKeyType,
     onBlur,
-    disableReturnKey
+    disableReturnKey,
   } = props
 
   const defaultStyle = green ? styles.green : styles.white
@@ -25,7 +25,6 @@ const Input = (props) => {
       onChangeText={onChangeText}
       style={[defaultStyle, props.style]}
       keyboardType={keyboardType}
-      enablesReturnKeyAutomatically
       placeholderTextColor={green ? '#ecf0f1' : 'grey'}
       placeholder={placeholder}
       secureTextEntry={secureTextEntry}
@@ -61,5 +60,5 @@ const styles = {
     marginLeft: 20,
     marginRight: 20,
     borderRadius: 5,
-  }
+  },
 }

@@ -197,7 +197,7 @@ class LinkView extends Component {
   }
 
   renderTagFilterList = () => {
-    if (this.props.status === 'archived') {
+    if (this.props.status === 'archived' && this.props.tags && this.props.tags.length) {
       return (
         <View style={styles.tagList}>
           <ScrollView horizontal>
@@ -271,13 +271,6 @@ const styles = {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  add: {
-    position: 'absolute',
-    bottom: 5,
-    right: 5,
-    opacity: 0.8,
-    backgroundColor: 'transparent'
   },
   tagList: {
     backgroundColor: 'white',

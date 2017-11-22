@@ -137,7 +137,7 @@ const styles = {
   },
   form: {
     flexDirection: 'column',
-    flex: 1
+    paddingBottom: 10
   },
   padding: {
     flex: 0.1
