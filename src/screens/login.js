@@ -6,8 +6,10 @@ import {
   LayoutAnimation,
   Keyboard,
   KeyboardAvoidingView,
+  ScrollView,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Button, Icon } from 'react-native-elements'
@@ -125,7 +127,7 @@ class Login extends Component {
           countryName={this.props.countryName}
           onCountryChange={this.onPickerChange}
           style={styles.picker}
-          itemStyle={{ color: '#fff' }}
+          itemStyle={{ color: '#fff', height: 175 }}
         />
       )
     }
@@ -224,7 +226,13 @@ class Login extends Component {
         keyboardVerticalOffset={keyboardVerticalOffset}
         style={styles.container}
       >
-        <Text style={styles.header}>Cure8</Text>
+        <View style={styles.header}>
+          <Image
+            style={{ width: 100, height: 30 }}
+            resizeMode='contain'
+            source={require('../../assets/images/logo_clear.png')}
+          />
+        </View>
         <StatusBar hidden />
           <View style={styles.form}>
             {this.renderPhoneInput()}
@@ -242,11 +250,9 @@ const styles = {
     flex: 1
   },
   header: {
-    color: '#fff',
-    fontSize: 24,
     alignSelf: 'center',
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     flex: 1
   },
   instructions: {
