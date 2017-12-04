@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { View, AsyncStorage } from 'react-native'
+import { View, AsyncStorage, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { Button, CheckBox } from 'react-native-elements'
+import { Button, CheckBox, SearchBar } from 'react-native-elements'
+import _ from 'lodash'
 import {
   createLink,
   urlChanged,
@@ -16,12 +17,20 @@ class AddLink extends Component {
     return { title: 'Curate New Link' }
   }
 
-  state = { saveToMyLinks: false, token: null, displayCheckBox: true, contacts: [] }
+  state = {
+    saveToMyLinks: false,
+    token: null,
+    displayCheckBox: true,
+    contacts: [],
+    selectedContacts: [],
+    enteredNumber: '',
+  }
 
   async componentDidMount() {
     this.onUrlChange('')
     const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
+    const { contacts, groups } = this.props
+    this.setState({ token, contacts, groups })
     this.checkIfLinkExists()
   }
 
@@ -34,14 +43,14 @@ class AddLink extends Component {
   }
 
   async onContactPress(contactId) {
-    if (this.state.contacts.includes(contactId)) {
-      const newState = this.state.contacts.filter(contact => {
+    if (this.state.selectedContacts.includes(contactId)) {
+      const newState = this.state.selectedContacts.filter(contact => {
         return contact !== contactId
       })
-      await this.setState({ contacts: newState })
+      await this.setState({ selectedContacts: newState })
       return
     }
-    this.setState({ contacts: [...this.state.contacts, contactId] })
+    this.setState({ selectedContacts: [...this.state.selectedContacts, contactId] })
   }
 
   checkIfLinkExists() {
@@ -56,7 +65,9 @@ class AddLink extends Component {
 
   saveLink = () => {
     const { url, comment } = this.props
-    const { saveToMyLinks, token, contacts } = this.state
+    const { saveToMyLinks, token, selectedContacts, enteredNumber } = this.state
+    let contacts = selectedContacts
+    if (enteredNumber.length) { contacts = [enteredNumber] }
     this.props.urlChanged('')
     this.props.commentChanged('')
     this.props.createLink({ url, comment, contacts, saveToMyLinks, token })
@@ -64,10 +75,37 @@ class AddLink extends Component {
   }
 
   buttonStatus() {
-    if (this.state.saveToMyLinks === false && this.state.contacts.length === 0) {
+    const { saveToMyLinks, selectedContacts, enteredNumber } = this.state
+    const noContactSelected = saveToMyLinks === false && selectedContacts.length === 0
+    const noNumberEntered =  enteredNumber.length < 8
+    if (noContactSelected && noNumberEntered) {
       return true
     }
     return false
+  }
+
+  validateNumber(number) {
+    if (number.length >+ 2 && number.split('')[0] !== '+') {
+      Alert.alert(
+        'Oops',
+        "For anonymous number entries, please enter with a '+' followed by the country code, and drop the leading zero. For example, '+61551234567'."
+      )
+    } else {
+      this.setState({ enteredNumber: number, contacts: [], groups: [] })
+    }
+  }
+
+  contactSearch = (text) => {
+    if (text.length >= 1 && !_.isNaN(Number(text))) {
+      this.validateNumber(text)
+    } else if (text.length >= 2) {
+      const contacts = this.state.contacts.filter(contact => {
+        return contact.name.includes(text)
+      })
+      this.setState({ contacts, groups: [] })
+    } else {
+      this.setState({ contacts: this.props.contacts, groups: this.props.groups, enteredNumber: '' })
+    }
   }
 
   renderCheckBox() {
@@ -107,10 +145,18 @@ class AddLink extends Component {
           {this.renderCheckBox()}
           </View>
           <View style={{ flex: 3 }}>
+            <SearchBar
+              lightTheme
+              placeholder='Search contacts or type number'
+              containerStyle={{ backgroundColor: 'white' }}
+              inputStyle={{ backgroundColor: '#f3f3f3' }}
+              clearIcon={{ color: '#86939e', name: 'clear' }}
+              onChangeText={(text) => this.contactSearch(text)}
+            />
             <ContactPickList
-              contacts={this.props.contacts}
-              selectedContacts={this.state.contacts}
-              groups={this.props.groups}
+              contacts={this.state.contacts}
+              selectedContacts={this.state.selectedContacts}
+              groups={this.state.groups}
               onPress={this.onContactPress.bind(this)}
             />
             <View style={{ marginTop: 10 }}>
@@ -137,7 +183,6 @@ const styles = {
   },
   form: {
     flexDirection: 'column',
-    paddingBottom: 10
   },
   padding: {
     flex: 0.1
