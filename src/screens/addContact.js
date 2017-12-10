@@ -12,7 +12,7 @@ class AddContact extends Component {
   static navigationOptions = ({ navigation }) => {
     const { familyName, givenName } = navigation.state.params.contact
     return {
-      title: `${givenName} ${familyName}`,
+      title: `${givenName || ''} ${familyName || ''}`,
     }
   }
 
