@@ -144,7 +144,7 @@ class AddLink extends Component {
             />
           {this.renderCheckBox()}
           </View>
-          <View style={{ flex: 3 }}>
+          <View style={{ flex: 3, marginTop: 5 }}>
             <SearchBar
               lightTheme
               placeholder='Search contacts or type number'
