@@ -17,8 +17,8 @@ class ContactPickList extends Component {
         contact={item}
         title={item.name}
         isMember={item.member}
-        chevronType={'circle'}
-        iconType={'font-awesome'}
+        chevronType="circle"
+        iconType="font-awesome"
         iconColour={iconColour}
         onPress={() => this.props.onPress(item.id)}
       />
@@ -44,7 +44,7 @@ class ContactPickList extends Component {
       )
     }
     return (
-      <Text style={styles.contactsHint}>Add contacts from your phone using the app's contacts section if you'd like to share this link with anyone.</Text>
+      <Text style={styles.contactsHint}>No contacts here? Add contacts from your phone using the app&apos;s contacts section if you&apos;d like to share this link with anyone.</Text>
     )
   }
 }

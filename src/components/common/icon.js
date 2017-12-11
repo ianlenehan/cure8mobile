@@ -11,8 +11,10 @@ const MyIcon = (props) => {
         color={props.color}
         onPress={props.onPress}
         type={props.type}
+        reverse={props.reverse || false}
+        raised={props.raised || false}
       />
-      <Text style={styles.text}>{props.text}</Text>
+      <Text style={[styles.text, props.textStyle]}>{props.text}</Text>
     </View>
   )
 }
@@ -22,6 +24,6 @@ export default MyIcon
 const styles = {
   text: {
     fontSize: 8,
-    color: 'grey'
-  }
+    color: 'grey',
+  },
 }

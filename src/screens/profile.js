@@ -71,13 +71,6 @@ class Profile extends Component {
     this.props.getUserInfo(this.state.token)
   }
 
-  statsAlert = () => {
-    Alert.alert(
-      'What is this?',
-      'This number is calculated as the percentage of curations your friends have rated with a thumbs up.'
-    )
-  }
-
   upgradeHelp = () => {
     Alert.alert(
       'Why purchase the full version?',
@@ -130,18 +123,8 @@ class Profile extends Component {
     if (stats) {
       return (
         <View style={styles.stats}>
-          <Text style={styles.stat}>Curations: {stats.curations}</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-            <Text style={styles.stat}>Score: {stats.score * 100}%</Text>
-            <Icon
-              name='question-circle'
-              type='font-awesome'
-              size={18}
-              color='white'
-              containerStyle={{ paddingLeft: 5 }}
-              onPress={this.statsAlert}
-            />
-            </View>
+          <Text style={styles.stat}>{stats.curations} Curations</Text>
+          <Text style={styles.stat}>{stats.ratings} Thumbs Up</Text>
         </View>
       )
     }
@@ -287,13 +270,14 @@ const styles = {
   },
   stats: {
     marginTop: 30,
-    justifyContent: 'center',
-    flex: 1
+    flex: 1,
   },
   stat: {
     textAlign: 'center',
     color: '#fff',
-    fontSize: 24
+    fontSize: 18,
+    marginLeft: 15,
+    marginRight: 15
   },
   switchView: {
     flexDirection: 'row',
