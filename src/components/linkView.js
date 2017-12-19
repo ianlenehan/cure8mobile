@@ -187,8 +187,8 @@ class LinkView extends Component {
     this.setState({ morePressed: curation })
   }
 
-  resetLinks = () => {
-    this.setState({ filterTerms: [] })
+  resetLinks = async () => {
+    await this.setState({ filterTerms: [] })
     this.filterLinks()
   }
 
