@@ -394,7 +394,7 @@ class Card extends Component {
     if (tags.length && status === 'archived') {
       return tags.map(tag => {
         return (
-          <Tag key={tag.id} tag={tag.name} tagStyle={{ fontSize: 10 }} />
+          <Tag key={tag.id} tag={tag.name} style={styles.smallTag} tagStyle={styles.smallTagStyle} />
         )
       })
     }
@@ -514,6 +514,15 @@ const styles = {
     borderColor: '#dcdcdc',
     marginTop: 5,
     paddingTop: 5
+  },
+  smallTag: {
+    backgroundColor: 'white',
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
+  smallTagStyle: {
+    fontSize: 10,
+    color: '#ccc',
   }
 }
 
