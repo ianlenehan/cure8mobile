@@ -11,7 +11,7 @@ import {
   FIRST_NAME_CHANGED,
   LAST_NAME_CHANGED,
   CREATE_ACCOUNT_FAIL,
-  PHONE_RESET
+  PHONE_RESET,
 } from '../types'
 
 const initialState = {
@@ -24,7 +24,7 @@ const initialState = {
   countryName: '',
   callingCode: '',
   loading: false,
-  error: ''
+  error: '',
 }
 
 export default (state = initialState, action) => {
@@ -33,7 +33,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         phone: action.payload.phone,
-        formattedPhone: action.payload.formattedPhone
+        formattedPhone: action.payload.formattedPhone,
       }
     case CODE_CHANGED:
       return { ...state, code: action.payload }
@@ -42,9 +42,19 @@ export default (state = initialState, action) => {
     case GET_CODE:
       return { ...state, loading: false, buttonText: action.payload }
     case GET_CODE_ERROR:
-      return { ...state, loading: false, buttonText: '', error: action.payload }
+      return {
+        ...state,
+        loading: false,
+        buttonText: '',
+        error: action.payload,
+      }
     case LOGIN_USER:
-      return { ...state, loading: true, error: '' }
+      return {
+        ...state,
+        loading: true,
+        error: '',
+        buttonText: 'Please wait...',
+      }
     case LOGGED_OUT:
       return { ...initialState }
     case FIRST_NAME_CHANGED:
@@ -52,9 +62,20 @@ export default (state = initialState, action) => {
     case LAST_NAME_CHANGED:
       return { ...state, lastName: action.payload }
     case LOGIN_USER_SUCCESS:
-      return { ...state, token: action.payload.token, user: action.payload.user }
+      return {
+        ...state,
+        token: action.payload.token,
+        user: action.payload.user,
+        buttonText: '',
+      }
     case LOGIN_USER_FAIL:
-      return { ...state, error: 'Authentication Failed.', code: '', loading: false }
+      return {
+        ...state,
+        error: 'Authentication Failed.',
+        code: '',
+        loading: false,
+        buttonText: '',
+      }
     case PHONE_RESET:
       return { ...state, code: '', phone: '', buttonText: '' }
     case CREATE_ACCOUNT_FAIL:

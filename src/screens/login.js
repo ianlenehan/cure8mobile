@@ -183,6 +183,7 @@ class Login extends Component {
           <Button
             title={this.props.buttonText}
             backgroundColor='#fff'
+            disabled={this.props.loading}
             color='#27ae60'
             buttonStyle={styles.button}
             onPress={this.onLoginPress}

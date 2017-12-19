@@ -13,9 +13,9 @@ import {
   LAST_NAME_CHANGED,
   CREATE_ACCOUNT_FAIL,
   PHONE_RESET,
-  CODE_REQUESTED
+  CODE_REQUESTED,
 } from '../types'
-import rootURL from '../../../environment.js'
+import rootURL from '../../../environment'
 
 const formatPhone = (phone, callingCode) => {
   const numbersOnly = Number(phone.replace(/[^\d]/g, ''))
@@ -128,17 +128,17 @@ export const createAccount = ({ formattedPhone, code, firstName, lastName }) => 
           last_name: lastName
         }
       })
-      .then((res) => {
-        if (res.data.status === 200) {
-          loginUserSuccess(dispatch, res)
-        } else {
+        .then((res) => {
+          if (res.data.status === 200) {
+            loginUserSuccess(dispatch, res)
+          } else {
+            loginUserFailure(dispatch)
+          }
+        })
+        .catch((error) => {
           loginUserFailure(dispatch)
-        }
-      })
-      .catch((error) => {
-        loginUserFailure(dispatch)
-        console.log(error)
-      })
+          console.log(error)
+        })
     }
   }
   return { type: CREATE_ACCOUNT_FAIL }

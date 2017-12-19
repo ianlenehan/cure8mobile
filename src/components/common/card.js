@@ -66,20 +66,24 @@ class Card extends Component {
     return `http://fillmurray.com/300/${size}`
   }
 
-  messageOwner = async (phone) => {
-    const { title } = this.props.link
-    Clipboard.setString(`Re: "${title}" from Cure8.`)
-    if (!this.state.alertMsgCurator) {
-      Alert.alert(
-        'Did you know?',
-        'From here, pressing paste into your message app will add the curated link title to your message.',
-        [
-          { text: 'Cool!', onPress: () => Linking.openURL(`sms:${phone}`) }
-        ]
-      )
-      await AsyncStorage.setItem('alertMsgCurator', 'yes')
+  messageOwner = async (phone, name) => {
+    if (name === 'Cure8') {
+      Alert.alert('Sample Link', 'For links your friends curate for you, you will be able to message them with this button to comment on the link.')
     } else {
-      Linking.openURL(`sms:${phone}`)
+      const { title } = this.props.link
+      Clipboard.setString(`Re: "${title}" from Cure8.`)
+      if (!this.state.alertMsgCurator) {
+        Alert.alert(
+          'Did you know?',
+          'From here, pressing paste into your message app will add the curated link title to your message.',
+          [
+            { text: 'Cool!', onPress: () => Linking.openURL(`sms:${phone}`) }
+          ]
+        )
+        await AsyncStorage.setItem('alertMsgCurator', 'yes')
+      } else {
+        Linking.openURL(`sms:${phone}`)
+      }
     }
   }
 
@@ -100,7 +104,7 @@ class Card extends Component {
           name='comment'
           type='font-awesome'
           color="#27ae60"
-          onPress={() => this.messageOwner(ownerPhone)}
+          onPress={() => this.messageOwner(ownerPhone, firstName)}
           text={`Msg ${firstName}`}
         />
       )
@@ -122,8 +126,11 @@ class Card extends Component {
   }
 
   onArchivePress(owner, curation, action) {
+    console.log('owner is', owner)
     const { selectedTags } = this.state
-    if (owner.phone === this.state.phone && action === 'deleted') {
+    if (owner.name === 'Cure8') {
+      Alert.alert('Sample Link', 'As this is a sample link, it\s not something you can delete or archive. Add your own links and this one will go away!')
+    } else if (owner.phone === this.state.phone && action === 'deleted') {
       this.props.justArchive(curation, 1, action)
     } else {
       this.props.onArchivePress(curation, action)
@@ -313,23 +320,25 @@ class Card extends Component {
   addNewTag = () => {
     const { tags, selectedTags, tagSearchQuery } = this.state
     const cleanTag = tagSearchQuery.toLowerCase().trim()
-    if (swearjar.profane(cleanTag)) {
-      Alert.alert(
-        'Oops',
-        "Let's keep this clean, we might use tags publicy in a later release.",
-        [{ text: 'Sorry' }]
-      )
-    } else {
-      if (tags.includes(cleanTag)) {
-        this.setState({ selectedTags: [...selectedTags, cleanTag] })
+    if (cleanTag.length) {
+      if (swearjar.profane(cleanTag)) {
+        Alert.alert(
+          'Oops',
+          "Let's keep this clean, we might use tags publicy in a later release.",
+          [{ text: 'Sorry' }]
+        )
       } else {
-        this.setState({
-          selectedTags: [...selectedTags, cleanTag],
-          tags: [cleanTag, ...tags]
-        })
+        if (tags.includes(cleanTag)) {
+          this.setState({ selectedTags: [...selectedTags, cleanTag] })
+        } else {
+          this.setState({
+            selectedTags: [...selectedTags, cleanTag],
+            tags: [cleanTag, ...tags]
+          })
+        }
       }
+      this.tagSearch('')
     }
-    this.tagSearch('')
   }
 
   renderThumbsDownIcon(owner, curation) {
@@ -394,7 +403,13 @@ class Card extends Component {
     if (tags.length && status === 'archived') {
       return tags.map(tag => {
         return (
-          <Tag key={tag.id} tag={tag.name} style={styles.smallTag} tagStyle={styles.smallTagStyle} />
+          <Tag
+            key={tag.id}
+            tag={tag.name}
+            style={styles.smallTag}
+            tagStyle={styles.smallTagStyle}
+            onPress={console.log}
+          />
         )
       })
     }
