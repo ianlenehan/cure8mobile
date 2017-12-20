@@ -127,7 +127,7 @@ class Login extends Component {
           countryName={this.props.countryName}
           onCountryChange={this.onPickerChange}
           style={styles.picker}
-          itemStyle={{ color: '#fff', height: 175 }}
+          itemStyle={{ color: '#fff', height: 175, fontSize: 16 }}
         />
       )
     }
@@ -144,24 +144,14 @@ class Login extends Component {
       )
     }
     return (
-      <View style={{ flexDirection: 'row' }}>
-        <Input
-          value={this.props.phone}
-          onChangeText={this.onPhoneChange}
-          keyboardType={'phone-pad'}
-          placeholder='Phone number'
-          style={{ flex: 1 }}
-          green
-          onBlur={() => Keyboard.dismiss()}
-        />
-        <Icon
-          containerStyle={{ marginLeft: -17, marginRight: 3, marginTop: 3 }}
-          name='keyboard-hide'
-          color="#fff"
-          onPress={() => Keyboard.dismiss()}
-          underlayColor='rgba(0,0,0,0)'
-        />
-      </View>
+      <Input
+        value={this.props.phone}
+        onChangeText={this.onPhoneChange}
+        keyboardType={'phone-pad'}
+        placeholder='Phone number'
+        green
+        onBlur={Keyboard.dismiss}
+      />
     )
   }
 
@@ -198,7 +188,7 @@ class Login extends Component {
       )
     }
     return (
-      <View>
+      <ScrollView>
         <Text style={styles.instructions}>
           Enter your number to sign in or create account.
           Choose your country code from the list below.
@@ -215,7 +205,7 @@ class Login extends Component {
           buttonStyle={styles.button}
           onPress={this.onGetCodePress}
         />
-      </View>
+      </ScrollView>
     )
   }
 
@@ -224,7 +214,6 @@ class Login extends Component {
     return (
       <KeyboardAvoidingView
         behavior='padding'
-        keyboardVerticalOffset={keyboardVerticalOffset}
         style={styles.container}
       >
         <View style={styles.header}>
@@ -235,10 +224,10 @@ class Login extends Component {
           />
         </View>
         <StatusBar hidden />
-          <View style={styles.form}>
-            {this.renderPhoneInput()}
-            {this.renderFormButton()}
-          </View>
+        <View style={styles.form}>
+          {this.renderPhoneInput()}
+          {this.renderFormButton()}
+        </View>
       </KeyboardAvoidingView>
     )
   }
