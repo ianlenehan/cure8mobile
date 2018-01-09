@@ -1,6 +1,6 @@
 import axios from 'axios'
 import * as types from '../types'
-import rootURL from '../../../environment.js'
+import rootURL from '../../../environment'
 
 export const urlChanged = (url) => {
   return {
@@ -38,19 +38,25 @@ export const archiveLink = ({ id, rating, action, token, tags }) => {
       curation: { id, rating, action, tags },
       user: { token }
     })
-    .then((res) => {
-      if (res.data.status === 200) {
-        dispatch({
-          type: types.GET_LINKS,
-          payload: res.data.links
-        })
-      } else if (res.data.status === 401) {
-        dispatch({ type: types.NOT_AUTHORIZED })
-      }
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+      .then((res) => {
+        if (res.data.status === 200) {
+          dispatch({
+            type: types.GET_LINKS,
+            payload: res.data.links
+          })
+        } else if (res.data.status === 401) {
+          dispatch({ type: types.NOT_AUTHORIZED })
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+}
+
+export const toastDisplayed = () => {
+  return (dispatch) => {
+    dispatch({ type: types.TOAST_DISPLAYED })
   }
 }
 
@@ -100,7 +106,7 @@ export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => 
       .then((res) => {
         if (res.data.status === 200) {
           dispatch({
-            type: types.GET_LINKS,
+            type: types.LINK_CURATED,
             payload: res.data.links
           })
         } else if (res.data.status === 401) {

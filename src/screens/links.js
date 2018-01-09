@@ -12,8 +12,9 @@ import {
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import OneSignal from 'react-native-onesignal'
+import { Toast } from 'native-base'
 
-import { getLinks } from '../redux/link/actions'
+import { getLinks, toastDisplayed } from '../redux/link/actions'
 import { getUserInfo, updateUser, getUserActivity, isUserAMember } from '../redux/user/actions'
 import { getContacts } from '../redux/contact/actions'
 import LinkView from '../components/linkView'
@@ -72,6 +73,19 @@ class Links extends Component {
     if (nextProps.links && this.props.links) {
       if (nextProps.links.length > this.props.links.length) this.getUserData()
     }
+    if (nextProps.linkCurated) {
+      this.newCurationToastAlert()
+    }
+  }
+
+  newCurationToastAlert() {
+    Toast.show({
+      text: "Your curation has been saved!",
+      position: 'top',
+      buttonText: 'OK',
+      duration: 3000,
+    })
+    this.props.toastDisplayed()
   }
 
   getUserData = async () => {
@@ -157,9 +171,9 @@ const styles = {
 }
 
 const mapStateToProps = ({ link, user }) => {
-  const { links, loading, authorized } = link
+  const { links, loading, authorized, linkCurated } = link
   const { info: userInfo } = user
-  return { links, loading, authorized, userInfo }
+  return { links, loading, authorized, linkCurated, userInfo }
 }
 
 export default connect(mapStateToProps, {
@@ -168,5 +182,6 @@ export default connect(mapStateToProps, {
   getUserInfo,
   updateUser,
   getUserActivity,
-  isUserAMember
+  isUserAMember,
+  toastDisplayed,
 })(Links)
