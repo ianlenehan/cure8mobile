@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { TabNavigator, StackNavigator } from 'react-navigation'
-import { Image } from 'react-native'
 import { Icon } from 'react-native-elements'
 import { Root } from 'native-base'
 import { Provider } from 'react-redux'
@@ -44,7 +43,7 @@ const contactsNavigator = StackNavigator({
 const linksNavigator = StackNavigator({
   links: { screen: Links },
   addLink: { screen: AddLink },
-  oldLinks: { screen: OldLinks },
+  profile: { screen: Profile },
 }, {
   navigationOptions: {
     headerTintColor: 'white',
@@ -69,11 +68,22 @@ const activityNav = StackNavigator({
   }
 })
 
+const oldLinksNav = StackNavigator({
+  activity: { screen: OldLinks },
+}, {
+  navigationOptions: {
+    headerTintColor: 'white',
+    headerStyle: {
+      backgroundColor: primaryGreen,
+    },
+  }
+})
+
 const mainTabNavigator = TabNavigator({
   linksNavigator: { screen: linksNavigator },
+  oldLinks: { screen: oldLinksNav },
   contacts: { screen: contactsNavigator },
   activity: { screen: activityNav },
-  profile: { screen: Profile }
 }, {
   tabBarOptions: {
     labelStyle: {

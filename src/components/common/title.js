@@ -24,12 +24,12 @@ const styles = {
     padding: 5,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#27ae60'
+    color: '#27ae60',
   },
   small: {
     fontSize: 16,
     padding: 5,
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   }
 }

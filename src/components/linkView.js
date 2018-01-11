@@ -90,7 +90,7 @@ class LinkView extends Component {
   async membershipAlert() {
     await AsyncStorage.setItem('limitReached', 'true')
     Toast.show({
-      text: "Thanks for trying Cure8! This is the free version of the app and you won't see more than 5 links until you upgrade. You can do this from the profile tab.",
+      text: "Thanks for trying Cure8! This is the free version of the app and you won't see more than 5 links until you upgrade. You can do this from the Settings screen.",
       position: 'bottom',
       buttonText: 'OK',
       type: 'warning',
@@ -135,7 +135,7 @@ class LinkView extends Component {
     if (!this.props.isMember && atMaxLinks) {
       Alert.alert(
         'Sorry!',
-        "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Profile tab."
+        "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Settings screen."
       )
     } else {
       this.props.navigate('addLink', { url: link.url })
@@ -171,13 +171,15 @@ class LinkView extends Component {
     const { filterTerms } = this.state
     const tags = this.props.tags.sort()
     return tags.map(tag => {
-      const tagColour = filterTerms.includes(tag) ? '#27ae60' : '#ccc'
+      const tagColour = filterTerms.includes(tag) ? '#fff' : '#27ae60'
+      const fontColour = filterTerms.includes(tag) ? '#27ae60' : '#fff'
       return (
         <Tag
           key={tag}
           tag={tag}
           onPress={this.filterByTag.bind(this)}
           style={{ backgroundColor: tagColour }}
+          tagStyle={{ color: fontColour }}
         />
       )
     })
@@ -200,14 +202,14 @@ class LinkView extends Component {
     if (this.props.status === 'archived' && this.props.tags && this.props.tags.length) {
       return (
         <View style={styles.tagList}>
-          <ScrollView horizontal>
+          <ScrollView horizontal style={{ borderWidth: 0 }}>
             {this.filterTagList()}
           </ScrollView>
           <Icon
             size={24}
             containerStyle={{ margin: 5 }}
             name='cancel'
-            color='#ccc'
+            color='#fff'
             onPress={this.resetLinks}
           />
         </View>
@@ -273,8 +275,8 @@ const styles = {
     justifyContent: 'center'
   },
   tagList: {
-    backgroundColor: 'white',
-    flexDirection: 'row'
+    backgroundColor: '#27ae60',
+    flexDirection: 'row',
   }
 }
 

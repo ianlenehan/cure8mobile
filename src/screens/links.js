@@ -40,7 +40,7 @@ class Links extends Component {
             async () => {
               const limitReached = await AsyncStorage.getItem('limitReached')
               if (limitReached) {
-                Alert.alert('Sorry!', "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Profile tab.")
+                Alert.alert('Sorry!', "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Settings screen.")
               } else {
                 navigate('addLink')
               }
@@ -50,10 +50,10 @@ class Links extends Component {
       ),
       headerLeft: (
         <Button
-          icon={{ name: 'archive' }}
+          icon={{ name: 'settings' }}
           iconLeft
           backgroundColor='rgba(0,0,0,0)'
-          onPress={() => navigate('oldLinks')}
+          onPress={() => navigate('profile')}
         />
       )
     }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { AsyncStorage, Text, View } from 'react-native'
+import { Icon } from 'react-native-elements'
 import { connect } from 'react-redux'
 
 import { getLinks } from '../redux/link/actions'
@@ -9,8 +10,11 @@ import Spinner from '../components/common/spinner'
 class OldLinks extends Component {
   static navigationOptions = () => {
     return {
+      tabBarLabel: 'Archived',
       headerTitle: 'Archived Links',
-      headerTitleStyle: styles.headerTitle
+      tabBarIcon: ({ tintColor }) => {
+        return <Icon name="archive" size={24} color={tintColor} />
+      }
     }
   }
 
@@ -55,7 +59,10 @@ const styles = {
     flex: 1,
     justifyContent: 'center'
   },
-  headerTitle: {}
+  headerTitle: {
+    borderColor: '#fff',
+    borderWidth: 2
+  }
 }
 
 const mapStateToProps = ({ link }) => {

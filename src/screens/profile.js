@@ -17,10 +17,7 @@ import { logUserOut } from '../redux/auth/actions'
 class Profile extends Component {
   static navigationOptions = () => {
     return {
-      tabBarLabel: 'Profile',
-      tabBarIcon: ({ tintColor }) => {
-        return <Icon name="user" type="font-awesome" size={24} color={tintColor} />
-      }
+      title: 'Settings',
     }
   }
 
@@ -245,7 +242,7 @@ const styles = {
   container: {
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: '#27ae60',
+    backgroundColor: '#fff',
     paddingTop: 10,
     paddingBottom: 10
   },
@@ -260,13 +257,12 @@ const styles = {
   },
   name: {
     textAlign: 'center',
-    color: '#fff',
     fontSize: 38,
     paddingTop: 30
   },
   phone: {
-    color: '#fff',
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'grey',
   },
   stats: {
     marginTop: 30,
@@ -274,8 +270,8 @@ const styles = {
   },
   stat: {
     textAlign: 'center',
-    color: '#fff',
     fontSize: 18,
+    color: 'grey',
     marginLeft: 15,
     marginRight: 15
   },
@@ -289,6 +285,7 @@ const styles = {
   },
   upgradeView: {
     backgroundColor: '#fff',
+    borderTopWidth: 1,
   },
   optionsView: {
     backgroundColor: '#fff',

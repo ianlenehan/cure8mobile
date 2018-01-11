@@ -277,7 +277,7 @@ class Card extends Component {
         <Button
           title='Update tags'
           backgroundColor='#27ae60'
-          buttonStyle={{ marginBottom: 10, width: 150, padding: 8 }}
+          buttonStyle={styles.updateTagsButton}
           fontSize={12}
           onPress={() => this.props.addTags(curation_id, selectedTags)}
         />
@@ -538,6 +538,12 @@ const styles = {
   smallTagStyle: {
     fontSize: 10,
     color: '#ccc',
+  },
+  updateTagsButton: {
+    marginBottom: 10,
+    width: 150,
+    padding: 8,
+    borderRadius: 5,
   }
 }
 
