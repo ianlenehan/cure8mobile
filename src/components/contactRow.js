@@ -7,14 +7,15 @@ const getRightTitle = (props) => {
     return (
       <View style={{ flexDirection: 'row' }}>
         <Icon
-          name='mode-edit'
-          color='#ddd'
+          name="mode-edit"
+          color="#ddd"
           onPress={props.onEditPress}
           containerStyle={{ paddingRight: 15 }}
         />
         <Icon
-          name='delete'
-          color='#ddd'
+          name="trash-o"
+          type="font-awesome"
+          color="#ddd"
           onPress={props.onDeletePress}
         />
       </View>
@@ -22,8 +23,9 @@ const getRightTitle = (props) => {
   } else if (props.editMode) {
     return (
       <Icon
-        name='delete'
-        color='#ddd'
+        name="trash-o"
+        type="font-awesome"
+        color="#ddd"
         onPress={props.onDeletePress}
       />
     )
@@ -42,12 +44,12 @@ const getRightTitle = (props) => {
 const formatName = (props) => {
   if (props.title && props.isMember) {
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <View style={{ flexDirection: "row" }}>
         <Text style={styles.title}>{props.title || ''}</Text>
         <Icon
           name="check-circle"
           size={14}
-          color={'#27ae60'}
+          color="#27ae60"
           containerStyle={{ marginTop: 4 }}
         />
       </View>
@@ -61,11 +63,11 @@ const ContactRow = (props) => {
   return (
     <TouchableWithoutFeedback onPress={() => onPress(contact)}>
       <View style={styles.card}>
-          <View style={styles.details}>
-            {formatName(props)}
-            <Text style={styles.subtitle}>{subtitle}</Text>
-            {getRightTitle(props)}
-          </View>
+        <View style={styles.details}>
+          {formatName(props)}
+          <Text style={styles.subtitle}>{subtitle}</Text>
+          {getRightTitle(props)}
+        </View>
       </View>
     </TouchableWithoutFeedback>
   )

@@ -9,10 +9,8 @@ const styles = {
     padding: 3,
     backgroundColor: '#ccc',
     margin: 4,
-    borderRadius: 20,
+    borderRadius: 15,
     marginBottom: 5,
-    borderWidth: 1,
-    borderColor: '#fff',
   },
   tag: {
     paddingRight: 6,

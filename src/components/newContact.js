@@ -36,15 +36,12 @@ class NewContact extends Component {
       // Contacts.PERMISSION_AUTHORIZED || Contacts.PERMISSION_UNDEFINED || Contacts.PERMISSION_DENIED
       if (permission === 'undefined') {
         Contacts.requestPermission((err, permission) => {
-          console.log('permission is? ', permission)
         })
       }
       if (permission === 'authorized') {
-        console.log('permission authorized')
         this.getPhoneContact()
       }
       if (permission === 'denied') {
-        console.log('permission denied')
       }
     })
   }

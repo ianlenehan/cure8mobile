@@ -105,9 +105,8 @@ class LinkView extends Component {
 
     const linksCount = filteredByStatus.length
     let allLinks = filteredByStatus
-    if (!isMember) {
+    if (!isMember && !__DEV__) {
       allLinks = filteredByStatus.splice(-5)
-      // allLinks = filteredByStatus //for local testing
       if (allLinks.length === 5) { this.membershipAlert() }
     }
 
@@ -132,7 +131,7 @@ class LinkView extends Component {
 
   shareLink(link) {
     const atMaxLinks = this.state.links.length >= 5
-    if (!this.props.isMember && atMaxLinks) {
+    if (!this.props.isMember && atMaxLinks && !__DEV__) {
       Alert.alert(
         'Sorry!',
         "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Settings screen."
@@ -171,14 +170,14 @@ class LinkView extends Component {
     const { filterTerms } = this.state
     const tags = this.props.tags.sort()
     return tags.map(tag => {
-      const tagColour = filterTerms.includes(tag) ? '#fff' : '#27ae60'
-      const fontColour = filterTerms.includes(tag) ? '#27ae60' : '#fff'
+      const tagColour = filterTerms.includes(tag) ? '#27ae60' : '#fff'
+      const fontColour = filterTerms.includes(tag) ? '#fff' : '#27ae60'
       return (
         <Tag
           key={tag}
           tag={tag}
           onPress={this.filterByTag.bind(this)}
-          style={{ backgroundColor: tagColour }}
+          style={{ backgroundColor: tagColour, borderColor: fontColour, borderWidth: 1 }}
           tagStyle={{ color: fontColour }}
         />
       )
@@ -209,7 +208,7 @@ class LinkView extends Component {
             size={24}
             containerStyle={{ margin: 5 }}
             name='cancel'
-            color='#fff'
+            color='#ddd'
             onPress={this.resetLinks}
           />
         </View>
@@ -275,7 +274,7 @@ const styles = {
     justifyContent: 'center'
   },
   tagList: {
-    backgroundColor: '#27ae60',
+    backgroundColor: '#fff',
     flexDirection: 'row',
   }
 }

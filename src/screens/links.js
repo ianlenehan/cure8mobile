@@ -39,7 +39,7 @@ class Links extends Component {
           onPress={
             async () => {
               const limitReached = await AsyncStorage.getItem('limitReached')
-              if (limitReached) {
+              if (limitReached && !__DEV__) {
                 Alert.alert('Sorry!', "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Settings screen.")
               } else {
                 navigate('addLink')
