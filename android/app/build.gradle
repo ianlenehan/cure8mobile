@@ -148,6 +148,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-default-preference')
     compile project(':react-native-onesignal')
     compile project(':react-native-custom-tabs')
     compile project(':react-native-vector-icons')

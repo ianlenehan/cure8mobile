@@ -3,6 +3,7 @@ package com.cure8mobile;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNDefaultPreferencePackage;
 import com.geektime.rnonesignalandroid.ReactNativeOneSignalPackage;
 import com.github.droibit.android.reactnative.customtabs.CustomTabsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNDefaultPreferencePackage(),
             new ReactNativeOneSignalPackage(),
             new CustomTabsPackage(),
             new VectorIconsPackage(),
