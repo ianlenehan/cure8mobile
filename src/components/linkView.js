@@ -99,7 +99,9 @@ class LinkView extends Component {
 
   async filterLinks(links = this.props.links) {
     const { status, isMember } = this.props
-    const filteredByStatus = links.filter((link) => {
+    const sortedLinks = this.sortLinks(links)
+
+    const filteredByStatus = sortedLinks.filter((link) => {
       return link.status === status
     })
 
@@ -115,6 +117,12 @@ class LinkView extends Component {
       res = this.filterByTags(allLinks)
     }
     this.setState({ links: res })
+  }
+
+  sortLinks(links) {
+    return links.sort((a, b) => {
+      return new Date(b.date_added) - new Date(a.date_added)
+    })
   }
 
   archiveLink = (id, rating, tags = []) => {

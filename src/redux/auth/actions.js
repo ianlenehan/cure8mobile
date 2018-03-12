@@ -17,6 +17,9 @@ import {
 } from '../types'
 import rootURL from '../../../environment'
 
+const apiNamespace = 'v1/'
+const apiUrl = `${rootURL}${apiNamespace}`
+
 const formatPhone = (phone, callingCode) => {
   const numbersOnly = Number(phone.replace(/[^\d]/g, ''))
   return `+${callingCode}${numbersOnly}`
@@ -61,7 +64,7 @@ export const getTemporaryCode = (formattedPhone) => {
   return (dispatch) => {
     dispatch({ type: CODE_REQUESTED })
 
-    axios.post(`${rootURL}users/request`, { user: { phone: formattedPhone } })
+    axios.post(`${apiUrl}users/request`, { user: { phone: formattedPhone } })
       .then((res) => {
         if (res.data.status === 200) {
           dispatch({
@@ -88,7 +91,7 @@ export const logUserIn = ({ formattedPhone, code }) => {
   return (dispatch) => {
     dispatch({ type: LOGIN_USER })
 
-    axios.post(`${rootURL}login`, { user: { phone: formattedPhone, code } })
+    axios.post(`${apiUrl}login`, { user: { phone: formattedPhone, code } })
       .then((res) => {
         if (res.data.status === 200) {
           loginUserSuccess(dispatch, res)
@@ -105,7 +108,7 @@ export const logUserIn = ({ formattedPhone, code }) => {
 
 export const logUserOut = (token) => {
   return (dispatch) => {
-    axios.post(`${rootURL}logout`, { user: { token } })
+    axios.post(`${apiUrl}logout`, { user: { token } })
       .then(() => {
         dispatch({ type: LOGGED_OUT })
       })
@@ -120,7 +123,7 @@ export const createAccount = ({ formattedPhone, code, firstName, lastName }) => 
     return (dispatch) => {
       dispatch({ type: LOGIN_USER })
 
-      axios.post(`${rootURL}login`, {
+      axios.post(`${apiUrl}login`, {
         user: {
           phone: formattedPhone,
           code,

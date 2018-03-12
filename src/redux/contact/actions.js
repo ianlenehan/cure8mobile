@@ -9,6 +9,9 @@ import {
 } from '../types'
 import rootURL from '../../../environment'
 
+const apiNamespace = 'v1/'
+const apiUrl = `${rootURL}${apiNamespace}`
+
 export const nameChanged = (name) => {
   return {
     type: NAME_CHANGED,
@@ -21,7 +24,7 @@ export const saveGroup = (name, contacts, token) => {
     return (dispatch) => {
       dispatch({ type: GET_CONTACTS })
 
-      axios.post(`${rootURL}groups/create`, {
+      axios.post(`${apiUrl}groups/create`, {
         group: { name, members: contacts }, user: { token },
       })
         .then(res => {
@@ -51,7 +54,7 @@ export const updateGroup = (id, name, contacts, token) => {
     return (dispatch) => {
       dispatch({ type: GET_CONTACTS })
 
-      axios.post(`${rootURL}groups/update`, {
+      axios.post(`${apiUrl}groups/update`, {
         group: { id, name, members: contacts }, user: { token },
       })
         .then(res => {
@@ -80,7 +83,7 @@ export const saveContact = (name, phone, token) => {
   return (dispatch) => {
     dispatch({ type: GET_CONTACTS })
 
-    axios.post(`${rootURL}contacts/create`, {
+    axios.post(`${apiUrl}contacts/create`, {
       contact: { phone, name }, user: { token },
     })
       .then(res => {
@@ -103,7 +106,7 @@ export const getContacts = (token) => {
   return (dispatch) => {
     dispatch({ type: GET_CONTACTS })
 
-    axios.post(`${rootURL}user/contacts`, { user: { token } })
+    axios.post(`${apiUrl}user/contacts`, { user: { token } })
       .then(res => {
         if (res.data.status === 200) {
           dispatch({
@@ -124,7 +127,7 @@ export const deleteContact = (contact, token) => {
   return (dispatch) => {
     dispatch({ type: GET_CONTACTS })
 
-    axios.post(`${rootURL}user/contacts/delete`, {
+    axios.post(`${apiUrl}user/contacts/delete`, {
       user: { token },
       contact: { id: contact.id },
     })
