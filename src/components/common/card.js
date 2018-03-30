@@ -22,6 +22,7 @@ import Tag from './tag'
 import CardSection from './cardSection'
 import Spinner from './spinner'
 import Input from './input'
+import RatingIcons from './ratingIcons'
 
 class Card extends Component {
   constructor(props) {
@@ -341,53 +342,26 @@ class Card extends Component {
     }
   }
 
-  renderThumbsDownIcon(owner, curation) {
-    if (owner.phone !== this.state.phone) {
-      return(
-        <Icon
-          size={24}
-          containerStyle={{ margin: 5 }}
-          name='thumb-down'
-          color='#e67e22'
-          onPress={() => this.props.archiveLink(curation, 0)}
-        />
-      )
-    }
+  renderAllIcons(owner, curation) {
+    return owner.phone === this.state.phone
   }
 
   renderIcons(curation, owner, rating) {
     const { archiveMode } = this.props
     const { tags, selectedTags } = this.state
+    const renderAll = this.renderAllIcons(owner, curation)
     if (archiveMode.curation === curation) {
       return (
-        <View>
-          <View style={{ flex: 1 }}>
-            <ScrollView
-              style={{ flex: 1 }}
-              horizontal
-              >
-              {this.renderTags()}
-            </ScrollView>
-          </View>
-          {this.addTagInput()}
-          <View style={styles.icons}>
-            <Icon
-              size={24}
-              containerStyle={{ margin: 5 }}
-              name='thumb-up'
-              color='#3498db'
-              onPress={() => this.props.archiveLink(curation, 1, selectedTags)}
-            />
-          {this.renderThumbsDownIcon(owner, curation)}
-            <Icon
-              size={24}
-              containerStyle={{ margin: 5 }}
-              name='cancel'
-              color='#ccc'
-              onPress={() => this.props.onArchivePress(null)}
-            />
-          </View>
-        </View>
+        <RatingIcons
+          renderTags={this.renderTags.bind(this)}
+          curation={curation}
+          addTagInput={this.addTagInput.bind(this)}
+          archiveLink={this.props.archiveLink.bind(this)}
+          owner={owner}
+          selectedTags={selectedTags}
+          renderAllIcons={renderAll}
+          onArchivePress={this.props.onArchivePress.bind(this)}
+        />
       )
     }
     return this.renderMainIcons(curation, owner, rating)
