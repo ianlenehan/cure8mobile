@@ -343,7 +343,7 @@ class Card extends Component {
   }
 
   renderAllIcons(owner, curation) {
-    return owner.phone === this.state.phone
+    return owner.phone !== this.state.phone
   }
 
   renderIcons(curation, owner, rating) {

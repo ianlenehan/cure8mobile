@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, ScrollView } from 'react-native'
 import { Icon } from 'react-native-elements'
 import EmojiButton from './emoji-button'
-import ratings from '../../../helpers/ratings'
+import { ratings } from '../../../helpers/ratings'
 
 class RatingIcons extends Component {
   constructor() {
@@ -11,7 +11,7 @@ class RatingIcons extends Component {
   }
 
   render() {
-    const { curation, owner, selectedTags } = this.props
+    const { curation, selectedTags } = this.props
     return (
       <View>
         <View style={styles.icons}>
