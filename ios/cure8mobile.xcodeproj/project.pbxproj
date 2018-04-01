@@ -40,6 +40,8 @@
 		2DCD954D1E0B4F2C00145EB5 /* cure8mobileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* cure8mobileTests.m */; };
 		3162F678D3D84C0AB79DE13E /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ABC220F6366C42D5B29AC447 /* Zocial.ttf */; };
 		33177E1609C34D47924A7B3D /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D8D1AA4D9DD49CFADC9FDEE /* SimpleLineIcons.ttf */; };
+		3C55981A20327B76006FE2C2 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06929FA31F8B8E03006CE897 /* Media.xcassets */; };
+		3C55981B2032CE30006FE2C2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3C69498C20196FAB00DA0D34 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C69498B20196FAB00DA0D34 /* ShareViewController.swift */; };
 		3C69498F20196FAB00DA0D34 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C69498D20196FAB00DA0D34 /* MainInterface.storyboard */; };
 		3C69499320196FAB00DA0D34 /* cure8Share.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3C69498920196FAB00DA0D34 /* cure8Share.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -1475,7 +1477,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C55981B2032CE30006FE2C2 /* Images.xcassets in Resources */,
 				3C69498F20196FAB00DA0D34 /* MainInterface.storyboard in Resources */,
+				3C55981A20327B76006FE2C2 /* Media.xcassets in Resources */,
 				3C6949C32019703400DA0D34 /* GetURL.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

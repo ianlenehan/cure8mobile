@@ -13,7 +13,7 @@ import MobileCoreServices
 class ShareViewController: SLComposeServiceViewController {
   
   var urlToPost : String = "something"
-  var token : String = "none"
+  var userToken : String = "none"
 
     override func isContentValid() -> Bool {
         // Do validation of contentText and/or NSExtensionContext attachments here
@@ -33,11 +33,10 @@ class ShareViewController: SLComposeServiceViewController {
     }
   
     override func viewDidLoad() {
-      let defaults = UserDefaults.standard
-      let name = defaults.string(forKey: "authToken")
+      setupUI()
       if let userDefaults = UserDefaults(suiteName: "group.cure8.cure8app") {
-        let value1 = userDefaults.string(forKey: "authToken")
-        print("retrieved token value\(value1)")
+        let token = userDefaults.string(forKey: "authToken")
+        self.userToken = token!
       } else {
         print("no token value")
       }
@@ -50,10 +49,8 @@ class ShareViewController: SLComposeServiceViewController {
           guard let dictionary = item as? NSDictionary else { return }
           OperationQueue.main.addOperation {
             if let results = dictionary[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary,
-              let urlString = results["URL"] as? String,
-              let url = NSURL(string: urlString) {
+              let urlString = results["URL"] as? String {
               self.urlToPost = urlString
-              print("URL retrieved: \(url)")
             }
           }
         })
@@ -62,14 +59,22 @@ class ShareViewController: SLComposeServiceViewController {
       }
     }
   
-  func postToApi() {
+  private func setupUI() {
+    let imageView = UIImageView(image: UIImage(named: "logo_clear_share_ex"))
+    imageView.contentMode = .scaleAspectFit
+    navigationItem.titleView = imageView
+    navigationController?.navigationBar.topItem?.titleView = imageView
+    navigationController?.navigationBar.tintColor = .white
+    navigationController?.navigationBar.backgroundColor = UIColor(red:0.153, green:0.682, blue:0.376, alpha:1.00)
+  }
+  
+  private func postToApi() {
     let url = URL(string: "https://cure8.herokuapp.com/api/v1/links/share_extension")
-//    let url = URL(string: "http://localhost:3000/api/v1/links/share_extension")
     var request = URLRequest(url: url!)
     request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "POST"
     
-    let postString = "phone=+61410872627&url=\(urlToPost)"
+    let postString = "token=\(userToken)&url=\(urlToPost)"
     request.httpBody = postString.data(using: .utf8)
     
     let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -87,8 +92,6 @@ class ShareViewController: SLComposeServiceViewController {
       print("responseString = \(String(describing: responseString))")
     }
     task.resume()
-      
-    print("URL is: \(postString)")
   }
 
 }
