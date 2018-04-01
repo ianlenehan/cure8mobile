@@ -9,6 +9,7 @@ import {
   commentChanged,
   categoryChanged
 } from '../redux/link/actions'
+import { getUserInfo }  from '../redux/user/actions'
 import ContactPickList from '../components/contactPickList'
 import Input from '../components/common/input'
 
@@ -63,14 +64,15 @@ class AddLink extends Component {
     }
   }
 
-  saveLink = () => {
+  saveLink = async () => {
     const { url, comment } = this.props
     const { saveToMyLinks, token, selectedContacts, enteredNumber } = this.state
     let contacts = selectedContacts
     if (enteredNumber.length) { contacts = [enteredNumber] }
     this.props.urlChanged('')
     this.props.commentChanged('')
-    this.props.createLink({ url, comment, contacts, saveToMyLinks, token })
+    await this.props.createLink({ url, comment, contacts, saveToMyLinks, token })
+    await this.props.getUserInfo(token)
     this.props.navigation.goBack()
   }
 
@@ -196,5 +198,9 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, {
-  urlChanged, commentChanged, categoryChanged, createLink,
+  urlChanged,
+  commentChanged,
+  categoryChanged,
+  createLink,
+  getUserInfo,
 })(AddLink)

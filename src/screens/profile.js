@@ -21,7 +21,7 @@ class Profile extends Component {
     }
   }
 
-  state = { token: null , readerMode: 'on', inAppPurchase: null, membership: null }
+  state = { token: null , readerMode: 'on', inAppPurchase: null, subscriptionType: null }
 
   componentDidMount() {
     this.loadInAppPurchaseProducts()
@@ -30,10 +30,10 @@ class Profile extends Component {
 
   async setStateVariables() {
     const token = await AsyncStorage.getItem('token')
-    const membership = await AsyncStorage.getItem('membership')
     const readerModeFromStorage = await AsyncStorage.getItem('readerMode')
     const readerMode = readerModeFromStorage || 'on'
-    this.setState({ token, membership, readerMode })
+    const subscriptionType = this.props.info.subscription_type
+    this.setState({ token, subscriptionType, readerMode })
     this.props.getUserInfo(token)
   }
 
@@ -69,6 +69,7 @@ class Profile extends Component {
   }
 
   upgradeHelp = () => {
+    const { token } = this.state
     Alert.alert(
       'Why purchase the full version?',
       'The free version of this app allows you to create and receive five curations. The full version removes these restrictions. Press "Restore" if you have already upgraded the app.',
@@ -88,8 +89,8 @@ class Profile extends Component {
 
               response.forEach(async (purchase) => {
                 if (purchase.productIdentifier === 'com.cure8.cure8app.premium') {
-                  this.setState({ membership: 'premium' })
-                  await AsyncStorage.setItem('membership', 'premium')
+                  this.props.updateUser(token, 'unlimited', 'subscription_type', this.props.info)
+                  this.setState({ subscriptionType: 'unlimited' })
                   await AsyncStorage.removeItem('limitReached')
                   this.props.getUserInfo(this.state.token)
                 }
@@ -101,15 +102,14 @@ class Profile extends Component {
     )
   }
 
-  upgradeMembership = () => {
+  upgradeSubscription = () => {
     const { identifier } = this.state.inAppPurchase
     NativeModules.InAppUtils.purchaseProduct(identifier, async (error, response) => {
       if(response && response.productIdentifier) {
-        this.setState({ membership: 'premium' })
+        this.setState({ subscriptionType: 'unlimited' })
         Alert.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier)
-        await AsyncStorage.setItem('membership', 'premium')
+        await this.props.updateUser(token, 'unlimited', 'subscription_type', this.props.info)
         await AsyncStorage.removeItem('limitReached')
-        this.props.getUserInfo(this.state.token)
         this.props.isUserAMember()
       }
     })
@@ -148,9 +148,9 @@ class Profile extends Component {
   }
 
   renderUpgradeButton() {
-    const { inAppPurchase, membership } = this.state
+    const { inAppPurchase, subscriptionType } = this.state
     const isIOS = Platform.OS === 'ios'
-    if (inAppPurchase && !membership && isIOS) {
+    if (inAppPurchase && !subscriptionType && isIOS) {
       return (
         <View style={[styles.upgradeView, styles.switchView]}>
           <View style={{ flexDirection: 'row' }}>
@@ -170,7 +170,7 @@ class Profile extends Component {
             backgroundColor='#27ae60'
             buttonStyle={styles.buyButton}
             borderRadius={5}
-            onPress={this.upgradeMembership}
+            onPress={this.upgradeSubscription}
           />
         </View>
       )
@@ -201,7 +201,7 @@ class Profile extends Component {
               onValueChange={(val) => this.toggleSwitch(val, 'getRatingNotifications')}
               />
           </View>
-          <View style={styles.switchView}>
+          <View style={[styles.switchView, { borderBottomWidth: 1 }]}>
             <Text style={styles.options}>New Curation Notifications</Text>
             <Switch
               tintColor='#dcdcdc'
@@ -281,7 +281,7 @@ const styles = {
     alignItems: 'center',
     padding: 5,
     borderColor: '#ddd',
-    borderBottomWidth: 1,
+    borderTopWidth: 1,
   },
   upgradeView: {
     backgroundColor: '#fff',
