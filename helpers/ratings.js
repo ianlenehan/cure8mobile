@@ -12,4 +12,5 @@ export const ratingValues = {
   3: 'joy',
   4: 'cry',
   5: 'angry',
+  0: '-1',
 }

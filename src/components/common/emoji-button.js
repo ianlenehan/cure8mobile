@@ -3,7 +3,6 @@ import { TouchableWithoutFeedback, Text, View } from 'react-native'
 import Emoji from 'react-native-emoji'
 
 const EmojiButton = (props) => {
-  console.log('render', props.render)
   if (props.render) {
     return (
       <TouchableWithoutFeedback

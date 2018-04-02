@@ -98,8 +98,9 @@ class LinkView extends Component {
   }
 
   async filterLinks(links = this.props.links) {
-    const { status, isMember } = this.props
+    const { status, userInfo } = this.props
     const sortedLinks = this.sortLinks(links)
+    const isMember = !!userInfo.subscription_type
 
     const filteredByStatus = sortedLinks.filter((link) => {
       return link.status === status
@@ -289,9 +290,9 @@ const styles = {
 
 const mapStateToProps = ({ link, user }) => {
   const { archiveMode, links, loading } = link
-  const { isMember } = user
+  const { info: userInfo } = user
   const { tags } = user.info
-  return { archiveMode, links, loading, tags, isMember }
+  return { archiveMode, links, loading, tags, userInfo }
 }
 
 export default connect(mapStateToProps, {

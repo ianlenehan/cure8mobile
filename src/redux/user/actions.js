@@ -80,19 +80,3 @@ export const getUserActivity = (token) => {
     })
   }
 }
-
-export const isUserAMember = () => {
-  return async (dispatch) => {
-    const membership = await AsyncStorage.getItem('membership')
-    const isIOS = Platform.OS === 'ios'
-    let isAMember = !!membership
-    if (!isIOS) {
-      isAMember = true
-    }
-    if (isAMember) await AsyncStorage.removeItem('limitReached')
-    dispatch({
-      type: types.GOT_MEMBERSHIP,
-      payload: isAMember,
-    })
-  }
-}

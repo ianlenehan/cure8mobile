@@ -29,6 +29,11 @@ class Activity extends Component {
     }
   }
 
+  constructor() {
+    super()
+    this.ratingValues = ratingValues
+  }
+
   formatDate(date) {
     const currentDate = moment()
     return moment(date).local().from(currentDate)
@@ -47,11 +52,12 @@ class Activity extends Component {
   }
 
   getRatingIcon(item) {
-    const name = ratingValues[item.rating]
+    const name = this.ratingValues[item.rating]
 
     return (
       <EmojiButton
         name={name}
+        render
       />
     )
   }

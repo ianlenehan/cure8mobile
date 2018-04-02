@@ -11,7 +11,7 @@ import {
 import { Icon, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 
-import { getUserInfo, updateUser, isUserAMember } from '../redux/user/actions'
+import { getUserInfo, updateUser } from '../redux/user/actions'
 import { logUserOut } from '../redux/auth/actions'
 
 class Profile extends Component {
@@ -110,7 +110,6 @@ class Profile extends Component {
         Alert.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier)
         await this.props.updateUser(token, 'unlimited', 'subscription_type', this.props.info)
         await AsyncStorage.removeItem('limitReached')
-        this.props.isUserAMember()
       }
     })
   }
@@ -317,5 +316,4 @@ export default connect(mapStateToProps, {
   getUserInfo,
   updateUser,
   logUserOut,
-  isUserAMember
 })(Profile)

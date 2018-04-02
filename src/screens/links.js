@@ -15,7 +15,7 @@ import OneSignal from 'react-native-onesignal'
 import { Toast } from 'native-base'
 
 import { getLinks, toastDisplayed } from '../redux/link/actions'
-import { getUserInfo, updateUser, getUserActivity, isUserAMember } from '../redux/user/actions'
+import { getUserInfo, updateUser, getUserActivity } from '../redux/user/actions'
 import { getContacts } from '../redux/contact/actions'
 import LinkView from '../components/linkView'
 import Spinner from '../components/common/spinner'
@@ -94,7 +94,6 @@ class Links extends Component {
     this.props.getContacts(token)
     this.props.getUserInfo(token)
     this.props.getUserActivity(token)
-    this.props.isUserAMember()
   }
 
   checkNotificationStatus = async (status) => {
@@ -182,6 +181,5 @@ export default connect(mapStateToProps, {
   getUserInfo,
   updateUser,
   getUserActivity,
-  isUserAMember,
   toastDisplayed,
 })(Links)

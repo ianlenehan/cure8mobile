@@ -293,7 +293,7 @@ class Card extends Component {
         <View style={{ alignItems: 'center' }}>
           <View style={{ flexDirection: 'row', margin: 10 }}>
             <Input
-              placeholder='type to add new tag'
+              placeholder="type to add new tag and then press '+'"
               style={{ flex: 1, fontSize: 12, height: 30 }}
               onChangeText={this.tagSearch}
               value={this.state.tagSearchQuery}
