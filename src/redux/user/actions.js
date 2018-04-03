@@ -48,17 +48,17 @@ export const getUserInfo = (token) => {
     axios.post(`${apiUrl}user/info`, {
       user: { token },
     })
-    .then(res => {
-      if (res.data.status === 200) {
-        dispatch({
-          type: types.GOT_INFO,
-          payload: res.data
-        })
-      }
-    })
-    .catch(err => {
-      console.log(err)
-    })
+      .then(res => {
+        if (res.data.status === 200) {
+          dispatch({
+            type: types.GOT_INFO,
+            payload: res.data
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 
@@ -67,16 +67,16 @@ export const getUserActivity = (token) => {
     axios.post(`${apiUrl}user/activity`, {
       user: { token },
     })
-    .then(res => {
-      if (res.data.status === 200) {
-        dispatch({
-          type: types.GOT_ACTIVITY,
-          payload: res.data.data
-        })
-      }
-    })
-    .catch(err => {
-      console.log(err)
-    })
+      .then(res => {
+        if (res.data.status === 200) {
+          dispatch({
+            type: types.GOT_ACTIVITY,
+            payload: res.data.data
+          })
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 }

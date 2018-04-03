@@ -8,7 +8,8 @@ import {
   RefreshControl,
   AsyncStorage,
   Alert,
-  Platform
+  Platform,
+  NativeModules,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
@@ -22,7 +23,7 @@ import {
   getLinks,
   addTags
 } from '../redux/link/actions'
-import { getUserInfo } from '../redux/user/actions'
+import { getUserInfo, updateUser } from '../redux/user/actions'
 import Card from './common/card'
 import Tag from './common/tag'
 
@@ -62,6 +63,10 @@ class LinkView extends Component {
     if (nextProps.tags) {
       this.setState({ tags: nextProps.tags })
     }
+
+    if (nextProps.userInfo.subscription_type) {
+      this.filterLinks(this.props.link, nextProps.userInfo)
+    }
   }
 
   async onRefresh() {
@@ -87,21 +92,46 @@ class LinkView extends Component {
     this.props.setArchiveMode(curation, action)
   }
 
-  async membershipAlert() {
-    await AsyncStorage.setItem('limitReached', 'true')
-    Toast.show({
-      text: "Thanks for trying Cure8! This is the free version of the app and you won't see more than 5 links until you upgrade. You can do this from the Settings screen.",
-      position: 'bottom',
-      buttonText: 'OK',
-      type: 'warning',
+  restorePurchase = () => {
+    NativeModules.InAppUtils.restorePurchases((error, response) => {
+      if(error) {
+        Alert.alert('iTunes Error', 'Could not connect to iTunes store.')
+      } else {
+        Alert.alert('Restore Successful', 'Successfully restored your purchase.')
+
+        if (response.length === 0) {
+          Alert.alert('No Purchases', "We couldn't find any purchases to restore.")
+          return
+        }
+
+        response.forEach(async (purchase) => {
+          if (purchase.productIdentifier === 'com.cure8.cure8app.premium') {
+            await this.props.updateUser(this.state.token, 'unlimited', 'subscription_type', this.props.userInfo)
+            AsyncStorage.setItem('subscriptionType', 'unlimited')
+            await AsyncStorage.removeItem('limitReached')
+            this.props.getUserInfo(this.state.token)
+          }
+        })
+      }
     })
   }
 
-  async filterLinks(links = this.props.links) {
-    const { status, userInfo } = this.props
+  async membershipAlert() {
+    await AsyncStorage.setItem('limitReached', 'true')
+    Alert.alert(
+      'Sorry!',
+      "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Settings screen. Or tap Restore below if you have already purchased.",
+      [
+        {text: 'OK'},
+        {text: 'Restore', onPress: () => this.restorePurchase()},
+      ]
+    )
+  }
+
+  async filterLinks(links = this.props.links, userInfo = this.props.userInfo) {
+    const { status } = this.props
     const sortedLinks = this.sortLinks(links)
     const isMember = !!userInfo.subscription_type
-
     const filteredByStatus = sortedLinks.filter((link) => {
       return link.status === status
     })
@@ -141,10 +171,7 @@ class LinkView extends Component {
   shareLink(link) {
     const atMaxLinks = this.state.links.length >= 5
     if (!this.props.isMember && atMaxLinks && !__DEV__) {
-      Alert.alert(
-        'Sorry!',
-        "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Settings screen."
-      )
+      this.membershipAlertDialog()
     } else {
       this.props.navigate('addLink', { url: link.url })
     }
@@ -302,5 +329,6 @@ export default connect(mapStateToProps, {
   shareLink,
   setArchiveMode,
   getUserInfo,
-  addTags
+  addTags,
+  updateUser,
 })(LinkView)

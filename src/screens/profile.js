@@ -89,8 +89,9 @@ class Profile extends Component {
 
               response.forEach(async (purchase) => {
                 if (purchase.productIdentifier === 'com.cure8.cure8app.premium') {
-                  this.props.updateUser(token, 'unlimited', 'subscription_type', this.props.info)
+                  await this.props.updateUser(token, 'unlimited', 'subscription_type', this.props.info)
                   this.setState({ subscriptionType: 'unlimited' })
+                  AsyncStorage.setItem('subscriptionType', 'unlimited')
                   await AsyncStorage.removeItem('limitReached')
                   this.props.getUserInfo(this.state.token)
                 }
@@ -107,6 +108,7 @@ class Profile extends Component {
     NativeModules.InAppUtils.purchaseProduct(identifier, async (error, response) => {
       if(response && response.productIdentifier) {
         this.setState({ subscriptionType: 'unlimited' })
+        AsyncStorage.setItem('subscriptionType', 'unlimited')
         Alert.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier)
         await this.props.updateUser(token, 'unlimited', 'subscription_type', this.props.info)
         await AsyncStorage.removeItem('limitReached')
