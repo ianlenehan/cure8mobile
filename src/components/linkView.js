@@ -38,21 +38,25 @@ class LinkView extends Component {
       readerMode: 'on',
       filterTerms: [],
       tags: [],
-      morePressed: null
+      morePressed: null,
+      isMember: true,
     }
   }
 
   async componentDidMount() {
+    const membership = await AsyncStorage.getItem('membership')
+    const token = await AsyncStorage.getItem('token')
+    this.setState({ isMember: !!membership, token })
     this.filterLinks()
     this.checkReaderMode()
-    const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
     this.props.getUserInfo(token)
+    if (!membership && this.props.links.length === 5 && !__DEV__) {
+      this.membershipAlert()
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     this.checkReaderMode()
-
     if (nextProps.links && this.props.links) {
       if (!_.isEqual(nextProps.links, this.props.links)) {
         this.filterLinks(nextProps.links)
@@ -65,7 +69,7 @@ class LinkView extends Component {
     }
 
     if (nextProps.userInfo.subscription_type) {
-      this.filterLinks(this.props.link, nextProps.userInfo)
+      this.setState({ isMember: true })
     }
   }
 
@@ -93,27 +97,32 @@ class LinkView extends Component {
   }
 
   restorePurchase = () => {
-    NativeModules.InAppUtils.restorePurchases((error, response) => {
-      if(error) {
-        Alert.alert('iTunes Error', 'Could not connect to iTunes store.')
-      } else {
-        Alert.alert('Restore Successful', 'Successfully restored your purchase.')
+    if (this.state.isMember) {
+      AsyncStorage.setItem('subscriptionType', 'unlimited')
+    } else {
+      NativeModules.InAppUtils.restorePurchases((error, response) => {
+        if(error) {
+          Alert.alert('iTunes Error', 'Could not connect to iTunes store.')
+        } else {
+          Alert.alert('Restore Successful', 'Successfully restored your purchase.')
 
-        if (response.length === 0) {
-          Alert.alert('No Purchases', "We couldn't find any purchases to restore.")
-          return
-        }
-
-        response.forEach(async (purchase) => {
-          if (purchase.productIdentifier === 'com.cure8.cure8app.premium') {
-            await this.props.updateUser(this.state.token, 'unlimited', 'subscription_type', this.props.userInfo)
-            AsyncStorage.setItem('subscriptionType', 'unlimited')
-            await AsyncStorage.removeItem('limitReached')
-            this.props.getUserInfo(this.state.token)
+          if (response.length === 0) {
+            Alert.alert('No Purchases', "We couldn't find any purchases to restore.")
+            return
           }
-        })
-      }
-    })
+
+          response.forEach(async (purchase) => {
+            if (purchase.productIdentifier === 'com.cure8.cure8app.premium') {
+              await this.props.updateUser(this.state.token, 'unlimited', 'subscription_type', this.props.userInfo)
+              await AsyncStorage.setItem('subscriptionType', 'unlimited')
+              await AsyncStorage.removeItem('limitReached')
+              this.props.getLinks(this.state.token)
+              this.setState({ isMember: true })
+            }
+          })
+        }
+      })
+    }
   }
 
   async membershipAlert() {
@@ -128,20 +137,15 @@ class LinkView extends Component {
     )
   }
 
-  async filterLinks(links = this.props.links, userInfo = this.props.userInfo) {
+  filterLinks(links = this.props.links, userInfo = this.props.userInfo) {
     const { status } = this.props
     const sortedLinks = this.sortLinks(links)
-    const isMember = !!userInfo.subscription_type
     const filteredByStatus = sortedLinks.filter((link) => {
       return link.status === status
     })
 
     const linksCount = filteredByStatus.length
     let allLinks = filteredByStatus
-    if (!isMember && !__DEV__) {
-      allLinks = filteredByStatus.splice(-5)
-      if (allLinks.length === 5) { this.membershipAlert() }
-    }
 
     let res = allLinks
     if (this.state.filterTerms.length) {
@@ -170,7 +174,7 @@ class LinkView extends Component {
 
   shareLink(link) {
     const atMaxLinks = this.state.links.length >= 5
-    if (!this.props.isMember && atMaxLinks && !__DEV__) {
+    if (!this.state.isMember && atMaxLinks && !__DEV__) {
       this.membershipAlertDialog()
     } else {
       this.props.navigate('addLink', { url: link.url })
@@ -268,6 +272,7 @@ class LinkView extends Component {
         readerMode={this.state.readerMode}
         tags={this.state.tags}
         addTags={this.addTags.bind(this)}
+        userPhone={this.props.userInfo.phone}
       />
     )
   }
@@ -281,7 +286,7 @@ class LinkView extends Component {
           data={this.state.links}
           extraData={this.props}
           renderItem={this.renderItem}
-          keyExtractor={item => item.curation_id}
+          keyExtractor={item => item.curation_id.toString()}
           removeClippedSubviews={false}
           archiveMode={this.props.archiveMode}
           refreshControl={

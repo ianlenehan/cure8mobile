@@ -38,7 +38,7 @@ class ContactPickList extends Component {
           renderItem={this.renderItem.bind(this)}
           renderSectionHeader={this.renderSectionHeader.bind(this)}
           editMode={this.props.editMode}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
           removeClippedSubviews={false}
         />
       )

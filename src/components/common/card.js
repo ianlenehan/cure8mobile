@@ -29,32 +29,31 @@ class Card extends Component {
     super(props)
 
     this.state = {
-      alertMsgCurator: null,
       phone: null,
       tags: [],
       selectedTags: [],
-      tagSearchQuery: ''
+      tagSearchQuery: '',
+      expandMoreAlerted: false,
     }
   }
 
   async componentDidMount() {
-    const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
-    const phone = await AsyncStorage.getItem('currentUserPhone')
-    this.setState({
-      alertMsgCurator,
-      phone
-    })
-
     if (this.props.link.status === 'archived') {
       const tags = this.props.link.tags.map(tag => tag.name)
       this.setState({ selectedTags: [...tags, ...this.state.selectedTags] })
     }
+
+    const expandMoreAlerted = await AsyncStorage.getItem('expandeMoreAlerted')
+    this.setState({ expandMoreAlerted })
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.tags && nextProps.tags.length) {
       tags = nextProps.tags.sort()
       this.setState({ tags })
+    }
+    if (nextProps.userPhone) {
+      this.setState({ phone: this.props.userPhone })
     }
   }
 
@@ -68,12 +67,13 @@ class Card extends Component {
   }
 
   messageOwner = async (phone, name) => {
+    const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
     if (name === 'Cure8') {
       Alert.alert('Sample Link', 'For links your friends curate for you, you will be able to message them with this button to comment on the link.')
     } else {
       const { title } = this.props.link
       Clipboard.setString(`Re: "${title}" from Cure8.`)
-      if (!this.state.alertMsgCurator) {
+      if (!alertMsgCurator) {
         Alert.alert(
           'Did you know?',
           'From here, pressing paste into your message app will add the curated link title to your message.',
@@ -93,7 +93,12 @@ class Card extends Component {
     this.props.onArchivePress(null)
   }
 
-  expandMore = (curation) => {
+  expandMore = async (curation) => {
+    if (!this.state.expandMoreAlerted) {
+      Alert.alert('How does this work?', 'Pressing on Delete or Archive will ask you to rate the curation for your friend. Add a tag when Archiving if you wish, and then press the Thumbs Up or any other emoji to finish deleting or archiving the curation.')
+      await AsyncStorage.setItem('expandMoreAlerted', 'alerted')
+      this.setState({ expandMoreAlerted: 'alerted' })
+    }
     this.props.onDrawerPress(curation)
   }
 
@@ -127,7 +132,6 @@ class Card extends Component {
   }
 
   onArchivePress(owner, curation, action) {
-    console.log('owner is', owner)
     const { selectedTags } = this.state
     if (owner.name === 'Cure8') {
       Alert.alert('Sample Link', 'As this is a sample link, it\s not something you can delete or archive. Add your own links and this one will go away!')

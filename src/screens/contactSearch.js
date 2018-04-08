@@ -138,7 +138,7 @@ class ContactSearch extends Component {
         <FlatList
           data={this.state.filteredContacts}
           renderItem={this.renderItem.bind(this)}
-          keyExtractor={item => (item.id + Math.random())}
+          keyExtractor={item => (item.id + Math.random()).toString()}
         />
       </View>
     )
