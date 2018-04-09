@@ -37,14 +37,11 @@ class Card extends Component {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     if (this.props.link.status === 'archived') {
       const tags = this.props.link.tags.map(tag => tag.name)
       this.setState({ selectedTags: [...tags, ...this.state.selectedTags] })
     }
-
-    const expandMoreAlerted = await AsyncStorage.getItem('expandeMoreAlerted')
-    this.setState({ expandMoreAlerted })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -94,10 +91,10 @@ class Card extends Component {
   }
 
   expandMore = async (curation) => {
-    if (!this.state.expandMoreAlerted) {
+    const expandMoreAlerted = await AsyncStorage.getItem('expandeMoreAlerted')
+    if (!expandMoreAlerted) {
       Alert.alert('How does this work?', 'Pressing on Delete or Archive will ask you to rate the curation for your friend. Add a tag when Archiving if you wish, and then press the Thumbs Up or any other emoji to finish deleting or archiving the curation.')
       await AsyncStorage.setItem('expandMoreAlerted', 'alerted')
-      this.setState({ expandMoreAlerted: 'alerted' })
     }
     this.props.onDrawerPress(curation)
   }
