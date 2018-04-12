@@ -11,7 +11,6 @@ class Welcome extends Component {
     if (token) {
       DefaultPreference.setName('group.cure8.cure8app')
       await DefaultPreference.set('authToken', token)
-      console.log('default preference done', DefaultPreference.get('authToken'))
       this.setState({ loading: false })
       this.props.navigation.navigate('linksNavigator')
     } else {

@@ -91,10 +91,11 @@ class Card extends Component {
   }
 
   expandMore = async (curation) => {
-    const expandMoreAlerted = await AsyncStorage.getItem('expandeMoreAlerted')
+    const expandMoreAlerted = await AsyncStorage.getItem('expandMoreAlerted')
     if (!expandMoreAlerted) {
       Alert.alert('How does this work?', 'Pressing on Delete or Archive will ask you to rate the curation for your friend. Add a tag when Archiving if you wish, and then press the Thumbs Up or any other emoji to finish deleting or archiving the curation.')
       await AsyncStorage.setItem('expandMoreAlerted', 'alerted')
+      const item = await AsyncStorage.getItem('expandMoreAlerted')
     }
     this.props.onDrawerPress(curation)
   }
