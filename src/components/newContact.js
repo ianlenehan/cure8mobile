@@ -119,7 +119,7 @@ class NewContact extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.searchContainer}>
         {this.renderButton()}
       </View>
     )
@@ -127,15 +127,10 @@ class NewContact extends Component {
 }
 
 const styles = {
-  container: {
+  searchContainer: {
     borderWidth: 1,
     borderColor: '#ddd',
     borderBottomWidth: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.6,
-    shadowRadius: 4,
-    elevation: 3,
     paddingTop: 5
   },
   button: {

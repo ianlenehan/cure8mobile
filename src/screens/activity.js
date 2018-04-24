@@ -15,6 +15,8 @@ import SafariView from 'react-native-safari-view'
 import { CustomTabs } from 'react-native-custom-tabs'
 import { Icon, Button } from 'react-native-elements'
 import Spinner from '../components/common/spinner'
+import EmojiButton from '../components/common/emoji-button'
+import { ratingValues } from '../../helpers/ratings'
 
 class Activity extends Component {
   static navigationOptions = () => {
@@ -25,6 +27,11 @@ class Activity extends Component {
         return <Icon name="bell-o" type="font-awesome" size={24} color={tintColor} />;
       }
     }
+  }
+
+  constructor() {
+    super()
+    this.ratingValues = ratingValues
   }
 
   formatDate(date) {
@@ -45,22 +52,12 @@ class Activity extends Component {
   }
 
   getRatingIcon(item) {
-    if (item.rating ==='1') {
-      return (
-        <Icon
-          size={22}
-          containerStyle={{ margin: 5 }}
-          name='thumb-up'
-          color='#3498db'
-        />
-      )
-    }
+    const name = this.ratingValues[item.rating]
+
     return (
-      <Icon
-        size={22}
-        containerStyle={{ margin: 5 }}
-        name='thumb-down'
-        color='#e67e22'
+      <EmojiButton
+        name={name}
+        render
       />
     )
   }

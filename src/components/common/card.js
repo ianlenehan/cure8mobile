@@ -22,28 +22,22 @@ import Tag from './tag'
 import CardSection from './cardSection'
 import Spinner from './spinner'
 import Input from './input'
+import RatingIcons from './ratingIcons'
 
 class Card extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      alertMsgCurator: null,
       phone: null,
       tags: [],
       selectedTags: [],
-      tagSearchQuery: ''
+      tagSearchQuery: '',
+      expandMoreAlerted: false,
     }
   }
 
-  async componentDidMount() {
-    const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
-    const phone = await AsyncStorage.getItem('currentUserPhone')
-    this.setState({
-      alertMsgCurator,
-      phone
-    })
-
+  componentDidMount() {
     if (this.props.link.status === 'archived') {
       const tags = this.props.link.tags.map(tag => tag.name)
       this.setState({ selectedTags: [...tags, ...this.state.selectedTags] })
@@ -54,6 +48,9 @@ class Card extends Component {
     if (nextProps.tags && nextProps.tags.length) {
       tags = nextProps.tags.sort()
       this.setState({ tags })
+    }
+    if (nextProps.userPhone) {
+      this.setState({ phone: this.props.userPhone })
     }
   }
 
@@ -67,12 +64,13 @@ class Card extends Component {
   }
 
   messageOwner = async (phone, name) => {
+    const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
     if (name === 'Cure8') {
       Alert.alert('Sample Link', 'For links your friends curate for you, you will be able to message them with this button to comment on the link.')
     } else {
       const { title } = this.props.link
       Clipboard.setString(`Re: "${title}" from Cure8.`)
-      if (!this.state.alertMsgCurator) {
+      if (!alertMsgCurator) {
         Alert.alert(
           'Did you know?',
           'From here, pressing paste into your message app will add the curated link title to your message.',
@@ -92,7 +90,13 @@ class Card extends Component {
     this.props.onArchivePress(null)
   }
 
-  expandMore = (curation) => {
+  expandMore = async (curation) => {
+    const expandMoreAlerted = await AsyncStorage.getItem('expandMoreAlerted')
+    if (!expandMoreAlerted) {
+      Alert.alert('How does this work?', 'Pressing on Delete or Archive will ask you to rate the curation for your friend. Add a tag when Archiving if you wish, and then press the Thumbs Up or any other emoji to finish deleting or archiving the curation.')
+      await AsyncStorage.setItem('expandMoreAlerted', 'alerted')
+      const item = await AsyncStorage.getItem('expandMoreAlerted')
+    }
     this.props.onDrawerPress(curation)
   }
 
@@ -126,7 +130,6 @@ class Card extends Component {
   }
 
   onArchivePress(owner, curation, action) {
-    console.log('owner is', owner)
     const { selectedTags } = this.state
     if (owner.name === 'Cure8') {
       Alert.alert('Sample Link', 'As this is a sample link, it\s not something you can delete or archive. Add your own links and this one will go away!')
@@ -292,7 +295,7 @@ class Card extends Component {
         <View style={{ alignItems: 'center' }}>
           <View style={{ flexDirection: 'row', margin: 10 }}>
             <Input
-              placeholder='type to add new tag'
+              placeholder="type to add new tag and then press '+'"
               style={{ flex: 1, fontSize: 12, height: 30 }}
               onChangeText={this.tagSearch}
               value={this.state.tagSearchQuery}
@@ -341,53 +344,26 @@ class Card extends Component {
     }
   }
 
-  renderThumbsDownIcon(owner, curation) {
-    if (owner.phone !== this.state.phone) {
-      return(
-        <Icon
-          size={24}
-          containerStyle={{ margin: 5 }}
-          name='thumb-down'
-          color='#e67e22'
-          onPress={() => this.props.archiveLink(curation, 0)}
-        />
-      )
-    }
+  renderAllIcons(owner, curation) {
+    return owner.phone !== this.state.phone
   }
 
   renderIcons(curation, owner, rating) {
     const { archiveMode } = this.props
     const { tags, selectedTags } = this.state
+    const renderAll = this.renderAllIcons(owner, curation)
     if (archiveMode.curation === curation) {
       return (
-        <View>
-          <View style={{ flex: 1 }}>
-            <ScrollView
-              style={{ flex: 1 }}
-              horizontal
-              >
-              {this.renderTags()}
-            </ScrollView>
-          </View>
-          {this.addTagInput()}
-          <View style={styles.icons}>
-            <Icon
-              size={24}
-              containerStyle={{ margin: 5 }}
-              name='thumb-up'
-              color='#3498db'
-              onPress={() => this.props.archiveLink(curation, 1, selectedTags)}
-            />
-          {this.renderThumbsDownIcon(owner, curation)}
-            <Icon
-              size={24}
-              containerStyle={{ margin: 5 }}
-              name='cancel'
-              color='#ccc'
-              onPress={() => this.props.onArchivePress(null)}
-            />
-          </View>
-        </View>
+        <RatingIcons
+          renderTags={this.renderTags.bind(this)}
+          curation={curation}
+          addTagInput={this.addTagInput.bind(this)}
+          archiveLink={this.props.archiveLink.bind(this)}
+          owner={owner}
+          selectedTags={selectedTags}
+          renderAllIcons={renderAll}
+          onArchivePress={this.props.onArchivePress.bind(this)}
+        />
       )
     }
     return this.renderMainIcons(curation, owner, rating)

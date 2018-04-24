@@ -77,7 +77,7 @@ class Contacts extends Component {
         data={this.props.contacts}
         renderItem={this.renderItem.bind(this)}
         editMode={this.props.editMode}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         removeClippedSubviews={false}
       />
     )
