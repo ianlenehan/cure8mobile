@@ -1,6 +1,6 @@
 import React from 'react'
 import { TouchableWithoutFeedback, Text, View } from 'react-native'
-import Emoji from 'react-native-emoji'
+import Emoji from '@ardentlabs/react-native-emoji'
 
 const EmojiButton = (props) => {
   if (props.render) {
