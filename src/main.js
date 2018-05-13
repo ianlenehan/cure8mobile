@@ -61,6 +61,7 @@ const activityNav = StackNavigator({
 }, {
   navigationOptions: {
     headerTintColor: 'white',
+    gesturesEnabled: false,
     headerStyle: {
       backgroundColor: primaryGreen,
     },
