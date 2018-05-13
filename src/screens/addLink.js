@@ -9,7 +9,7 @@ import {
   commentChanged,
   categoryChanged
 } from '../redux/link/actions'
-import { getUserInfo }  from '../redux/user/actions'
+import { getUserInfo, getUserActivity }  from '../redux/user/actions'
 import ContactPickList from '../components/contactPickList'
 import Input from '../components/common/input'
 
@@ -73,6 +73,7 @@ class AddLink extends Component {
     this.props.commentChanged('')
     await this.props.createLink({ url, comment, contacts, saveToMyLinks, token })
     await this.props.getUserInfo(token)
+    await this.props.getUserActivity(token)
     this.props.navigation.goBack()
   }
 
@@ -203,4 +204,5 @@ export default connect(mapStateToProps, {
   categoryChanged,
   createLink,
   getUserInfo,
+  getUserActivity,
 })(AddLink)
