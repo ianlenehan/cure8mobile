@@ -33,7 +33,6 @@ class LinkView extends Component {
 
     this.state = {
       links: [],
-      refreshing: false,
       token: null,
       readerMode: 'on',
       filterTerms: [],
@@ -74,10 +73,8 @@ class LinkView extends Component {
   }
 
   async onRefresh() {
-    this.setState({ refreshing: true })
     await this.checkReaderMode()
     await this.props.refresh()
-    this.setState({ refreshing: false })
   }
 
   async checkReaderMode() {
@@ -291,7 +288,7 @@ class LinkView extends Component {
           archiveMode={this.props.archiveMode}
           refreshControl={
             <RefreshControl
-              refreshing={this.state.refreshing}
+              refreshing={this.props.loading}
               onRefresh={this.onRefresh.bind(this)}
             />
           }

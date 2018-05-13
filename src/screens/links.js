@@ -62,6 +62,7 @@ class Links extends Component {
   componentDidMount() {
     this.getUserData()
     this.requestNotificationPermissions()
+    this.updateUserOs()
 
     OneSignal.getPermissionSubscriptionState((status) => {
       this.checkNotificationStatus(status)
@@ -104,6 +105,15 @@ class Links extends Component {
     }
     this.props.updateUser(token, status.userId, 'push')
     // TODO move this back into the if statement once I'm done fiddling
+  }
+
+  async updateUserOs() {
+    const storedOs = await AsyncStorage.getItem('deviceOs')
+    if (!storedOs) {
+      const token = await AsyncStorage.getItem('token')
+      this.props.updateUser(token, Platform.OS, 'device_os')
+      AsyncStorage.setItem('deviceOs', Platform.OS)
+    }
   }
 
   requestNotificationPermissions() {
