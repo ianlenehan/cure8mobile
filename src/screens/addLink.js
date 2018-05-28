@@ -99,6 +99,7 @@ class AddLink extends Component {
   }
 
   contactSearch = (text) => {
+    this.setState({ searchText: text })
     if (text.length >= 1 && !_.isNaN(Number(text))) {
       this.validateNumber(text)
     } else if (text.length >= 2) {
@@ -152,9 +153,10 @@ class AddLink extends Component {
               lightTheme
               placeholder='Search contacts or type number'
               containerStyle={{ backgroundColor: 'white', borderTopWidth: 0 }}
-              inputStyle={{ backgroundColor: '#f3f3f3' }}
+              inputStyle={{ backgroundColor: '#f3f3f3', fontSize: 14 }}
               clearIcon={{ color: '#86939e', name: 'clear' }}
               onChangeText={(text) => this.contactSearch(text)}
+              value={this.state.searchText}
             />
             <ContactPickList
               contacts={this.state.contacts}

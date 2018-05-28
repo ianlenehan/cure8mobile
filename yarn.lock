@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@ardentlabs/react-native-emoji@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@ardentlabs/react-native-emoji/-/react-native-emoji-1.2.1.tgz#716b757c30cbd667afe78d51032f5e2ca33d7def"
+  dependencies:
+    node-emoji "1.3.1"
+
 "@babel/code-frame@7.0.0-beta.44":
   version "7.0.0-beta.44"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.0.0-beta.44.tgz#2a02643368de80916162be70865c97774f3adbd9"
@@ -2602,8 +2608,8 @@ image-size@^0.6.0:
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.6.1.tgz#98122a562d59dcc097ef1b2c8191866eb8f5d663"
 
 immutable@^3.8.1:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.1.tgz#200807f11ab0f72710ea485542de088075f68cd2"
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
 
 imurmurhash@^0.1.4:
   version "0.1.4"
@@ -4365,12 +4371,6 @@ react-native-elements@^0.16.0:
     prop-types "^15.5.8"
     react-native-side-menu "^1.0.2"
     react-native-tab-navigator "^0.3.3"
-
-react-native-emoji@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-emoji/-/react-native-emoji-1.2.0.tgz#ab424590fc88f12c0fab2b4fb7eaf7b51926a9bf"
-  dependencies:
-    node-emoji "1.3.1"
 
 react-native-in-app-utils@^6.0.0:
   version "6.0.0"
