@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, AsyncStorage, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { Button, CheckBox, SearchBar } from 'react-native-elements'
+import { Button, CheckBox, SearchBar, Divider } from 'react-native-elements'
 import _ from 'lodash'
 import {
   createLink,
@@ -125,6 +125,7 @@ class AddLink extends Component {
         />
       )
     }
+    return <Divider style={{ margin: 10, marginTop: 20 }} />
   }
 
   render() {
