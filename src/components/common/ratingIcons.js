@@ -31,6 +31,11 @@ class RatingIcons extends Component {
             render={this.props.renderAllIcons}
           />
           <EmojiButton
+            onPress={() => this.props.archiveLink(curation, this.ratings.astonished, selectedTags)}
+            name="astonished"
+            render={this.props.renderAllIcons}
+          />
+          <EmojiButton
             onPress={() => this.props.archiveLink(curation, this.ratings.cry, selectedTags)}
             name="cry"
             render={this.props.renderAllIcons}
