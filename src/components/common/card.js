@@ -115,6 +115,32 @@ class Card extends Component {
     }
   }
 
+  startConversation() {
+    const { title } = this.props.link
+
+    fetch('http://localhost:3000/conversations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({ title })
+    })
+  }
+
+  renderConversationIcon() {
+    return (
+      <MyIcon
+        size={24}
+        name='comment'
+        type='font-awesome'
+        color="#27ae60"
+        onPress={() => this.startConversation()}
+        text='Discuss'
+      />
+    )
+  }
+
   openInWebBrowser = (url) => {
     const readerMode = this.props.readerMode === 'on' ? true : false
     if (Platform.OS === 'ios') {
@@ -168,7 +194,7 @@ class Card extends Component {
             onPress={() => this.onArchivePress(owner, curation, 'archived')}
             text='Archive'
           />
-          {this.renderMsgOwner(ownerPhone, firstName)}
+          {this.renderConversationIcon(ownerPhone, firstName)}
           <MyIcon
             size={24}
             type='font-awesome'

@@ -5,19 +5,19 @@ const getSubtitle = (contact, props) => {
   if (props.subtitle) {
     return `${contact.members.length} members`
   }
-  // return ''
+  return true
 }
 
 const onPressEvent = (contact, props) => {
   if (props.onPress) {
     return () => props.onPress(contact)
   }
-  // return () => console.log('No action')
+  return true
 }
 
 const ContactList = (props) => {
   return (
-      <List containerStyle={styles.container}>
+    <List containerStyle={styles.container}>
       {
         props.contacts.map((contact, i) => (
           <ListItem
@@ -30,8 +30,8 @@ const ContactList = (props) => {
             subtitle={getSubtitle(contact, props)}
           />
         ))
-      }
-      </List>
+    }
+    </List>
   )
 }
 
@@ -39,9 +39,9 @@ export default ContactList
 
 const styles = {
   container: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   subtitle: {
     fontSize: 12,
-  }
+  },
 }
