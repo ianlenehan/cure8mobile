@@ -15,9 +15,11 @@ export const setConversations = (conversations) => {
 }
 
 export const setConversationMessages = (messages) => {
-  console.log('setting msgs', messages)
+  const sortedMessages = messages.sort((a, b) => {
+    return b.created_at > a.created_at
+  })
   return {
     type: types.CONVERSATION_MESSAGES_SET,
-    payload: messages,
+    payload: sortedMessages,
   }
 }

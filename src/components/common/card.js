@@ -34,6 +34,7 @@ class Card extends Component {
       selectedTags: [],
       tagSearchQuery: '',
       expandMoreAlerted: false,
+      token: null,
     }
   }
 
@@ -42,6 +43,7 @@ class Card extends Component {
       const tags = this.props.link.tags.map(tag => tag.name)
       this.setState({ selectedTags: [...tags, ...this.state.selectedTags] })
     }
+    this.setToken()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,6 +54,11 @@ class Card extends Component {
     if (nextProps.userPhone) {
       this.setState({ phone: this.props.userPhone })
     }
+  }
+
+  async setToken() {
+    const token = await AsyncStorage.getItem('token')
+    this.setState({ token })
   }
 
   getBillMurray() {
@@ -115,8 +122,9 @@ class Card extends Component {
     }
   }
 
-  startConversation() {
-    const { title } = this.props.link
+  startConversation(chatType) {
+    const { title, link_id, users_shared_with } = this.props.link
+    const { token } = this.state
 
     fetch('http://localhost:3000/conversations', {
       method: 'POST',
@@ -124,8 +132,44 @@ class Card extends Component {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
-      body: JSON.stringify({ title })
+      body: JSON.stringify({
+        conversation: {
+          link_id,
+          users_shared_with,
+          chat_type: chatType,
+        },
+        user: { token }
+      })
     })
+    this.props.navigate('chats')
+  }
+
+  _isAlertNecessary() {
+    const { owner, shared_with, users_shared_with } = this.props.link
+
+    if (shared_with > 2) { return true }
+
+    const ownerSharedWithThemself = users_shared_with.includes(owner.id)
+
+    if (shared_with === 2 && ownerSharedWithThemself) { return true }
+    
+    return false
+  }
+
+  conversationAlert() {
+    const { name: ownerName } = this.props.link.owner
+    if (this._isAlertNecessary()) {
+      Alert.alert(
+        'Chat',
+        `Select a one on one chat with ${ownerName} or start a group chat with everyone they curated this for.`,
+        [
+          { text: '1-on-1', onPress: () => this.startConversation('single') },
+          { text: 'Group', onPress: () => this.startConversation('group') }
+        ]
+      )
+    } else {
+      this.startConversation('single')
+    }
   }
 
   renderConversationIcon() {
@@ -135,7 +179,7 @@ class Card extends Component {
         name='comment'
         type='font-awesome'
         color="#27ae60"
-        onPress={() => this.startConversation()}
+        onPress={() => this.conversationAlert()}
         text='Discuss'
       />
     )

@@ -270,6 +270,7 @@ class LinkView extends Component {
         tags={this.state.tags}
         addTags={this.addTags.bind(this)}
         userPhone={this.props.userInfo.phone}
+        navigate={this.props.navigate}
       />
     )
   }

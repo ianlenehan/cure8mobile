@@ -38,14 +38,13 @@ class Chat extends Component {
   componentWillMount() {
     const { conversationMessages, activeConversationId } = this.props
     const messages = this._appendGiftedChatFields(conversationMessages)
-    this.setState({ messages: conversationMessages,  conversationId: activeConversationId })
+    this.setState({ messages,  conversationId: activeConversationId })
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('rece props', nextProps)
     if (nextProps.conversationMessages) {
       const messages = this._appendGiftedChatFields(nextProps.conversationMessages)
-      this.setState({ messages: nextProps.conversationMessages })
+      this.setState({ messages })
     }
   }
 
@@ -90,13 +89,11 @@ class Chat extends Component {
   }
 
   render() {
-    console.log('rendering messages', this.props.conversationMessages)
     return (
       <GiftedChat
         messages={this.props.conversationMessages}
         onSend={messages => this.addMessage(messages)}
         renderBubble={this.renderBubble}
-        inverted={false}
         user={{
           _id: this.props.userInfo.id,
         }}
