@@ -8,9 +8,12 @@ export const setActiveConversationId = (conversationId) => {
 }
 
 export const setConversations = (conversations) => {
+  const sortedConversations = conversations.sort((a, b) => {
+    return b.last_update > a.last_update
+  })
   return {
     type: types.CONVERSATIONS_SET,
-    payload: conversations,
+    payload: sortedConversations,
   }
 }
 

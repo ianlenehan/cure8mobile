@@ -122,11 +122,11 @@ class Card extends Component {
     }
   }
 
-  startConversation(chatType) {
+  async startConversation(chatType) {
     const { title, link_id, users_shared_with } = this.props.link
     const { token } = this.state
 
-    fetch('http://localhost:3000/conversations', {
+    await fetch('http://localhost:3000/conversations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -141,6 +141,7 @@ class Card extends Component {
         user: { token }
       })
     })
+
     this.props.navigate('chats')
   }
 
@@ -152,7 +153,7 @@ class Card extends Component {
     const ownerSharedWithThemself = users_shared_with.includes(owner.id)
 
     if (shared_with === 2 && ownerSharedWithThemself) { return true }
-    
+
     return false
   }
 

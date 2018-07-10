@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, Alert } from 'react-native'
+import { Text, Alert, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
 import { GiftedChat } from 'react-native-gifted-chat'
@@ -90,14 +90,16 @@ class Chat extends Component {
 
   render() {
     return (
-      <GiftedChat
-        messages={this.props.conversationMessages}
-        onSend={messages => this.addMessage(messages)}
-        renderBubble={this.renderBubble}
-        user={{
-          _id: this.props.userInfo.id,
-        }}
-      />
+      <View style={{ backgroundColor: 'white', flex: 1 }}>
+        <GiftedChat
+          messages={this.props.conversationMessages}
+          onSend={messages => this.addMessage(messages)}
+          renderBubble={this.renderBubble}
+          user={{
+            _id: this.props.userInfo.id,
+          }}
+        />
+      </View>
     )
   }
 }

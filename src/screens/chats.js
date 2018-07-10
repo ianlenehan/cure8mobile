@@ -1,14 +1,45 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, AsyncStorage } from 'react-native'
+import { Text, View, TouchableOpacity, TouchableWithoutFeedback, FlatList, AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
-import { List, ListItem, Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements'
 import RNActionCable from 'react-native-actioncable'
 import ActionCableProvider, { ActionCable } from 'react-actioncable-provider'
 import Cable from '../components/cable'
 import { setActiveConversationId, setConversations, setConversationMessages } from '../redux/conversation/actions'
+import moment from 'moment'
 
 const styles = {
-
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+    justifyContent: 'space-between'
+  },
+  card: {
+    backgroundColor: 'white',
+    padding: 12,
+    borderColor: '#ddd',
+    borderBottomWidth: 1,
+  },
+  title: {
+    fontSize: 16,
+    paddingTop: 3,
+    paddingRight: 5,
+  },
+  subtitle: {
+    fontSize: 12,
+    color: 'grey',
+  },
+  details: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  subtitleAndDate: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  }
 }
 
 function getSubtitle(chat) {
@@ -67,10 +98,43 @@ class Chats extends Component {
     this.props.navigation.navigate('chat', { title: conversation.title })
   }
 
+  formatDate(date) {
+    const currentDate = moment()
+    return moment(date).local().from(currentDate)
+  }
+
+  renderItem({ item }) {
+    return (
+      <TouchableWithoutFeedback onPress={() => this.goToConversation(item)}>
+        <View style={styles.card}>
+          <View style={styles.details}>
+            <Text style={styles.title}>{item.title || ''}</Text>
+            <View style={styles.subtitleAndDate}>
+              <Text style={styles.subtitle}>{item.members.join(", ")}</Text>
+              <Text style={styles.subtitle}>{this.formatDate(item.last_update)}</Text>
+            </View>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
+
+  renderContent() {
+    return (
+      <FlatList
+        data={this.props.conversations}
+        renderItem={this.renderItem.bind(this)}
+        editMode={this.props.editMode}
+        keyExtractor={item => item.id.toString()}
+        removeClippedSubviews={false}
+      />
+    )
+  }
+
   render() {
     const { conversations, activeConversationId } = this.props
     return (
-      <View style={styles.conversationsList}>
+      <View style={styles.container}>
         <ActionCable
           channel={{ channel: 'ConversationsChannel' }}
           onReceived={this.handleReceivedConversation}
@@ -81,19 +145,7 @@ class Chats extends Component {
             handleReceivedMessage={this.handleReceivedMessage}
           />
         ) : null}
-        <Text>Conversations</Text>
-        <List containerStyle={styles.container}>
-          {
-            conversations.map((chat) => (
-              <ListItem
-                key={chat.id}
-                title={chat.title}
-                onPress={() => this.goToConversation(chat)}
-                hideChevron
-              />
-            ))
-        }
-        </List>
+        {this.renderContent()}
       </View>
     )
   }
