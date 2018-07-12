@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import { Text, View, TouchableOpacity, TouchableWithoutFeedback, FlatList, AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
 import RNActionCable from 'react-native-actioncable'
 import ActionCableProvider, { ActionCable } from 'react-actioncable-provider'
 import Cable from '../components/cable'
-import { setActiveConversationId, setConversations, setConversationMessages } from '../redux/conversation/actions'
+import { setActiveConversation, setConversations, getConversations, setConversationMessages } from '../redux/conversation/actions'
 import moment from 'moment'
 
 const styles = {
@@ -60,18 +61,7 @@ class Chats extends Component {
 
   componentDidMount = async () => {
     const token = await AsyncStorage.getItem('token')
-    const res = await fetch('http://localhost:3000/user_conversations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        user: { token }
-      })
-    })
-    const conversations = await res.json()
-    this.props.setConversations(conversations)
+    this.props.getConversations(token)
   }
 
   handleReceivedConversation = response => {
@@ -93,7 +83,7 @@ class Chats extends Component {
   }
 
   goToConversation = (conversation) => {
-    this.props.setActiveConversationId(conversation.id)
+    this.props.setActiveConversation(conversation)
     this.props.setConversationMessages(conversation.messages)
     this.props.navigation.navigate('chat', { title: conversation.title })
   }
@@ -124,7 +114,6 @@ class Chats extends Component {
       <FlatList
         data={this.props.conversations}
         renderItem={this.renderItem.bind(this)}
-        editMode={this.props.editMode}
         keyExtractor={item => item.id.toString()}
         removeClippedSubviews={false}
       />
@@ -132,7 +121,7 @@ class Chats extends Component {
   }
 
   render() {
-    const { conversations, activeConversationId } = this.props
+    const { conversations, activeConversation } = this.props
     return (
       <View style={styles.container}>
         <ActionCable
@@ -152,12 +141,13 @@ class Chats extends Component {
 }
 
 const mapStateToProps = ({ conversation }) => {
-  const { activeConversationId, conversations, conversationMessages } = conversation
-  return { activeConversationId, conversations, conversationMessages }
+  const { activeConversation, conversations, conversationMessages } = conversation
+  return { activeConversation, conversations, conversationMessages }
 }
 
 export default connect(mapStateToProps, {
-  setActiveConversationId,
+  setActiveConversation,
   setConversations,
+  getConversations,
   setConversationMessages,
 })(Chats)

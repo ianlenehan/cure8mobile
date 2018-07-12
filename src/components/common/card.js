@@ -11,6 +11,7 @@ import {
   AsyncStorage,
   Alert
 } from 'react-native'
+import { connect } from 'react-redux'
 import moment from 'moment'
 import swearjar from 'swearjar'
 import { Icon, Button } from 'react-native-elements'
@@ -23,6 +24,8 @@ import CardSection from './cardSection'
 import Spinner from './spinner'
 import Input from './input'
 import RatingIcons from './ratingIcons'
+import axios from 'axios'
+import { createConversation, getConversations } from '../../redux/conversation/actions'
 
 class Card extends Component {
   constructor(props) {
@@ -126,23 +129,9 @@ class Card extends Component {
     const { title, link_id, users_shared_with } = this.props.link
     const { token } = this.state
 
-    await fetch('http://localhost:3000/conversations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        conversation: {
-          link_id,
-          users_shared_with,
-          chat_type: chatType,
-        },
-        user: { token }
-      })
-    })
-
-    this.props.navigate('chats')
+    await this.props.createConversation({ link_id, users_shared_with, chatType, token })
+    await this.props.getConversations(token)
+    this.props.navigate('chat', { title })
   }
 
   _isAlertNecessary() {
@@ -594,4 +583,11 @@ const styles = {
   }
 }
 
-export default Card
+const mapStateToProps = (state) => {
+  return {}
+}
+
+export default connect(mapStateToProps, {
+  createConversation,
+  getConversations,
+})(Card)

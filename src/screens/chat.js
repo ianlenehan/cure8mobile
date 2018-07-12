@@ -1,13 +1,16 @@
 import React, { Component } from 'react'
-import { Text, Alert, View } from 'react-native'
+import { Text, Alert, View, AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
 import { GiftedChat } from 'react-native-gifted-chat'
 import Bubble from '../../node_modules/react-native-gifted-chat/src/Bubble'
+import axios from 'axios'
+import { setConversationMessages } from '../redux/conversation/actions'
 
-const styles = {
+import rootURL from '../../environment'
 
-}
+const apiNamespace = 'v1/'
+const apiUrl = `${rootURL}${apiNamespace}`
 
 class Chat extends Component {
   static navigationOptions({ navigation }) {
@@ -36,9 +39,12 @@ class Chat extends Component {
   }
 
   componentWillMount() {
-    const { conversationMessages, activeConversationId } = this.props
+    const { conversationMessages, activeConversation } = this.props
+    if (!conversationMessages.length) {
+      this.props.setConversationMessages(activeConversation.messages)
+    }
     const messages = this._appendGiftedChatFields(conversationMessages)
-    this.setState({ messages,  conversationId: activeConversationId })
+    this.setState({ messages, conversationId: activeConversation.id })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -54,24 +60,19 @@ class Chat extends Component {
     }))
   }
 
-  addMessage(messages = []) {
+  async addMessage(messages = []) {
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }))
-
+    const token = await AsyncStorage.getItem('token')
     const [message] = messages
     const { userInfo: user } = this.props
-    fetch('http://localhost:3000/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
+    axios.post(`${apiUrl}messages`, {
+      message: {
         text: message.text,
         conversation_id: this.state.conversationId,
-        user_id: user.id,
-      })
+      },
+      user: { token }
     })
   }
 
@@ -91,23 +92,23 @@ class Chat extends Component {
   render() {
     return (
       <View style={{ backgroundColor: 'white', flex: 1 }}>
-        <GiftedChat
-          messages={this.props.conversationMessages}
-          onSend={messages => this.addMessage(messages)}
-          renderBubble={this.renderBubble}
-          user={{
-            _id: this.props.userInfo.id,
-          }}
-        />
+      <GiftedChat
+      messages={this.props.conversationMessages}
+      onSend={messages => this.addMessage(messages)}
+      renderBubble={this.renderBubble}
+      user={{
+        _id: this.props.userInfo.id,
+      }}
+      />
       </View>
     )
   }
 }
 
 const mapStateToProps = ({ conversation, user }) => {
-  const { activeConversationId, conversationMessages } = conversation
+  const { activeConversation, conversationMessages } = conversation
   const { info: userInfo } = user
-  return { activeConversationId, conversationMessages, userInfo }
+  return { activeConversation, conversationMessages, userInfo }
 }
 
-export default connect(mapStateToProps, { })(Chat)
+export default connect(mapStateToProps, { setConversationMessages })(Chat)
