@@ -18,5 +18,6 @@ module.exports = {
     "react/prop-types": 0,
     "arrow-parens": 0,
     "object-curly-newline": 0,
+    "react/prefer-stateless-function": 0,
     }
   }
