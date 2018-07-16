@@ -76,9 +76,13 @@ class Chats extends Component {
     const conversation = conversations.find(
       conversation => conversation.id === message.conversation_id
     )
+    const otherConversations = conversations.filter(
+      conversation => conversation.id !== message.conversation_id
+    )
     const conversationMessages = [...conversation.messages, message]
     conversation.messages = conversationMessages
-    this.props.setConversations(conversations)
+    conversation.updated_at = new Date()
+    this.props.setConversations([conversation, ...otherConversations])
     this.props.setConversationMessages(conversationMessages)
   }
 
@@ -101,7 +105,7 @@ class Chats extends Component {
             <Text style={styles.title}>{item.title || ''}</Text>
             <View style={styles.subtitleAndDate}>
               <Text style={styles.subtitle}>{item.members.join(", ")}</Text>
-              <Text style={styles.subtitle}>{this.formatDate(item.last_update)}</Text>
+              <Text style={styles.subtitle}>{this.formatDate(item.updated_at)}</Text>
             </View>
           </View>
         </View>

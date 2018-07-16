@@ -7,8 +7,8 @@ const apiUrl = `${rootURL}${apiNamespace}`
 
 const sortConversations = (conversations) => {
   return conversations.sort((a, b) => {
-    a = new Date(a.last_update)
-    b = new Date(b.last_update)
+    a = new Date(a.updated_at)
+    b = new Date(b.updated_at)
     return a > b ? -1 : a < b ? 1 : 0
   })
 }

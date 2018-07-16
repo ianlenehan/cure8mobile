@@ -110,21 +110,6 @@ class Card extends Component {
     this.props.onDrawerPress(curation)
   }
 
-  renderMsgOwner(ownerPhone, firstName) {
-    if (ownerPhone !== this.state.phone) {
-      return (
-        <MyIcon
-          size={24}
-          name='comment'
-          type='font-awesome'
-          color="#27ae60"
-          onPress={() => this.messageOwner(ownerPhone, firstName)}
-          text={`Msg ${firstName}`}
-        />
-      )
-    }
-  }
-
   async startConversation(chatType) {
     const { title, link_id, users_shared_with } = this.props.link
     const { token } = this.state
@@ -228,7 +213,7 @@ class Card extends Component {
             onPress={() => this.onArchivePress(owner, curation, 'archived')}
             text='Archive'
           />
-          {this.renderConversationIcon(ownerPhone, firstName)}
+          {this.renderConversationIcon()}
           <MyIcon
             size={24}
             type='font-awesome'
@@ -253,7 +238,7 @@ class Card extends Component {
               onPress={() => this.props.justArchive(curation, rating, 'deleted')}
               text='Delete'
               />
-            {this.renderMsgOwner(ownerPhone, firstName)}
+            {this.renderConversationIcon()}
             <MyIcon
               size={24}
               type='font-awesome'
