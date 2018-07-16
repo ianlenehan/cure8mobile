@@ -5,6 +5,14 @@ import rootURL from '../../../environment'
 const apiNamespace = 'v1/'
 const apiUrl = `${rootURL}${apiNamespace}`
 
+const sortConversations = (conversations) => {
+  return conversations.sort((a, b) => {
+    a = new Date(a.last_update)
+    b = new Date(b.last_update)
+    return a > b ? -1 : a < b ? 1 : 0
+  })
+}
+
 export const setActiveConversation = (conversation) => {
   return {
     type: types.ACTIVE_CONVERSATION_SET,
@@ -17,10 +25,11 @@ export const getConversations = (token) => {
     const res = await axios.post(`${apiUrl}user_conversations`, {
       user: { token },
     })
+    const sortedConversations = sortConversations(res.data)
     if (res.status === 200) {
       dispatch({
         type: types.CONVERSATIONS_SET,
-        payload: res.data,
+        payload: sortedConversations,
       })
     } else {
       console.log('get conversations error', res.status)
@@ -45,29 +54,8 @@ export const createConversation = ({ link_id, users_shared_with, chatType, token
   }
 }
 
-export const getUserInfo = (token) => {
-  return (dispatch) => {
-    axios.post(`${apiUrl}user/info`, {
-      user: { token },
-    })
-      .then(res => {
-        if (res.data.status === 200) {
-          dispatch({
-            type: types.GOT_INFO,
-            payload: res.data
-          })
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-}
-
 export const setConversations = (conversations) => {
-  const sortedConversations = conversations.sort((a, b) => {
-    return b.last_update > a.last_update
-  })
+  const sortedConversations = sortConversations(conversations)
   return {
     type: types.CONVERSATIONS_SET,
     payload: sortedConversations,
@@ -76,7 +64,9 @@ export const setConversations = (conversations) => {
 
 export const setConversationMessages = (messages) => {
   const sortedMessages = messages.sort((a, b) => {
-    return b.created_at > a.created_at
+    a = new Date(a.created_at)
+    b = new Date(b.created_at)
+    return a > b ? -1 : a < b ? 1 : 0
   })
   return {
     type: types.CONVERSATION_MESSAGES_SET,

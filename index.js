@@ -6,7 +6,7 @@ import RNActionCable from 'react-native-actioncable'
 import ActionCableProvider from 'react-actioncable-provider'
 import Main from './src/main'
 
-const cable = RNActionCable.createConsumer('ws://localhost:3000/cable')
+const cable = RNActionCable.createConsumer('wss://cure8.herokuapp.com/cable')
 
 export default class App extends Component {
   render() {

@@ -54,14 +54,8 @@ class Chat extends Component {
     }
   }
 
-  onSend(messages = []) {
-    this.setState(previousState => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }))
-  }
-
   async addMessage(messages = []) {
-    this.setState(previousState => ({
+    await this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }))
     const token = await AsyncStorage.getItem('token')
@@ -93,7 +87,7 @@ class Chat extends Component {
     return (
       <View style={{ backgroundColor: 'white', flex: 1 }}>
       <GiftedChat
-      messages={this.props.conversationMessages}
+      messages={this.state.messages}
       onSend={messages => this.addMessage(messages)}
       renderBubble={this.renderBubble}
       user={{
