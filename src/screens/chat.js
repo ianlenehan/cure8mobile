@@ -86,14 +86,15 @@ class Chat extends Component {
   render() {
     return (
       <View style={{ backgroundColor: 'white', flex: 1 }}>
-      <GiftedChat
-      messages={this.state.messages}
-      onSend={messages => this.addMessage(messages)}
-      renderBubble={this.renderBubble}
-      user={{
-        _id: this.props.userInfo.id,
-      }}
-      />
+        <GiftedChat
+        messages={this.state.messages}
+        onSend={messages => this.addMessage(messages)}
+        renderBubble={this.renderBubble}
+        bottomOffset={50}
+        user={{
+          _id: this.props.userInfo.id,
+        }}
+        />
       </View>
     )
   }
