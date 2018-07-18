@@ -6,7 +6,13 @@ import { Icon } from 'react-native-elements'
 import RNActionCable from 'react-native-actioncable'
 import ActionCableProvider, { ActionCable } from 'react-actioncable-provider'
 import Cable from '../components/cable'
-import { setActiveConversation, setConversations, getConversations, setConversationMessages } from '../redux/conversation/actions'
+import {
+  setActiveConversation,
+  setConversations,
+  getConversations,
+  setConversationMessages,
+  resetUnreadMessageCount,
+} from '../redux/conversation/actions'
 import moment from 'moment'
 
 const styles = {
@@ -21,10 +27,29 @@ const styles = {
     borderColor: '#ddd',
     borderBottomWidth: 1,
   },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flex: 10,
+  },
   title: {
     fontSize: 16,
     paddingTop: 3,
     paddingRight: 5,
+    flex: 1,
+  },
+  unreadContainer: {
+    backgroundColor: 'green',
+    height: 18,
+    width: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  unreadCount: {
+    fontSize: 12,
+    color: 'white',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 12,
@@ -82,13 +107,21 @@ class Chats extends Component {
     const conversationMessages = [...conversation.messages, message]
     conversation.messages = conversationMessages
     conversation.updated_at = new Date()
+    conversation.unread_messages += 1
+
     this.props.setConversations([conversation, ...otherConversations])
     this.props.setConversationMessages(conversationMessages)
+  }
+
+  resetUnreadMessages = async (conversationId) => {
+    const token = await AsyncStorage.getItem('token')
+    this.props.resetUnreadMessageCount(conversationId, token)
   }
 
   goToConversation = (conversation) => {
     this.props.setActiveConversation(conversation)
     this.props.setConversationMessages(conversation.messages)
+    this.resetUnreadMessages(conversation.id)
     this.props.navigation.navigate('chat', { title: conversation.title })
   }
 
@@ -102,7 +135,14 @@ class Chats extends Component {
       <TouchableWithoutFeedback onPress={() => this.goToConversation(item)}>
         <View style={styles.card}>
           <View style={styles.details}>
-            <Text style={styles.title}>{item.title || ''}</Text>
+            <View style={styles.titleRow}>
+              <Text style={styles.title}>{item.title || ''}</Text>
+              {item.unread_messages > 0 ? (
+                <View style={styles.unreadContainer}>
+                  <Text style={styles.unreadCount}>{item.unread_messages}</Text>
+                </View>
+              ) : null}
+            </View>
             <View style={styles.subtitleAndDate}>
               <Text style={styles.subtitle}>{item.members.join(", ")}</Text>
               <Text style={styles.subtitle}>{this.formatDate(item.updated_at)}</Text>
@@ -154,4 +194,5 @@ export default connect(mapStateToProps, {
   setConversations,
   getConversations,
   setConversationMessages,
+  resetUnreadMessageCount,
 })(Chats)

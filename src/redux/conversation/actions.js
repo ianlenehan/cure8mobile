@@ -73,3 +73,21 @@ export const setConversationMessages = (messages) => {
     payload: sortedMessages,
   }
 }
+
+export const resetUnreadMessageCount = (conversationId, token) => {
+  return async (dispatch) => {
+    const res = await axios.post(`${apiUrl}conversations/reset`, {
+      user: { token },
+      conversation: { id: conversationId },
+    })
+    const sortedConversations = sortConversations(res.data)
+    if (res.status === 200) {
+      dispatch({
+        type: types.CONVERSATIONS_SET,
+        payload: sortedConversations,
+      })
+    } else {
+      console.log('get conversations error', res.status)
+    }
+  }
+}
