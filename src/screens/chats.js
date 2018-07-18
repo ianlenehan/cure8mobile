@@ -107,7 +107,9 @@ class Chats extends Component {
     const conversationMessages = [...conversation.messages, message]
     conversation.messages = conversationMessages
     conversation.updated_at = new Date()
-    conversation.unread_messages += 1
+    if (message.user_id !== this.props.userInfo.id) {
+      conversation.unread_messages += 1
+    }
 
     this.props.setConversations([conversation, ...otherConversations])
     this.props.setConversationMessages(conversationMessages)
@@ -184,9 +186,10 @@ class Chats extends Component {
   }
 }
 
-const mapStateToProps = ({ conversation }) => {
+const mapStateToProps = ({ conversation, user }) => {
   const { activeConversation, conversations, conversationMessages } = conversation
-  return { activeConversation, conversations, conversationMessages }
+  const { info: userInfo } = user
+  return { activeConversation, conversations, conversationMessages, userInfo }
 }
 
 export default connect(mapStateToProps, {
