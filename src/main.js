@@ -105,7 +105,6 @@ const mainTabNavigator = TabNavigator({
       fontSize: 8,
     },
   },
-  lazy: true,
 })
 
 export default class App extends Component {

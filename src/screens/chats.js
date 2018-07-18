@@ -65,7 +65,7 @@ const styles = {
     marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-  }
+  },
 }
 
 function getSubtitle(chat) {
@@ -84,7 +84,18 @@ class Chats extends Component {
     }
   }
 
-  componentDidMount = async () => {
+  componentDidMount() {
+    this._getConversations()
+    this.subs = [
+      this.props.navigation.addListener('didFocus', () => this._getConversations()),
+    ]
+  }
+
+  componentWillUnmount() {
+    this.subs.forEach(sub => sub.remove())
+  }
+
+  _getConversations = async () => {
     const token = await AsyncStorage.getItem('token')
     this.props.getConversations(token)
   }
