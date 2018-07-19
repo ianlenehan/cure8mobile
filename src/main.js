@@ -115,7 +115,7 @@ export default class App extends Component {
       main: { screen: mainTabNavigator },
     }, {
       navigationOptions: { tabBarVisible: false },
-      lazy: true,
+      lazy: false,
     })
 
     return (
