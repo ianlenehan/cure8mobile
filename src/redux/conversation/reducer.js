@@ -2,7 +2,7 @@ import * as types from '../types'
 
 const initialState = {
   activeConversation: null,
-  conversations: [],
+  conversations: null,
   conversationMessages: [],
 }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, Alert, View, AsyncStorage } from 'react-native'
+import { Text, Alert, View, AsyncStorage, AppState } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
 import { GiftedChat } from 'react-native-gifted-chat'
@@ -28,6 +28,23 @@ class Chat extends Component {
   state = {
     messages: [],
     activeConversationId: null,
+    appState: AppState.currentState
+  }
+
+  _setConversationMessages() {
+    const { conversationMessages, activeConversation } = this.props
+    if (!conversationMessages.length) {
+      this.props.setConversationMessages(activeConversation.messages)
+    }
+    const messages = this._appendGiftedChatFields(conversationMessages)
+    this.setState({ messages, conversationId: activeConversation.id })
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      this._setConversationMessages()
+    }
+    this.setState({appState: nextAppState})
   }
 
   _appendGiftedChatFields(messages) {
@@ -39,12 +56,8 @@ class Chat extends Component {
   }
 
   componentWillMount() {
-    const { conversationMessages, activeConversation } = this.props
-    if (!conversationMessages.length) {
-      this.props.setConversationMessages(activeConversation.messages)
-    }
-    const messages = this._appendGiftedChatFields(conversationMessages)
-    this.setState({ messages, conversationId: activeConversation.id })
+    this._setConversationMessages()
+    AppState.addEventListener('change', this._handleAppStateChange)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,6 +65,10 @@ class Chat extends Component {
       const messages = this._appendGiftedChatFields(nextProps.conversationMessages)
       this.setState({ messages })
     }
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
   async addMessage(messages = []) {

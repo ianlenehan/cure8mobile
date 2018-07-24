@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { AppState, AsyncStorage } from 'react-native'
+import { connect } from 'react-redux'
 import { TabNavigator, StackNavigator } from 'react-navigation'
 import { Icon } from 'react-native-elements'
 import { Root } from 'native-base'
@@ -107,7 +109,31 @@ const mainTabNavigator = TabNavigator({
   },
 })
 
-export default class App extends Component {
+class App extends Component {
+  state = {
+    appState: AppState.currentState
+  }
+
+  componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return this.props !== nextProps
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = async (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      const token = await AsyncStorage.getItem('token')
+      console.log('App has come to the foreground!')
+    }
+    this.setState({ appState: nextAppState })
+  }
+
   render() {
     const MainNavigator = TabNavigator({
       welcome: { screen: Welcome },
@@ -127,3 +153,5 @@ export default class App extends Component {
     )
   }
 }
+
+export default App

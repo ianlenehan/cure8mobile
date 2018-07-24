@@ -7,9 +7,9 @@ const apiUrl = `${rootURL}${apiNamespace}`
 
 const sortConversations = (conversations) => {
   return conversations.sort((a, b) => {
-    a = new Date(a.updated_at)
-    b = new Date(b.updated_at)
-    return a > b ? -1 : a < b ? 1 : 0
+    const x = new Date(a.updated_at)
+    const y = new Date(b.updated_at)
+    return x > y ? -1 : x < y ? 1 : 0 // eslint-disable-line
   })
 }
 
@@ -64,9 +64,9 @@ export const setConversations = (conversations) => {
 
 export const setConversationMessages = (messages) => {
   const sortedMessages = messages.sort((a, b) => {
-    a = new Date(a.created_at)
-    b = new Date(b.created_at)
-    return a > b ? -1 : a < b ? 1 : 0
+    const x = new Date(a.created_at)
+    const y = new Date(b.created_at)
+    return x > y ? -1 : x < y ? 1 : 0 // eslint-disable-line
   })
   return {
     type: types.CONVERSATION_MESSAGES_SET,

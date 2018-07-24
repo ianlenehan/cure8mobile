@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import axios from 'axios'
-import { Text, View, TouchableOpacity, TouchableWithoutFeedback, FlatList, AsyncStorage } from 'react-native'
+import moment from 'moment'
+import { Text, View, TouchableWithoutFeedback, FlatList, AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
 import RNActionCable from 'react-native-actioncable'
@@ -13,13 +13,13 @@ import {
   setConversationMessages,
   resetUnreadMessageCount,
 } from '../redux/conversation/actions'
-import moment from 'moment'
+import Spinner from '../components/common/spinner'
 
 const styles = {
   container: {
     backgroundColor: 'white',
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   card: {
     backgroundColor: 'white',
@@ -66,11 +66,10 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-}
-
-function getSubtitle(chat) {
-  const names = chat.members.map(member => member.first_name)
-  return names.join(', ')
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+  },
 }
 
 class Chats extends Component {
@@ -84,15 +83,44 @@ class Chats extends Component {
     }
   }
 
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      conversations: null,
+    }
+  }
+
   componentDidMount() {
+    this._loadStoredData()
     this._getConversations()
     this.subs = [
       this.props.navigation.addListener('didFocus', () => this._getConversations()),
     ]
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.conversations && nextProps.conversations.length) {
+      this._storeData(nextProps.conversations)
+    }
+  }
+
   componentWillUnmount() {
     this.subs.forEach(sub => sub.remove())
+  }
+
+  async _loadStoredData() {
+    const conversations = await AsyncStorage.getItem('conversationData')
+    this.setState({ conversations: JSON.parse(conversations) })
+  }
+
+  async _storeData(conversations) {
+    await AsyncStorage.setItem('conversationData', JSON.stringify(conversations))
+  }
+
+  formatDate(date) {
+    const currentDate = moment()
+    return moment(date).local().from(currentDate)
   }
 
   _getConversations = async () => {
@@ -109,12 +137,8 @@ class Chats extends Component {
   handleReceivedMessage = response => {
     const { message } = response
     const conversations = [...this.props.conversations]
-    const conversation = conversations.find(
-      conversation => conversation.id === message.conversation_id
-    )
-    const otherConversations = conversations.filter(
-      conversation => conversation.id !== message.conversation_id
-    )
+    const conversation = conversations.find(c => c.id === message.conversation_id)
+    const otherConversations = conversations.filter(c => c.id !== message.conversation_id)
     const conversationMessages = [...conversation.messages, message]
     conversation.messages = conversationMessages
     conversation.updated_at = new Date()
@@ -138,11 +162,6 @@ class Chats extends Component {
     this.props.navigation.navigate('chat', { title: conversation.title })
   }
 
-  formatDate(date) {
-    const currentDate = moment()
-    return moment(date).local().from(currentDate)
-  }
-
   renderItem({ item }) {
     return (
       <TouchableWithoutFeedback onPress={() => this.goToConversation(item)}>
@@ -157,7 +176,7 @@ class Chats extends Component {
               ) : null}
             </View>
             <View style={styles.subtitleAndDate}>
-              <Text style={styles.subtitle}>{item.members.join(", ")}</Text>
+              <Text style={styles.subtitle}>{item.members.join(', ')}</Text>
               <Text style={styles.subtitle}>{this.formatDate(item.updated_at)}</Text>
             </View>
           </View>
@@ -166,10 +185,10 @@ class Chats extends Component {
     )
   }
 
-  renderContent() {
+  renderContent(conversations) {
     return (
       <FlatList
-        data={this.props.conversations}
+        data={conversations}
         renderItem={this.renderItem.bind(this)}
         keyExtractor={item => item.id.toString()}
         removeClippedSubviews={false}
@@ -178,20 +197,27 @@ class Chats extends Component {
   }
 
   render() {
-    const { conversations, activeConversation } = this.props
-    return (
-      <View style={styles.container}>
-        <ActionCable
-          channel={{ channel: 'ConversationsChannel' }}
-          onReceived={this.handleReceivedConversation}
-        />
-        {this.props.conversations.length ? (
-          <Cable
-            conversations={conversations}
-            handleReceivedMessage={this.handleReceivedMessage}
+    const conversations = this.props.conversations || this.state.conversations
+    if (conversations) {
+      return (
+        <View style={styles.container}>
+          <ActionCable
+            channel={{ channel: 'ConversationsChannel' }}
+            onReceived={this.handleReceivedConversation}
           />
+          {conversations.length ? (
+            <Cable
+              conversations={conversations}
+              handleReceivedMessage={this.handleReceivedMessage}
+            />
         ) : null}
-        {this.renderContent()}
+          {this.renderContent(conversations)}
+        </View>
+      )
+    }
+    return (
+      <View style={styles.loading}>
+        <Spinner size="large" text="Loading links..." />
       </View>
     )
   }

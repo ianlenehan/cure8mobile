@@ -5,11 +5,9 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Linking,
-  Clipboard,
   Platform,
   AsyncStorage,
-  Alert
+  Alert,
 } from 'react-native'
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -24,7 +22,6 @@ import CardSection from './cardSection'
 import Spinner from './spinner'
 import Input from './input'
 import RatingIcons from './ratingIcons'
-import axios from 'axios'
 import { createConversation, getConversations } from '../../redux/conversation/actions'
 
 class Card extends Component {
@@ -36,8 +33,6 @@ class Card extends Component {
       tags: [],
       selectedTags: [],
       tagSearchQuery: '',
-      expandMoreAlerted: false,
-      token: null,
     }
   }
 
@@ -46,22 +41,17 @@ class Card extends Component {
       const tags = this.props.link.tags.map(tag => tag.name)
       this.setState({ selectedTags: [...tags, ...this.state.selectedTags] })
     }
-    this.setToken()
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log('next props', nextProps.token)
     if (nextProps.tags && nextProps.tags.length) {
-      tags = nextProps.tags.sort()
+      const tags = nextProps.tags.sort()
       this.setState({ tags })
     }
     if (nextProps.userPhone) {
       this.setState({ phone: this.props.userPhone })
     }
-  }
-
-  async setToken() {
-    const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
   }
 
   getBillMurray() {
@@ -71,28 +61,6 @@ class Card extends Component {
     const number = Math.floor(Math.random() * (max - min)) + min
     const size = sizes[number]
     return `http://fillmurray.com/300/${size}`
-  }
-
-  messageOwner = async (phone, name) => {
-    const alertMsgCurator = await AsyncStorage.getItem('alertMsgCurator')
-    if (name === 'Cure8') {
-      Alert.alert('Sample Link', 'For links your friends curate for you, you will be able to message them with this button to comment on the link.')
-    } else {
-      const { title } = this.props.link
-      Clipboard.setString(`Re: "${title}" from Cure8.`)
-      if (!alertMsgCurator) {
-        Alert.alert(
-          'Did you know?',
-          'From here, pressing paste into your message app will add the curated link title to your message.',
-          [
-            { text: 'Cool!', onPress: () => Linking.openURL(`sms:${phone}`) }
-          ]
-        )
-        await AsyncStorage.setItem('alertMsgCurator', 'yes')
-      } else {
-        Linking.openURL(`sms:${phone}`)
-      }
-    }
   }
 
   expandLess = () => {
@@ -105,14 +73,13 @@ class Card extends Component {
     if (!expandMoreAlerted) {
       Alert.alert('How does this work?', 'Pressing on Delete or Archive will ask you to rate the curation for your friend. Add a tag when Archiving if you wish, and then press the Thumbs Up or any other emoji to finish deleting or archiving the curation.')
       await AsyncStorage.setItem('expandMoreAlerted', 'alerted')
-      const item = await AsyncStorage.getItem('expandMoreAlerted')
     }
     this.props.onDrawerPress(curation)
   }
 
   async startConversation(chatType) {
     const { title, link_id, users_shared_with } = this.props.link
-    const { token } = this.state
+    const { token } = this.props
 
     await this.props.createConversation({ link_id, users_shared_with, chatType, token })
     await this.props.getConversations(token)
@@ -120,13 +87,13 @@ class Card extends Component {
   }
 
   _isAlertNecessary() {
-    const { owner, shared_with, users_shared_with } = this.props.link
+    const { owner, shared_with: sharedWith, users_shared_with: usersSharedWith } = this.props.link
 
-    if (shared_with > 2) { return true }
+    if (sharedWith > 2) { return true }
 
-    const ownerSharedWithThemself = users_shared_with.includes(owner.id)
+    const ownerSharedWithThemself = usersSharedWith.includes(owner.id)
 
-    if (shared_with === 2 && ownerSharedWithThemself) { return true }
+    if (sharedWith === 2 && ownerSharedWithThemself) { return true }
 
     return false
   }
@@ -161,7 +128,7 @@ class Card extends Component {
   }
 
   openInWebBrowser = (url) => {
-    const readerMode = this.props.readerMode === 'on' ? true : false
+    const readerMode = this.props.readerMode === 'on'
     if (Platform.OS === 'ios') {
       SafariView.show({
         url,
@@ -175,7 +142,6 @@ class Card extends Component {
   }
 
   onArchivePress(owner, curation, action) {
-    const { selectedTags } = this.state
     if (owner.name === 'Cure8') {
       Alert.alert('Sample Link', 'As this is a sample link, it\s not something you can delete or archive. Add your own links and this one will go away!')
     } else if (owner.phone === this.state.phone && action === 'deleted') {
@@ -191,8 +157,6 @@ class Card extends Component {
   }
 
   renderMainIcons(curation, owner, rating) {
-    const { name, phone: ownerPhone } = owner
-    const firstName = name.split(' ')[0]
     if (this.props.status === 'new' && this.props.morePressed === curation) {
       if (this.props.loading) {
         return <Spinner size="small" />
@@ -246,13 +210,13 @@ class Card extends Component {
               color="#27ae60"
               onPress={() => this.props.onSharePress(this.props.link)}
               text='Share'
-              />
+            />
           </View>
           <View style={styles.tagContainer}>
             <ScrollView
               style={{ flex: 1 }}
               horizontal
-              >
+            >
               {this.renderTags()}
             </ScrollView>
           </View>
@@ -260,6 +224,7 @@ class Card extends Component {
         </View>
       )
     }
+    return null
   }
 
   renderMoreIcon(curation) {

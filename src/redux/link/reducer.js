@@ -1,7 +1,8 @@
 import * as types from '../types'
 
 const initialState = {
-  links: null,
+  newLinks: null,
+  archivedLinks: null,
   loading: true,
   archiveMode: {},
   url: '',
@@ -14,9 +15,21 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.GET_LINKS:
-      return { ...state, links: action.payload, loading: false, authorized: true }
+      return {
+        ...state,
+        newLinks: action.payload.newLinks,
+        archivedLinks: action.payload.archivedLinks,
+        loading: false,
+        authorized: true,
+      }
     case types.LINK_CURATED:
-      return { ...state, links: action.payload, loading: false, authorized: true, linkCurated: true }
+      return {
+        ...state,
+        links: action.payload,
+        loading: false,
+        authorized: true,
+        linkCurated: true,
+      }
     case types.TOAST_DISPLAYED:
       return { ...state, linkCurated: null }
     case types.REQUESTED_LINKS:

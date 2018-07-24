@@ -122,6 +122,15 @@ export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => 
   }
 }
 
+export const organiseLinks = (links, status) => {
+  const filteredLinks = links.filter((link) => {
+    return link.status === status
+  })
+  return filteredLinks.sort((a, b) => {
+    return new Date(b.date_added) - new Date(a.date_added)
+  })
+}
+
 export const getLinks = (token) => {
   return (dispatch) => {
     dispatch({ type: types.REQUESTED_LINKS })
@@ -129,9 +138,11 @@ export const getLinks = (token) => {
     axios.post(`${apiUrl}links/fetch`, { user: { token } })
       .then((res) => {
         if (res.status === 200) {
+          const newLinks = organiseLinks(res.data, 'new')
+          const archivedLinks = organiseLinks(res.data, 'archived')
           dispatch({
             type: types.GET_LINKS,
-            payload: res.data,
+            payload: { newLinks, archivedLinks },
           })
         } else if (res.status === 204) {
           dispatch({ type: types.NO_LINKS })

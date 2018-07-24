@@ -2,28 +2,24 @@ import React, { Component } from 'react'
 import {
   View,
   ScrollView,
-  Text,
   StatusBar,
   FlatList,
   RefreshControl,
   AsyncStorage,
   Alert,
-  Platform,
   NativeModules,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
-import { Toast } from 'native-base'
-import _ from 'lodash'
 import {
   createLink,
   archiveLink,
   shareLink,
   setArchiveMode,
   getLinks,
-  addTags
+  addTags,
 } from '../redux/link/actions'
-import { getUserInfo, updateUser } from '../redux/user/actions'
+import { updateUser } from '../redux/user/actions'
 import Card from './common/card'
 import Tag from './common/tag'
 
@@ -33,7 +29,6 @@ class LinkView extends Component {
 
     this.state = {
       links: [],
-      token: null,
       readerMode: 'on',
       filterTerms: [],
       tags: [],
@@ -44,11 +39,8 @@ class LinkView extends Component {
 
   async componentDidMount() {
     const membership = await AsyncStorage.getItem('membership')
-    const token = await AsyncStorage.getItem('token')
-    this.setState({ isMember: !!membership, token })
-    this.filterLinks()
+    this.setState({ isMember: !!membership })
     this.checkReaderMode()
-    this.props.getUserInfo(token)
     if (!membership && this.props.links.length === 5 && !__DEV__) {
       this.membershipAlert()
     }
@@ -56,13 +48,6 @@ class LinkView extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.checkReaderMode()
-    if (nextProps.links && this.props.links) {
-      if (!_.isEqual(nextProps.links, this.props.links)) {
-        this.filterLinks(nextProps.links)
-        this.props.getUserInfo(this.state.token)
-      }
-    }
-
     if (nextProps.tags) {
       this.setState({ tags: nextProps.tags })
     }
@@ -98,7 +83,7 @@ class LinkView extends Component {
       AsyncStorage.setItem('subscriptionType', 'unlimited')
     } else {
       NativeModules.InAppUtils.restorePurchases((error, response) => {
-        if(error) {
+        if (error) {
           Alert.alert('iTunes Error', 'Could not connect to iTunes store.')
         } else {
           Alert.alert('Restore Successful', 'Successfully restored your purchase.')
@@ -110,10 +95,10 @@ class LinkView extends Component {
 
           response.forEach(async (purchase) => {
             if (purchase.productIdentifier === 'com.cure8.cure8app.premium') {
-              await this.props.updateUser(this.state.token, 'unlimited', 'subscription_type', this.props.userInfo)
+              await this.props.updateUser(this.props.token, 'unlimited', 'subscription_type', this.props.userInfo)
               await AsyncStorage.setItem('subscriptionType', 'unlimited')
               await AsyncStorage.removeItem('limitReached')
-              this.props.getLinks(this.state.token)
+              this.props.getLinks(this.props.token)
               this.setState({ isMember: true })
             }
           })
@@ -134,38 +119,15 @@ class LinkView extends Component {
     )
   }
 
-  filterLinks(links = this.props.links, userInfo = this.props.userInfo) {
-    const { status } = this.props
-    const sortedLinks = this.sortLinks(links)
-    const filteredByStatus = sortedLinks.filter((link) => {
-      return link.status === status
-    })
-
-    const linksCount = filteredByStatus.length
-    let allLinks = filteredByStatus
-
-    let res = allLinks
-    if (this.state.filterTerms.length) {
-      res = this.filterByTags(allLinks)
-    }
-    this.setState({ links: res })
-  }
-
-  sortLinks(links) {
-    return links.sort((a, b) => {
-      return new Date(b.date_added) - new Date(a.date_added)
-    })
-  }
-
   archiveLink = (id, rating, tags = []) => {
     const { action } = this.props.archiveMode
-    const { token } = this.state
+    const { token } = this.props
     this.props.archiveLink({ id, rating, action, token, tags })
     this.onArchivePress(null)
   }
 
   archiveWithoutRating = (id, rating, action) => {
-    const { token } = this.state
+    const { token } = this.props
     this.props.archiveLink({ id, rating, action, token })
   }
 
@@ -185,7 +147,7 @@ class LinkView extends Component {
       newFilterTerms = filterTerms.filter(term => term !== tag)
     }
     await this.setState({ filterTerms: newFilterTerms })
-    this.filterLinks()
+    this.filterLinks(this.props.links)
   }
 
   filterByTags(links) {
@@ -227,11 +189,11 @@ class LinkView extends Component {
 
   resetLinks = async () => {
     await this.setState({ filterTerms: [] })
-    this.filterLinks()
+    this.filterLinks(this.props.links)
   }
 
   addTags = (curationId, tags) => {
-    this.props.addTags(curationId, tags, this.state.token)
+    this.props.addTags(curationId, tags, this.props.token)
   }
 
   renderTagFilterList = () => {
@@ -244,13 +206,14 @@ class LinkView extends Component {
           <Icon
             size={24}
             containerStyle={{ margin: 5 }}
-            name='cancel'
-            color='#ddd'
+            name="cancel"
+            color="#ddd"
             onPress={this.resetLinks}
           />
         </View>
       )
     }
+    return null
   }
 
   renderItem = ({ item }) => {
@@ -271,6 +234,7 @@ class LinkView extends Component {
         addTags={this.addTags.bind(this)}
         userPhone={this.props.userInfo.phone}
         navigate={this.props.navigate}
+        token={this.props.token}
       />
     )
   }
@@ -281,7 +245,7 @@ class LinkView extends Component {
         <StatusBar barStyle="light-content" />
         {this.renderTagFilterList()}
         <FlatList
-          data={this.state.links}
+          data={this.props.links}
           extraData={this.props}
           renderItem={this.renderItem}
           keyExtractor={item => item.curation_id.toString()}
@@ -302,7 +266,7 @@ class LinkView extends Component {
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: '#ecf0f1'
+    backgroundColor: '#ecf0f1',
   },
   links: {
     alignItems: 'center',
@@ -310,19 +274,19 @@ const styles = {
   noLinks: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   tagList: {
     backgroundColor: '#fff',
     flexDirection: 'row',
-  }
+  },
 }
 
 const mapStateToProps = ({ link, user }) => {
-  const { archiveMode, links, loading } = link
+  const { archiveMode, loading } = link
   const { info: userInfo } = user
   const { tags } = user.info
-  return { archiveMode, links, loading, tags, userInfo }
+  return { archiveMode, loading, tags, userInfo }
 }
 
 export default connect(mapStateToProps, {
@@ -331,7 +295,6 @@ export default connect(mapStateToProps, {
   archiveLink,
   shareLink,
   setArchiveMode,
-  getUserInfo,
   addTags,
   updateUser,
 })(LinkView)

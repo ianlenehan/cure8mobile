@@ -3,18 +3,18 @@ import {
   AsyncStorage,
   Text,
   View,
-  TouchableHighlight,
   Image,
   StatusBar,
   Platform,
-  Alert
+  Alert,
 } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import OneSignal from 'react-native-onesignal'
 import { Toast } from 'native-base'
+import _ from 'lodash'
 
-import { getLinks, toastDisplayed } from '../redux/link/actions'
+import { getLinks, toastDisplayed, organiseLinks } from '../redux/link/actions'
 import { getUserInfo, updateUser, getUserActivity } from '../redux/user/actions'
 import { getContacts } from '../redux/contact/actions'
 import LinkView from '../components/linkView'
@@ -27,7 +27,7 @@ class Links extends Component {
       headerTitle: (
         <Image
           style={{ width: 100, height: 30 }}
-          resizeMode='contain'
+          resizeMode="contain"
           source={require('../../assets/images/logo_clear.png')}
         />
       ),
@@ -35,7 +35,7 @@ class Links extends Component {
         <Button
           icon={{ name: 'plus', type: 'font-awesome' }}
           iconRight
-          backgroundColor='rgba(0,0,0,0)'
+          backgroundColor="rgba(0,0,0,0)"
           onPress={
             async () => {
               const limitReached = await AsyncStorage.getItem('limitReached')
@@ -52,14 +52,17 @@ class Links extends Component {
         <Button
           icon={{ name: 'settings' }}
           iconLeft
-          backgroundColor='rgba(0,0,0,0)'
+          backgroundColor="rgba(0,0,0,0)"
           onPress={() => navigate('profile')}
         />
-      )
+      ),
     }
   }
 
+  state = { cachedLinks: null, token: null }
+
   componentDidMount() {
+    this._loadStoredData()
     this.getUserData()
     this.requestNotificationPermissions()
     this.updateUserOs()
@@ -71,30 +74,49 @@ class Links extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.authorized) this.props.navigation.navigate('auth')
-    if (nextProps.links && this.props.links) {
-      if (nextProps.links.length > this.props.links.length) this.getUserData()
+    if (nextProps.newLinks) { this._storeData(nextProps.newLinks) }
+
+    if (nextProps.newLinks && this.props.newLinks) {
+      if (!_.isEqual(nextProps.newLinks, this.props.newLinks)) {
+        this.props.getUserInfo(this.state.token)
+      }
     }
     if (nextProps.linkCurated) {
       this.newCurationToastAlert()
     }
   }
 
+  getUserData = async () => {
+    const token = await AsyncStorage.getItem('token')
+    this.setState({ token })
+    this.props.getLinks(token)
+    this.props.getContacts(token)
+    this.props.getUserInfo(token)
+    this.props.getUserActivity(token)
+  }
+
+  async _loadStoredData() {
+    const links = await AsyncStorage.getItem('cachedLinks')
+    this.setState({ cachedLinks: JSON.parse(links) })
+  }
+
+  async _storeData() {
+    if (this.props.newLinks) {
+      await AsyncStorage.setItem('cachedLinks', JSON.stringify(this.props.newLinks))
+    }
+    if (this.props.archivedLinks) {
+      await AsyncStorage.setItem('cachedArchivedLinks', JSON.stringify(this.props.archivedLinks))
+    }
+  }
+
   newCurationToastAlert() {
     Toast.show({
-      text: "Your curation has been saved!",
+      text: 'Your curation has been saved!',
       position: 'top',
       buttonText: 'OK',
       duration: 3000,
     })
     this.props.toastDisplayed()
-  }
-
-  getUserData = async () => {
-    const token = await AsyncStorage.getItem('token')
-    this.props.getLinks(token)
-    this.props.getContacts(token)
-    this.props.getUserInfo(token)
-    this.props.getUserActivity(token)
   }
 
   checkNotificationStatus = async (status) => {
@@ -128,16 +150,15 @@ class Links extends Component {
   }
 
   renderLinkView() {
-    const { loading, links } = this.props
+    const { loading } = this.props
+    const links = this.props.newLinks || this.state.cachedLinks
+
     if (!links) {
       if (loading) {
         return (
           <View style={styles.loading}>
             <StatusBar barStyle="light-content" />
-            <Spinner size='large' text='Loading links...' />
-            <TouchableHighlight onPress={this.getuserData}>
-              <Text style={styles.reload}>reload</Text>
-            </TouchableHighlight>
+            <Spinner size="large" text="Loading links..." />
           </View>
         )
       }
@@ -149,9 +170,11 @@ class Links extends Component {
     }
     return (
       <LinkView
-        status='new'
+        status="new"
         navigate={this.props.navigation.navigate}
         refresh={this.getUserData.bind(this)}
+        links={links}
+        token={this.state.token}
       />
     )
   }
@@ -165,28 +188,29 @@ const styles = {
   noLinks: {
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1
+    flex: 1,
   },
   reload: {
     margin: 10,
     textAlign: 'center',
     textDecorationLine: 'underline',
-    color: 'grey'
+    color: 'grey',
   },
   loading: {
     flex: 1,
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+  },
 }
 
 const mapStateToProps = ({ link, user }) => {
-  const { links, loading, authorized, linkCurated } = link
+  const { newLinks, archivedLinks, loading, authorized, linkCurated } = link
   const { info: userInfo } = user
-  return { links, loading, authorized, linkCurated, userInfo }
+  return { newLinks, archivedLinks, loading, authorized, linkCurated, userInfo }
 }
 
 export default connect(mapStateToProps, {
   getLinks,
+  organiseLinks,
   getContacts,
   getUserInfo,
   updateUser,
