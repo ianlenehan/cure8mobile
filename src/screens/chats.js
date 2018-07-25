@@ -3,8 +3,7 @@ import moment from 'moment'
 import { Text, View, TouchableWithoutFeedback, FlatList, AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
-import RNActionCable from 'react-native-actioncable'
-import ActionCableProvider, { ActionCable } from 'react-actioncable-provider'
+import { ActionCable } from 'react-actioncable-provider'
 import Cable from '../components/cable'
 import {
   setActiveConversation,
@@ -73,16 +72,6 @@ const styles = {
 }
 
 class Chats extends Component {
-  static navigationOptions() {
-    return {
-      headerTitle: 'Chats',
-      tabBarLabel: 'Chats',
-      tabBarIcon: ({ tintColor }) => {
-        return <Icon name="comments" type="font-awesome" size={24} color={tintColor} />
-      },
-    }
-  }
-
   constructor(props) {
     super(props)
 
@@ -217,7 +206,7 @@ class Chats extends Component {
     }
     return (
       <View style={styles.loading}>
-        <Spinner size="large" text="Loading links..." />
+        <Spinner size="large" text="Loading chats..." />
       </View>
     )
   }
