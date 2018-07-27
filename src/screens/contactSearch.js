@@ -130,10 +130,10 @@ class ContactSearch extends Component {
             placeholder={this.inputPlaceholder()}
             value={this.props.name}
             onChangeText={this.props.nameChanged}
-            returnKeyType={'done'}
+            returnKeyType="done"
             disableReturnKey={false}
           />
-        {this.showMoreButton()}
+          {this.showMoreButton()}
         </View>
         <FlatList
           data={this.state.filteredContacts}

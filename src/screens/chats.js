@@ -81,17 +81,9 @@ class Chats extends Component {
   }
 
   componentDidMount() {
-    this._loadStoredData()
-    this._getConversations()
     this.subs = [
       this.props.navigation.addListener('didFocus', () => this._getConversations()),
     ]
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.conversations && nextProps.conversations.length) {
-      this._storeData(nextProps.conversations)
-    }
   }
 
   componentWillUnmount() {

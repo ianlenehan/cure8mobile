@@ -16,9 +16,28 @@ import _ from 'lodash'
 
 import { getLinks, toastDisplayed, organiseLinks } from '../redux/link/actions'
 import { getUserInfo, updateUser, getUserActivity } from '../redux/user/actions'
+import { getConversations } from '../redux/conversation/actions'
 import { getContacts } from '../redux/contact/actions'
 import LinkView from '../components/linkView'
 import Spinner from '../components/common/spinner'
+
+const styles = {
+  noLinks: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  reload: {
+    margin: 10,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+    color: 'grey',
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+}
 
 class Links extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -93,6 +112,7 @@ class Links extends Component {
     this.props.getContacts(token)
     this.props.getUserInfo(token)
     this.props.getUserActivity(token)
+    this.props.getConversations(token)
   }
 
   async _loadStoredData() {
@@ -143,7 +163,7 @@ class Links extends Component {
       const permissions = {
         alert: true,
         badge: true,
-        sound: true
+        sound: true,
       }
       OneSignal.requestPermissions(permissions)
     }
@@ -172,7 +192,7 @@ class Links extends Component {
       <LinkView
         status="new"
         navigate={this.props.navigation.navigate}
-        refresh={this.getUserData.bind(this)}
+        refresh={this.getUserData}
         links={links}
         token={this.state.token}
       />
@@ -184,28 +204,11 @@ class Links extends Component {
   }
 }
 
-const styles = {
-  noLinks: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-  },
-  reload: {
-    margin: 10,
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-    color: 'grey',
-  },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-}
-
-const mapStateToProps = ({ link, user }) => {
+const mapStateToProps = ({ link, user, conversation }) => {
   const { newLinks, archivedLinks, loading, authorized, linkCurated } = link
   const { info: userInfo } = user
-  return { newLinks, archivedLinks, loading, authorized, linkCurated, userInfo }
+  const { unreadMessages } = conversation
+  return { newLinks, archivedLinks, loading, authorized, linkCurated, userInfo, unreadMessages }
 }
 
 export default connect(mapStateToProps, {
@@ -216,4 +219,5 @@ export default connect(mapStateToProps, {
   updateUser,
   getUserActivity,
   toastDisplayed,
+  getConversations,
 })(Links)
