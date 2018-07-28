@@ -122,6 +122,7 @@ class LinkView extends Component {
   archiveLink = (id, rating, tags = []) => {
     const { action } = this.props.archiveMode
     const { token } = this.props
+    this.props.clearCache()
     this.props.archiveLink({ id, rating, action, token, tags })
     this.onArchivePress(null)
   }
@@ -284,7 +285,6 @@ const styles = {
 }
 
 const mapStateToProps = ({ link, user, contact }) => {
-  console.log('props user', user)
   const { archiveMode, loading } = link
   const { info: userInfo } = user
   const { tags } = user.info

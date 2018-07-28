@@ -168,10 +168,13 @@ class Links extends Component {
     }
   }
 
+  clearCache = () => {
+    this.setState({ cachedLinks: null })
+  }
+
   renderLinkView() {
     const { loading } = this.props
     const links = this.props.newLinks || this.state.cachedLinks
-
     if (!links) {
       if (loading) {
         return (
@@ -194,6 +197,7 @@ class Links extends Component {
         refresh={this.getUserData}
         links={links}
         token={this.state.token}
+        clearCache={this.clearCache}
       />
     )
   }
