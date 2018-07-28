@@ -315,11 +315,10 @@ class Card extends Component {
   }
 
   showSharedWith = () => {
-    const { owner } = this.props.link
     const { sharedWithNames } = this.state
-    let message = `${owner.name} has only shared with with you.`
+    let message = 'This has only been shared with with you.'
     if (sharedWithNames.length) {
-      message = `${owner.name} has also shared this with ${sharedWithNames.join(', ')}.`
+      message = `This has also been shared with ${sharedWithNames.join(', ')}.`
     }
     Alert.alert('Shared With', message)
   }

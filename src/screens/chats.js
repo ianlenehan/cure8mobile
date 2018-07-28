@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import { Text, View, TouchableWithoutFeedback, FlatList, AsyncStorage } from 'react-native'
+import {
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  FlatList,
+  AsyncStorage,
+  AppState,
+} from 'react-native'
 import { connect } from 'react-redux'
 import { ActionCable } from 'react-actioncable-provider'
 import Cable from '../components/cable'
@@ -77,16 +84,19 @@ class Chats extends Component {
 
     this.state = {
       conversations: null,
+      appState: AppState.currentState,
     }
   }
 
   componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange)
     this.subs = [
       this.props.navigation.addListener('didFocus', () => this._getConversations()),
     ]
   }
 
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange)
     this.subs.forEach(sub => sub.remove())
   }
 
@@ -97,6 +107,13 @@ class Chats extends Component {
 
   async _storeData(conversations) {
     await AsyncStorage.setItem('conversationData', JSON.stringify(conversations))
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      this._getConversations()
+    }
+    this.setState({ appState: nextAppState })
   }
 
   formatDate(date) {

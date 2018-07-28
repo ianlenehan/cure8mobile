@@ -7,6 +7,7 @@ import {
   StatusBar,
   Platform,
   Alert,
+  AppState,
 } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -58,7 +59,7 @@ class Links extends Component {
           onPress={
             async () => {
               const limitReached = await AsyncStorage.getItem('limitReached')
-              if (limitReached && !__DEV__) {
+              if (limitReached && !__DEV__) { // eslint-disable-line
                 Alert.alert('Sorry!', "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Settings screen.")
               } else {
                 navigate('addLink')
@@ -78,9 +79,10 @@ class Links extends Component {
     }
   }
 
-  state = { cachedLinks: null, token: null }
+  state = { cachedLinks: null, token: null, appState: AppState.currentState }
 
   componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange)
     this._loadStoredData()
     this.getUserData()
     this.requestNotificationPermissions()
@@ -89,6 +91,10 @@ class Links extends Component {
     OneSignal.getPermissionSubscriptionState((status) => {
       this.checkNotificationStatus(status)
     })
+
+    this.subs = [
+      this.props.navigation.addListener('didFocus', () => this.getUserData()),
+    ]
   }
 
   componentWillReceiveProps(nextProps) {
@@ -105,6 +111,11 @@ class Links extends Component {
     }
   }
 
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange)
+    this.subs.forEach(sub => sub.remove())
+  }
+
   getUserData = async () => {
     const token = await AsyncStorage.getItem('token')
     this.setState({ token })
@@ -113,6 +124,14 @@ class Links extends Component {
     this.props.getUserInfo(token)
     this.props.getUserActivity(token)
     this.props.getConversations(token)
+  }
+
+  _handleAppStateChange = async (nextAppState) => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      const token = await AsyncStorage.getItem('token')
+      this.props.getLinks(token)
+    }
+    this.setState({ appState: nextAppState })
   }
 
   async _loadStoredData() {
