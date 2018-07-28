@@ -4,7 +4,7 @@ import {
   NAME_CHANGED,
   EDIT_MODE_CHANGED,
   GROUP_NAME_MISSING,
-  NOT_AUTHORIZED
+  NOT_AUTHORIZED,
 } from '../types'
 
 const initialState = {
@@ -16,7 +16,7 @@ const initialState = {
   loading: '',
   editMode: false,
   error: '',
-  authorized: true
+  authorized: true,
 }
 
 export default (state = initialState, action) => {
@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
         groups: action.payload.groups,
         combinedContacts: action.payload.combined_contacts,
         contactExists: action.payload.contactExists,
-        loading: false
+        loading: false,
       }
     case NAME_CHANGED:
       return { ...state, name: action.payload }

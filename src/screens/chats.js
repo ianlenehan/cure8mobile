@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import moment from 'moment'
 import { Text, View, TouchableWithoutFeedback, FlatList, AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
-import { Icon } from 'react-native-elements'
 import { ActionCable } from 'react-actioncable-provider'
 import Cable from '../components/cable'
 import {
@@ -13,6 +12,7 @@ import {
   resetUnreadMessageCount,
 } from '../redux/conversation/actions'
 import Spinner from '../components/common/spinner'
+import { primaryGreen } from '../variables'
 
 const styles = {
   container: {
@@ -30,6 +30,7 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'space-between',
     flex: 10,
+    alignItems: 'center',
   },
   title: {
     fontSize: 16,
@@ -38,12 +39,11 @@ const styles = {
     flex: 1,
   },
   unreadContainer: {
-    backgroundColor: 'green',
+    backgroundColor: primaryGreen,
     height: 18,
     width: 18,
     borderRadius: 9,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   unreadCount: {
     fontSize: 12,

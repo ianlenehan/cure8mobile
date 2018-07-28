@@ -144,16 +144,15 @@ class Links extends Component {
     const token = await AsyncStorage.getItem('token')
     if (pushToken !== status.userId) {
       await AsyncStorage.setItem('pushToken', status.userId)
+      this.props.updateUser(token, status.userId, 'push', this.props.userInfo)
     }
-    this.props.updateUser(token, status.userId, 'push')
-    // TODO move this back into the if statement once I'm done fiddling
   }
 
   async updateUserOs() {
     const storedOs = await AsyncStorage.getItem('deviceOs')
     if (!storedOs) {
       const token = await AsyncStorage.getItem('token')
-      this.props.updateUser(token, Platform.OS, 'device_os')
+      this.props.updateUser(token, Platform.OS, 'device_os', this.props.userInfo)
       AsyncStorage.setItem('deviceOs', Platform.OS)
     }
   }

@@ -57,7 +57,7 @@ class LinkView extends Component {
     }
   }
 
-  async onRefresh() {
+  onRefresh = async () => {
     await this.checkReaderMode()
     await this.props.refresh()
   }
@@ -113,9 +113,9 @@ class LinkView extends Component {
       'Sorry!',
       "Thanks for trying Cure8! You are using the free version of this app and can no longer share or recieve new links. Perhaps you'd like to upgrade to the full version, which you can do from the Settings screen. Or tap Restore below if you have already purchased.",
       [
-        {text: 'OK'},
-        {text: 'Restore', onPress: () => this.restorePurchase()},
-      ]
+        { text: 'OK' },
+        { text: 'Restore', onPress: () => this.restorePurchase() },
+      ],
     )
   }
 
@@ -222,7 +222,7 @@ class LinkView extends Component {
         link={item}
         morePressed={this.state.morePressed}
         onDrawerPress={(curation) => this.expandCardDrawer(curation)}
-        onArchivePress={this.onArchivePress.bind(this)}
+        onArchivePress={this.onArchivePress}
         onSharePress={(link) => this.shareLink(link)}
         status={this.props.status}
         archiveMode={this.props.archiveMode}
@@ -235,6 +235,7 @@ class LinkView extends Component {
         userPhone={this.props.userInfo.phone}
         navigate={this.props.navigate}
         token={this.props.token}
+        contacts={this.props.contacts}
       />
     )
   }
@@ -254,7 +255,7 @@ class LinkView extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.props.loading}
-              onRefresh={this.onRefresh.bind(this)}
+              onRefresh={this.onRefresh}
             />
           }
         />
@@ -282,11 +283,13 @@ const styles = {
   },
 }
 
-const mapStateToProps = ({ link, user }) => {
+const mapStateToProps = ({ link, user, contact }) => {
+  console.log('props user', user)
   const { archiveMode, loading } = link
   const { info: userInfo } = user
   const { tags } = user.info
-  return { archiveMode, loading, tags, userInfo }
+  const { contacts } = contact
+  return { archiveMode, loading, tags, userInfo, contacts }
 }
 
 export default connect(mapStateToProps, {

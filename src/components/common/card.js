@@ -23,6 +23,7 @@ import Spinner from './spinner'
 import Input from './input'
 import RatingIcons from './ratingIcons'
 import { createConversation, getConversations } from '../../redux/conversation/actions'
+import { primaryGreen } from '../../variables'
 
 const styles = {
   title: {
@@ -53,7 +54,7 @@ const styles = {
   },
   count: {
     fontSize: 10,
-    color: 'grey',
+    color: primaryGreen,
   },
   comment: {
     fontSize: 12,
@@ -120,6 +121,7 @@ class Card extends Component {
       tags: [],
       selectedTags: [],
       tagSearchQuery: '',
+      sharedWithNames: null,
     }
   }
 
@@ -137,6 +139,9 @@ class Card extends Component {
     }
     if (nextProps.userPhone) {
       this.setState({ phone: this.props.userPhone })
+    }
+    if (nextProps.contacts.length > 0 && nextProps.userPhone) {
+      this.getSharedWithNames(nextProps.contacts, nextProps.userPhone)
     }
   }
 
@@ -204,10 +209,11 @@ class Card extends Component {
   }
 
   async startConversation(chatType) {
-    const { title, link_id, users_shared_with } = this.props.link
+    const { title, link_id, users_shared_with: users } = this.props.link
     const { token } = this.props
+    const userIds = users.map(user => user.id)
 
-    await this.props.createConversation({ link_id, users_shared_with, chatType, token })
+    await this.props.createConversation({ link_id, userIds, chatType, token })
     await this.props.getConversations(token)
     this.props.navigate('chat', { title })
   }
@@ -221,8 +227,8 @@ class Card extends Component {
     const { owner, shared_with: sharedWith, users_shared_with: usersSharedWith } = this.props.link
 
     if (sharedWith > 2) { return true }
-
-    const ownerSharedWithThemself = usersSharedWith.includes(owner.id)
+    const userIds = usersSharedWith.map(user => user.id)
+    const ownerSharedWithThemself = userIds.includes(owner.id)
 
     if (sharedWith === 2 && ownerSharedWithThemself) { return true }
 
@@ -294,6 +300,28 @@ class Card extends Component {
       }
       this.tagSearch('')
     }
+  }
+
+  getSharedWithNames(contacts, phone) {
+    const { users_shared_with: usersSharedWith } = this.props.link
+    const sharedWithNames = usersSharedWith.map(user => {
+      const userContactMatch = contacts.filter(contact => contact.user_id === user.id)
+      if (userContactMatch.length > 0) return userContactMatch[0].name
+      return user.phone
+    })
+    const index = sharedWithNames.indexOf(phone)
+    if (index > -1) sharedWithNames.splice(index, 1)
+    this.setState({ sharedWithNames })
+  }
+
+  showSharedWith = () => {
+    const { owner } = this.props.link
+    const { sharedWithNames } = this.state
+    let message = `${owner.name} has only shared with with you.`
+    if (sharedWithNames.length) {
+      message = `${owner.name} has also shared this with ${sharedWithNames.join(', ')}.`
+    }
+    Alert.alert('Shared With', message)
   }
 
   renderUpdateButton(status) {
@@ -515,11 +543,11 @@ class Card extends Component {
           <Image source={{ uri: image }} style={styles.image} />
         </TouchableOpacity>
         <View style={styles.subtitle}>
-          <View style={{ flexDirection: 'row', flex: 1 }}>
+          <TouchableOpacity style={{ flexDirection: 'row', flex: 1 }} onPress={this.showSharedWith}>
             <Text style={styles.owner}>{owner.name}</Text>
-            <Icon name="people" size={14} color="grey" />
+            <Icon name="people" size={14} color={primaryGreen} />
             <Text style={styles.count}> {sharedWith}</Text>
-          </View>
+          </TouchableOpacity>
           <Text style={styles.date}>{this.formatDate(date)}</Text>
         </View>
         <View style={{ flexDirection: 'row' }}>

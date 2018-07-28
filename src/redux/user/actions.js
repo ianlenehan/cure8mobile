@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Platform, AsyncStorage } from 'react-native'
 import * as types from '../types'
 import rootURL from '../../../environment'
 
@@ -12,7 +11,6 @@ export const updateUser = (token, value, field, userInfo = {}) => {
   switch (field) {
     case 'getRatingNotifications':
       fieldName = 'notifications_new_rating'
-      newInfo.notifications.rating = value
       break
     case 'getCurationNotifications':
       fieldName = 'notifications_new_link'
