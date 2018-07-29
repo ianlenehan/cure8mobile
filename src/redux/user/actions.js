@@ -27,14 +27,14 @@ export const updateUser = (token, value, field, userInfo = {}) => {
   return (dispatch) => {
     dispatch({
       type: types.GOT_INFO,
-      payload: newInfo
+      payload: newInfo,
     })
     axios.post(`${apiUrl}user/update`, { user: { token, field: fieldName, value } })
       .then(res => {
         if (res.data.status === 200) {
           dispatch({
             type: types.GOT_INFO,
-            payload: res.data
+            payload: res.data,
           })
         }
       })
@@ -50,7 +50,7 @@ export const getUserInfo = (token) => {
         if (res.data.status === 200) {
           dispatch({
             type: types.GOT_INFO,
-            payload: res.data
+            payload: res.data,
           })
         }
       })
@@ -69,7 +69,7 @@ export const getUserActivity = (token) => {
         if (res.data.status === 200) {
           dispatch({
             type: types.GOT_ACTIVITY,
-            payload: res.data.data
+            payload: res.data.data,
           })
         }
       })

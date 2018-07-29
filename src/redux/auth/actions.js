@@ -25,38 +25,57 @@ const formatPhone = (phone, callingCode) => {
   return `+${callingCode}${numbersOnly}`
 }
 
+const loginUserSuccess = async (dispatch, res) => {
+  const { id, name, phone: phn } = res.data.user
+  const { token } = res.data
+  await AsyncStorage.multiSet([
+    ['token', token],
+    ['currentUserId', id.toString()],
+    ['currentUserName', name],
+    ['currentUserPhone', phn.toString()],
+  ])
+  dispatch({
+    type: LOGIN_USER_SUCCESS,
+    payload: res.data,
+  })
+}
+
+const loginUserFailure = (dispatch) => {
+  dispatch({ type: LOGIN_USER_FAIL });
+}
+
 export const phoneChanged = (phone, callingCode) => {
   const formattedPhone = formatPhone(phone, callingCode)
   return {
     type: PHONE_CHANGED,
-    payload: { phone, formattedPhone }
+    payload: { phone, formattedPhone },
   }
 }
 
 export const codeChanged = (code) => {
   return {
     type: CODE_CHANGED,
-    payload: code
+    payload: code,
   }
 }
 
 export const firstNameChanged = (text) => {
   return {
     type: FIRST_NAME_CHANGED,
-    payload: text
+    payload: text,
   }
 }
 
 export const lastNameChanged = (text) => {
   return {
     type: LAST_NAME_CHANGED,
-    payload: text
+    payload: text,
   }
 }
 
 export const resetPhoneNumber = () => {
   return {
-    type: PHONE_RESET
+    type: PHONE_RESET,
   }
 }
 
@@ -69,19 +88,19 @@ export const getTemporaryCode = (formattedPhone) => {
         if (res.data.status === 200) {
           dispatch({
             type: GET_CODE,
-            payload: res.data.message
+            payload: res.data.message,
           })
         } else {
           dispatch({
             type: GET_CODE_ERROR,
-            payload: res.data.message
+            payload: res.data.message,
           })
         }
       })
       .catch((err) => {
         dispatch({
           type: GET_CODE_ERROR,
-          payload: `So... something's wrong. (${err})`
+          payload: `So... something's wrong. (${err})`,
         })
       })
   }
@@ -128,8 +147,8 @@ export const createAccount = ({ formattedPhone, code, firstName, lastName }) => 
           phone: formattedPhone,
           code,
           first_name: firstName,
-          last_name: lastName
-        }
+          last_name: lastName,
+        },
       })
         .then((res) => {
           if (res.data.status === 200) {
@@ -145,23 +164,4 @@ export const createAccount = ({ formattedPhone, code, firstName, lastName }) => 
     }
   }
   return { type: CREATE_ACCOUNT_FAIL }
-}
-
-const loginUserSuccess = async (dispatch, res) => {
-  const { id, name, phone: phn } = res.data.user
-  const { token } = res.data
-  await AsyncStorage.multiSet([
-    ['token', token],
-    ['currentUserId', id.toString()],
-    ['currentUserName', name],
-    ['currentUserPhone', phn.toString()],
-  ])
-  dispatch({
-    type: LOGIN_USER_SUCCESS,
-    payload: res.data
-  })
-}
-
-const loginUserFailure = (dispatch) => {
-  dispatch({ type: LOGIN_USER_FAIL });
 }

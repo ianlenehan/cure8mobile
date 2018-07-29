@@ -12,7 +12,11 @@ export default (state = initialState, action) => {
     case types.ACTIVE_CONVERSATION_SET:
       return { ...state, activeConversation: action.payload }
     case types.CONVERSATIONS_SET:
-      return { ...state, conversations: action.payload.conversations, unreadMessages: action.payload.unreadMessages }
+      return {
+        ...state,
+        conversations: action.payload.conversations,
+        unreadMessages: action.payload.unreadMessages,
+      }
     case types.CONVERSATION_MESSAGES_SET:
       return { ...state, conversationMessages: action.payload }
     case types.CONVERSATION_CREATED:
