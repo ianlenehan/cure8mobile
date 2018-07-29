@@ -160,7 +160,7 @@ class Chats extends Component {
     this.props.navigation.navigate('chat', { title: conversation.title })
   }
 
-  renderItem({ item }) {
+  renderItem = ({ item }) => {
     return (
       <TouchableWithoutFeedback onPress={() => this.goToConversation(item)}>
         <View style={styles.card}>
@@ -187,7 +187,7 @@ class Chats extends Component {
     return (
       <FlatList
         data={conversations}
-        renderItem={this.renderItem.bind(this)}
+        renderItem={this.renderItem}
         keyExtractor={item => item.id.toString()}
         removeClippedSubviews={false}
       />

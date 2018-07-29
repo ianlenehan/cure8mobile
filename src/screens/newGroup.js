@@ -6,8 +6,30 @@ import Input from '../components/common/input'
 import {
   nameChanged,
   saveGroup,
-  updateGroup
+  updateGroup,
 } from '../redux/contact/actions'
+
+const styles = {
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  subtitle: {
+    fontSize: 12,
+  },
+  inputView: {
+    paddingTop: 10,
+    paddingBottom: 15,
+  },
+  buttons: {
+    padding: 10,
+  },
+  error: {
+    color: 'grey',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+}
 
 class NewGroup extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -19,8 +41,7 @@ class NewGroup extends Component {
   state = { members: [], token: null }
 
   async componentDidMount() {
-    const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
+    this._setToken()
     let groupName = ''
     const { params } = this.props.navigation.state
     if (params.group) {
@@ -28,11 +49,6 @@ class NewGroup extends Component {
       groupName = params.group.name
     }
     this.onNameChange(groupName)
-  }
-
-  setGroupMembers(group) {
-    const members = group.members.map(member => member.group_id)
-    this.setState({ members })
   }
 
   onContactPress = async (contact) => {
@@ -63,11 +79,21 @@ class NewGroup extends Component {
     }
   }
 
+  setGroupMembers(group) {
+    const members = group.members.map(member => member.group_id)
+    this.setState({ members })
+  }
+
   getRightIcon(contact) {
     if (this.state.members.includes(contact.id)) {
       return { name: 'circle', type: 'font-awesome', color: '#27ae60' }
     }
     return { name: 'circle', type: 'font-awesome', color: '#dcdcdc' }
+  }
+
+  async _setToken() {
+    const token = await AsyncStorage.getItem('token')
+    this.setState({ token })
   }
 
   render() {
@@ -76,19 +102,19 @@ class NewGroup extends Component {
       <View style={styles.container}>
         <View style={styles.inputView}>
           <Input
-            placeholder={'Group Name'}
+            placeholder="Group Name"
             maxLength={50}
             value={this.props.name}
             onChangeText={this.onNameChange}
           />
-        <Text style={styles.error}>{this.props.error}</Text>
+          <Text style={styles.error}>{this.props.error}</Text>
         </View>
         <ScrollView>
           <List containerStyle={{ marginBottom: 20, marginTop: 0 }}>
             {
-              contacts.map((contact, i) => (
+              contacts.map((contact) => (
                 <ListItem
-                  key={i}
+                  key={contact.phone}
                   title={contact.name}
                   subtitle={contact.phone}
                   onPress={() => this.onContactPress(contact)}
@@ -101,8 +127,8 @@ class NewGroup extends Component {
         </ScrollView>
         <View style={styles.buttons}>
           <Button
-            title='Save'
-            backgroundColor='#27ae60'
+            title="Save"
+            backgroundColor="#27ae60"
             onPress={this.onSavePress}
           />
         </View>
@@ -116,28 +142,6 @@ const mapStateToProps = ({ contact }) => {
   return { name, error, editMode }
 }
 
-export default connect(mapStateToProps,
-  { nameChanged, saveGroup, updateGroup }
-)(NewGroup)
-
-const styles = {
-  container: {
-    backgroundColor: 'white',
-    flex: 1
-  },
-  subtitle: {
-    fontSize: 12,
-  },
-  inputView: {
-    paddingTop: 10,
-    paddingBottom: 15
-  },
-  buttons: {
-    padding: 10
-  },
-  error: {
-    color: 'grey',
-    textAlign: 'center',
-    marginTop: 5
-  },
-}
+export default connect(mapStateToProps, {
+  nameChanged, saveGroup, updateGroup,
+})(NewGroup)

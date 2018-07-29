@@ -4,7 +4,23 @@ import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import ContactRow from '../components/contactRow'
 import Spinner from '../components/common/spinner'
-import { deleteContact, setEditMode, updateGroup } from '../redux/contact/actions'
+import { deleteContact, setEditMode } from '../redux/contact/actions'
+
+const styles = {
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  button: {
+    margin: 10,
+  },
+  groupMembers: {
+    backgroundColor: '#ecf0f1',
+    paddingLeft: 20,
+    fontSize: 16,
+    padding: 5,
+  },
+}
 
 class Groups extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -14,7 +30,7 @@ class Groups extends Component {
       headerRight: (
         <Button
           title={params.editMode ? 'Done' : 'Edit'}
-          backgroundColor='rgba(0,0,0,0)'
+          backgroundColor="rgba(0,0,0,0)"
           onPress={() => params.setEditMode()}
         />
       ),
@@ -23,14 +39,11 @@ class Groups extends Component {
 
   state = { activeGroup: null }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.props.navigation.setParams({
       setEditMode: this.setEditMode.bind(this),
-      editMode: false
+      editMode: false,
     })
-
-    const token = await AsyncStorage.getItem('token')
-    this.setState({ token, groups: this.props.groups })
   }
 
   onDeletePress = (group) => {
@@ -47,11 +60,25 @@ class Groups extends Component {
     }
   }
 
+  onEditPress = (group) => {
+    const { contacts } = this.props
+    this.props.navigation.navigate('newGroup', { group, contacts })
+  }
+
   setEditMode = async () => {
     await this.props.setEditMode(this.props.editMode)
     this.props.navigation.setParams({
-      editMode: this.props.editMode
+      editMode: this.props.editMode,
     })
+  }
+
+  async _setToken() {
+    const token = await AsyncStorage.getItem('token')
+    this.setState({ token })
+  }
+
+  navigateToNewGroup = () => {
+    this.props.navigation.navigate('newGroup', { contacts: this.props.contacts })
   }
 
   renderGroupMembers = (group) => {
@@ -62,16 +89,12 @@ class Groups extends Component {
         return <Text style={styles.groupMembers} key={member.id}>{member.name}</Text>
       })
     }
-  }
-
-  onEditPress = (group) => {
-    const { contacts } = this.props
-    this.props.navigation.navigate('newGroup', { group, contacts })
+    return null
   }
 
   renderContent() {
     if (this.props.loading) {
-      return <Spinner size='large' text='Loading groups...' />
+      return <Spinner size="large" text="Loading groups..." />
     }
     return this.props.groups.map(group => {
       return (
@@ -86,8 +109,8 @@ class Groups extends Component {
             onDeletePress={() => this.onDeletePress(group)}
             onEditPress={() => this.onEditPress(group)}
           />
-        {this.renderGroupMembers(group)}
-      </View>
+          {this.renderGroupMembers(group)}
+        </View>
       )
     })
   }
@@ -100,30 +123,13 @@ class Groups extends Component {
         </ScrollView>
         <Button
           icon={{ name: 'plus', type: 'font-awesome' }}
-          title='New Group'
-          backgroundColor='#27ae60'
-          onPress={() => this.props.navigation.navigate(
-              'newGroup', { contacts: this.props.contacts })}
+          title="New Group"
+          backgroundColor="#27ae60"
+          onPress={this.navigateToNewGroup}
           buttonStyle={styles.button}
         />
       </View>
     )
-  }
-}
-
-const styles = {
-  container: {
-    backgroundColor: 'white',
-    flex: 1
-  },
-  button: {
-    margin: 10
-  },
-  groupMembers: {
-    backgroundColor: '#ecf0f1',
-    paddingLeft: 20,
-    fontSize: 16,
-    padding: 5
   }
 }
 

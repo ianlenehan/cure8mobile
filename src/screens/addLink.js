@@ -7,11 +7,36 @@ import {
   createLink,
   urlChanged,
   commentChanged,
-  categoryChanged
+  categoryChanged,
 } from '../redux/link/actions'
-import { getUserInfo, getUserActivity }  from '../redux/user/actions'
+import { getUserInfo, getUserActivity } from '../redux/user/actions'
 import ContactPickList from '../components/contactPickList'
 import Input from '../components/common/input'
+
+const styles = {
+  container: {
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    flex: 1,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  form: {
+    flexDirection: 'column',
+  },
+  padding: {
+    flex: 0.1,
+  },
+  sortButtons: {
+    height: 30,
+  },
+  sortButtonText: {
+    fontSize: 12,
+  },
+  selectedText: {
+    color: '#27ae60',
+  },
+}
 
 class AddLink extends Component {
   static navigationOptions = () => {
@@ -30,9 +55,7 @@ class AddLink extends Component {
 
   async componentDidMount() {
     this.onUrlChange('')
-    const token = await AsyncStorage.getItem('token')
-    const { contacts, groups } = this.props
-    this.setState({ token, contacts, groups })
+    this._setInitialState()
     this.checkIfLinkExists()
   }
 
@@ -44,7 +67,7 @@ class AddLink extends Component {
     this.props.commentChanged(comment)
   }
 
-  async onContactPress(contactId) {
+  onContactPress = async (contactId) => {
     if (this.state.selectedContacts.includes(contactId)) {
       const newState = this.state.selectedContacts.filter(contact => {
         return contact !== contactId
@@ -53,6 +76,12 @@ class AddLink extends Component {
       return
     }
     this.setState({ selectedContacts: [...this.state.selectedContacts, contactId] })
+  }
+
+  async _setInitialState() {
+    const token = await AsyncStorage.getItem('token')
+    const { contacts, groups } = this.props
+    this.setState({ token, contacts, groups })
   }
 
   checkIfLinkExists() {
@@ -81,7 +110,7 @@ class AddLink extends Component {
   buttonStatus() {
     const { saveToMyLinks, selectedContacts, enteredNumber } = this.state
     const noContactSelected = saveToMyLinks === false && selectedContacts.length === 0
-    const noNumberEntered =  enteredNumber.length < 8
+    const noNumberEntered = enteredNumber.length < 8
     if (noContactSelected && noNumberEntered) {
       return true
     }
@@ -89,10 +118,11 @@ class AddLink extends Component {
   }
 
   validateNumber(number) {
-    if (number.length >+ 2 && number.split('')[0] !== '+') {
+    if (number.length >= 2 && number.split('')[0] !== '+') {
       Alert.alert(
         'Oops',
-        "For anonymous number entries, please enter with a '+' followed by the country code, and drop the leading zero. For example, '+61551234567'."
+        "For anonymous number entries, please enter with a '+' followed by the " +
+        "country code, and drop the leading zero. For example, '+61551234567'.",
       )
     } else {
       this.setState({ enteredNumber: number, contacts: [], groups: [] })
@@ -113,12 +143,31 @@ class AddLink extends Component {
     }
   }
 
+  switchButton = () => {
+    const { contacts } = this.state
+    if (this.state.sortIndex === 0) {
+      const sortedContacts = contacts.sort((a, b) => {
+        return new Date(b.updated_at) - new Date(a.updated_at)
+      })
+      this.setState({ contacts: sortedContacts, sortIndex: 1 })
+    } else {
+      const sortedContacts = contacts.sort((a, b) => {
+        const nameA = a.name.toUpperCase()
+        const nameB = b.name.toUpperCase()
+        if (nameA < nameB) { return -1 }
+        if (nameA > nameB) { return 1 }
+        return 0
+      })
+      this.setState({ contacts: sortedContacts, sortIndex: 0 })
+    }
+  }
+
   renderCheckBox() {
     const { saveToMyLinks, displayCheckBox } = this.state
     if (displayCheckBox) {
       return (
         <CheckBox
-          title='Save to my links'
+          title="Save to my links"
           center
           checked={saveToMyLinks}
           onPress={() => this.setState({ saveToMyLinks: !saveToMyLinks })}
@@ -129,108 +178,64 @@ class AddLink extends Component {
     return <Divider style={{ margin: 10, marginTop: 20 }} />
   }
 
-  switchButton = () => {
-    const { contacts } = this.state
-    if (this.state.sortIndex === 0) {
-      const sortedContacts = contacts.sort((a, b) => {
-        return new Date(b.updated_at) - new Date(a.updated_at)
-      })
-      this.setState({ contacts: sortedContacts, sortIndex: 1 })
-    } else {
-      const sortedContacts = contacts.sort((a, b) => {
-        var nameA = a.name.toUpperCase()
-        var nameB = b.name.toUpperCase()
-        if (nameA < nameB) { return -1 }
-        if (nameA > nameB) { return 1 }
-        return 0
-      })
-      this.setState({ contacts: sortedContacts, sortIndex: 0 })
-    }
-  }
-
   render() {
     const buttonDisabled = this.buttonStatus()
     const sortButtons = ['Alphabetical', 'Recent']
     return (
       <View style={styles.container}>
-          <View style={styles.form}>
-            <Input
-              value={this.props.url}
-              onChangeText={this.onUrlChange}
-              placeholder='Link URL'
-              autoCapitalize='none'
-              returnKeyType={'done'}
-            />
-            <Input
-              value={this.props.comment}
-              onChangeText={this.onCommentChange}
-              maxLength={140}
-              placeholder='Comment'
-              returnKeyType={'done'}
-            />
+        <View style={styles.form}>
+          <Input
+            value={this.props.url}
+            onChangeText={this.onUrlChange}
+            placeholder="Link URL"
+            autoCapitalize="none"
+            returnKeyType="done"
+          />
+          <Input
+            value={this.props.comment}
+            onChangeText={this.onCommentChange}
+            maxLength={140}
+            placeholder="Comment"
+            returnKeyType="done"
+          />
           {this.renderCheckBox()}
+        </View>
+        <View style={{ flex: 3, marginTop: 0 }}>
+          <ButtonGroup
+            buttons={sortButtons}
+            selectedIndex={this.state.sortIndex}
+            onPress={this.switchButton}
+            containerStyle={styles.sortButtons}
+            textStyle={styles.sortButtonText}
+            selectedTextStyle={styles.selectedText}
+          />
+          <SearchBar
+            lightTheme
+            placeholder="Search contacts or type number"
+            containerStyle={{ backgroundColor: '#f3f3f3', borderTopWidth: 0 }}
+            inputStyle={{ backgroundColor: '#ffffff', fontSize: 14 }}
+            clearIcon={{ color: '#86939e', name: 'clear' }}
+            onChangeText={(text) => this.contactSearch(text)}
+            value={this.state.searchText}
+          />
+          <ContactPickList
+            contacts={this.state.contacts}
+            selectedContacts={this.state.selectedContacts}
+            groups={this.state.groups}
+            onPress={this.onContactPress}
+          />
+          <View style={{ marginTop: 10 }}>
+            <Button
+              title="Curate"
+              backgroundColor="#27ae60"
+              onPress={this.saveLink}
+              disabled={buttonDisabled}
+            />
           </View>
-          <View style={{ flex: 3, marginTop: 0 }}>
-            <ButtonGroup
-              buttons={sortButtons}
-              selectedIndex={this.state.sortIndex}
-              onPress={this.switchButton}
-              containerStyle={styles.sortButtons}
-              textStyle={styles.sortButtonText}
-              selectedTextStyle={styles.selectedText}
-            />
-            <SearchBar
-              lightTheme
-              placeholder='Search contacts or type number'
-              containerStyle={{ backgroundColor: '#f3f3f3', borderTopWidth: 0 }}
-              inputStyle={{ backgroundColor: '#ffffff', fontSize: 14 }}
-              clearIcon={{ color: '#86939e', name: 'clear' }}
-              onChangeText={(text) => this.contactSearch(text)}
-              value={this.state.searchText}
-            />
-            <ContactPickList
-              contacts={this.state.contacts}
-              selectedContacts={this.state.selectedContacts}
-              groups={this.state.groups}
-              onPress={this.onContactPress.bind(this)}
-            />
-            <View style={{ marginTop: 10 }}>
-              <Button
-                title='Curate'
-                backgroundColor='#27ae60'
-                onPress={this.saveLink}
-                disabled={buttonDisabled}
-              />
-            </View>
-          </View>
+        </View>
       </View>
     )
   }
-}
-
-const styles = {
-  container: {
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    flex: 1,
-    paddingTop: 10,
-    paddingBottom: 10
-  },
-  form: {
-    flexDirection: 'column',
-  },
-  padding: {
-    flex: 0.1
-  },
-  sortButtons: {
-    height: 30,
-  },
-  sortButtonText: {
-    fontSize: 12,
-  },
-  selectedText: {
-    color: '#27ae60',
-  },
 }
 
 const mapStateToProps = (state) => {

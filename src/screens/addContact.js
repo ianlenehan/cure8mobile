@@ -18,10 +18,9 @@ class AddContact extends Component {
 
   state = { callingCode: '', countryName: null, token: '' }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.getUserLocation()
-    const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
+    this._setToken()
   }
 
   onAddPress = async (name, number) => {
@@ -37,16 +36,21 @@ class AddContact extends Component {
     axios.get(url)
       .then((res) => {
         this.setState({
-          countryName: res.data.country_name
+          countryName: res.data.country_name,
         })
       })
       .catch((error) => {
-       console.error(error)
-     })
+        console.error(error)
+      })
   }
 
-  getDetailsFromPicker(countryName, callingCode) {
+  getDetailsFromPicker = (countryName, callingCode) => {
     this.setState({ countryName, callingCode })
+  }
+
+  async _setToken() {
+    const token = await AsyncStorage.getItem('token')
+    this.setState({ token })
   }
 
   numberLabel = (label) => {
@@ -75,27 +79,33 @@ class AddContact extends Component {
       return (
         <PhonePicker
           countryName={this.state.countryName}
-          onCountryChange={this.getDetailsFromPicker.bind(this)}
+          onCountryChange={this.getDetailsFromPicker}
           note={note}
           green
         />
       )
     }
+    return null
   }
 
   render() {
-    const { phoneNumbers: numbers, givenName, familyName } = this.props.navigation.state.params.contact
+    const {
+      phoneNumbers: numbers,
+      givenName,
+      familyName,
+    } = this.props.navigation.state.params.contact
     const name = `${givenName} ${familyName}`
+
     return (
       <View>
-        <H1 text={'Select a Number'} />
+        <H1 text="Select a Number" />
         {this.renderPicker()}
         <ScrollView>
           <List containerStyle={{ marginBottom: 20 }}>
             {
-              numbers.map((number, i) => (
+              numbers.map((number) => (
                 <ListItem
-                  key={i}
+                  key={number.number}
                   title={number.number}
                   subtitle={this.numberLabel(number.label)}
                   rightIcon={{ name: 'plus', type: 'font-awesome' }}

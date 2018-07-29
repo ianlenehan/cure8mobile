@@ -7,6 +7,22 @@ import { getLinks } from '../redux/link/actions'
 import LinkView from '../components/linkView'
 import Spinner from '../components/common/spinner'
 
+const styles = {
+  noLinks: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    borderColor: '#fff',
+    borderWidth: 2,
+  },
+}
+
 class OldLinks extends Component {
   static navigationOptions = () => {
     return {
@@ -25,7 +41,7 @@ class OldLinks extends Component {
     this.getUserData()
   }
 
-  async getUserData() {
+  getUserData = async () => {
     const token = await AsyncStorage.getItem('token')
     this.setState({ token })
     this.props.getLinks(token)
@@ -57,28 +73,12 @@ class OldLinks extends Component {
       <LinkView
         status="archived"
         navigate={this.props.navigation.navigate}
-        refresh={this.getUserData.bind(this)}
+        refresh={this.getUserData}
         links={links}
         token={this.state.token}
       />
     )
   }
-}
-
-const styles = {
-  noLinks: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-  },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    borderColor: '#fff',
-    borderWidth: 2,
-  },
 }
 
 const mapStateToProps = ({ link }) => {
