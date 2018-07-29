@@ -4,6 +4,21 @@ import { Icon } from 'react-native-elements'
 import EmojiButton from './emoji-button'
 import { ratings } from '../../../helpers/ratings'
 
+const styles = {
+  icons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flex: 1,
+    padding: 5,
+  },
+  icon: {
+    flexDirection: 'row',
+    flex: 0.5,
+    paddingRight: 10,
+    justifyContent: 'flex-end',
+  },
+}
+
 class RatingIcons extends Component {
   constructor() {
     super()
@@ -65,21 +80,6 @@ class RatingIcons extends Component {
       </View>
     )
   }
-}
-
-const styles = {
-  icons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    flex: 1,
-    padding: 5,
-  },
-  icon: {
-    flexDirection: 'row',
-    flex: 0.5,
-    paddingRight: 10,
-    justifyContent: 'flex-end',
-  },
 }
 
 export default RatingIcons

@@ -126,10 +126,7 @@ class Card extends Component {
   }
 
   componentDidMount() {
-    if (this.props.link.status === 'archived') {
-      const tags = this.props.link.tags.map(tag => tag.name)
-      this.setState({ selectedTags: [...tags, ...this.state.selectedTags] })
-    }
+    this._setTags()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -164,75 +161,16 @@ class Card extends Component {
     return `http://fillmurray.com/300/${size}`
   }
 
-  openInWebBrowser = (url) => {
-    const readerMode = this.props.readerMode === 'on'
-    if (Platform.OS === 'ios') {
-      SafariView.show({
-        url,
-        readerMode,
-        tintColor: '#27ae60',
-        barColor: '#27ae60',
-      })
-    } else if (Platform.OS === 'android') {
-      CustomTabs.openURL(url)
-    }
-  }
-
-  conversationAlert() {
-    const { name: ownerName } = this.props.link.owner
-    if (this._isAlertNecessary()) {
-      Alert.alert(
-        'Chat',
-        `Select a one on one chat with ${ownerName} or start a group chat with everyone they curated this for.`,
-        [
-          { text: '1-on-1', onPress: () => this.startConversation('single') },
-          { text: 'Group', onPress: () => this.startConversation('group') },
-        ],
-      )
-    } else {
-      this.startConversation('single')
-    }
-  }
-
-  expandLess = () => {
-    this.props.onDrawerPress(null)
-    this.props.onArchivePress(null)
-  }
-
-  expandMore = async (curation) => {
-    const expandMoreAlerted = await AsyncStorage.getItem('expandMoreAlerted')
-    if (!expandMoreAlerted) {
-      Alert.alert('How does this work?', 'Pressing on Delete or Archive will ask you to rate the curation for your friend. Add a tag when Archiving if you wish, and then press the Thumbs Up or any other emoji to finish deleting or archiving the curation.')
-      await AsyncStorage.setItem('expandMoreAlerted', 'alerted')
-    }
-    this.props.onDrawerPress(curation)
-  }
-
-  async startConversation(chatType) {
-    const { title, link_id, users_shared_with: users } = this.props.link
-    const { token } = this.props
-    const userIds = users.map(user => user.id)
-
-    await this.props.createConversation({ link_id, userIds, chatType, token })
-    await this.props.getConversations(token)
-    this.props.navigate('chat', { title })
-  }
-
-  formatDate(date) {
-    const currentDate = moment()
-    return moment(date).local().from(currentDate)
-  }
-
-  _isAlertNecessary() {
-    const { owner, shared_with: sharedWith, users_shared_with: usersSharedWith } = this.props.link
-
-    if (sharedWith > 2) { return true }
-    const userIds = usersSharedWith.map(user => user.id)
-    const ownerSharedWithThemself = userIds.includes(owner.id)
-
-    if (sharedWith === 2 && ownerSharedWithThemself) { return true }
-
-    return false
+  getSharedWithNames(contacts, phone) {
+    const { users_shared_with: usersSharedWith } = this.props.link
+    const sharedWithNames = usersSharedWith.map(user => {
+      const userContactMatch = contacts.filter(contact => contact.user_id === user.id)
+      if (userContactMatch.length > 0) return userContactMatch[0].name
+      return user.phone
+    })
+    const index = sharedWithNames.indexOf(phone)
+    if (index > -1) sharedWithNames.splice(index, 1)
+    this.setState({ sharedWithNames })
   }
 
   toggleTag = (tag) => {
@@ -247,7 +185,7 @@ class Card extends Component {
     }
   }
 
-  addTagInput() {
+  addTagInput = () => {
     const { archiveMode, status } = this.props
     if (archiveMode.action === 'archived' || status === 'archived') {
       return (
@@ -302,16 +240,82 @@ class Card extends Component {
     }
   }
 
-  getSharedWithNames(contacts, phone) {
-    const { users_shared_with: usersSharedWith } = this.props.link
-    const sharedWithNames = usersSharedWith.map(user => {
-      const userContactMatch = contacts.filter(contact => contact.user_id === user.id)
-      if (userContactMatch.length > 0) return userContactMatch[0].name
-      return user.phone
-    })
-    const index = sharedWithNames.indexOf(phone)
-    if (index > -1) sharedWithNames.splice(index, 1)
-    this.setState({ sharedWithNames })
+  _isAlertNecessary() {
+    const { owner, shared_with: sharedWith, users_shared_with: usersSharedWith } = this.props.link
+
+    if (sharedWith > 2) { return true }
+    const userIds = usersSharedWith.map(user => user.id)
+    const ownerSharedWithThemself = userIds.includes(owner.id)
+
+    if (sharedWith === 2 && ownerSharedWithThemself) { return true }
+
+    return false
+  }
+
+  formatDate(date) {
+    const currentDate = moment()
+    return moment(date).local().from(currentDate)
+  }
+
+  async startConversation(chatType) {
+    const { title, link_id, users_shared_with: users } = this.props.link
+    const { token } = this.props
+    const userIds = users.map(user => user.id)
+
+    await this.props.createConversation({ link_id, userIds, chatType, token })
+    await this.props.getConversations(token)
+    this.props.navigate('chat', { title })
+  }
+
+  expandLess = () => {
+    this.props.onDrawerPress(null)
+    this.props.onArchivePress(null)
+  }
+
+  expandMore = async (curation) => {
+    const expandMoreAlerted = await AsyncStorage.getItem('expandMoreAlerted')
+    if (!expandMoreAlerted) {
+      Alert.alert('How does this work?', 'Pressing on Delete or Archive will ask you to rate the curation for your friend. Add a tag when Archiving if you wish, and then press the Thumbs Up or any other emoji to finish deleting or archiving the curation.')
+      await AsyncStorage.setItem('expandMoreAlerted', 'alerted')
+    }
+    this.props.onDrawerPress(curation)
+  }
+
+  conversationAlert() {
+    const { name: ownerName } = this.props.link.owner
+    if (this._isAlertNecessary()) {
+      Alert.alert(
+        'Chat',
+        `Select a one on one chat with ${ownerName} or start a group chat with everyone they curated this for.`,
+        [
+          { text: '1-on-1', onPress: () => this.startConversation('single') },
+          { text: 'Group', onPress: () => this.startConversation('group') },
+        ],
+      )
+    } else {
+      this.startConversation('single')
+    }
+  }
+
+  openInWebBrowser = (url) => {
+    const readerMode = this.props.readerMode === 'on'
+    if (Platform.OS === 'ios') {
+      SafariView.show({
+        url,
+        readerMode,
+        tintColor: '#27ae60',
+        barColor: '#27ae60',
+      })
+    } else if (Platform.OS === 'android') {
+      CustomTabs.openURL(url)
+    }
+  }
+
+  _setTags() {
+    if (this.props.link.status === 'archived') {
+      const tags = this.props.link.tags.map(tag => tag.name)
+      this.setState({ selectedTags: [...tags, ...this.state.selectedTags] })
+    }
   }
 
   showSharedWith = () => {
@@ -340,7 +344,7 @@ class Card extends Component {
     return null
   }
 
-  renderTags() {
+  renderTags = () => {
     const { tags, selectedTags } = this.state
     const { archiveMode, status } = this.props
     if (tags && (archiveMode.action === 'archived' || status === 'archived')) {
@@ -349,7 +353,7 @@ class Card extends Component {
         return (
           <Tag
             style={{ backgroundColor: tagColour }}
-            onPress={this.toggleTag.bind(this)}
+            onPress={this.toggleTag}
             tag={tag}
             key={tag}
           />
@@ -479,14 +483,14 @@ class Card extends Component {
     if (archiveMode.curation === curation) {
       return (
         <RatingIcons
-          renderTags={this.renderTags.bind(this)}
+          renderTags={this.renderTags}
           curation={curation}
-          addTagInput={this.addTagInput.bind(this)}
-          archiveLink={this.props.archiveLink.bind(this)}
+          addTagInput={this.addTagInput}
+          archiveLink={this.props.archiveLink}
           owner={owner}
           selectedTags={selectedTags}
           renderAllIcons={renderAll}
-          onArchivePress={this.props.onArchivePress.bind(this)}
+          onArchivePress={this.props.onArchivePress}
         />
       )
     }

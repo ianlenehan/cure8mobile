@@ -18,4 +18,4 @@ const Cable = ({ conversations, handleReceivedMessage }) => {
   );
 };
 
-export default Cable;
+export default Cable

@@ -47,7 +47,6 @@ class LinkView extends Component {
     super(props)
 
     this.state = {
-      links: null,
       filteredLinks: null,
       readerMode: 'on',
       filterTerms: [],
@@ -156,7 +155,7 @@ class LinkView extends Component {
   }
 
   shareLink(link) {
-    const atMaxLinks = this.state.links.length >= 5
+    const atMaxLinks = this.props.links.length >= 5
     if (!this.state.isMember && atMaxLinks && !__DEV__) { //eslint-disable-line
       this.membershipAlertDialog()
     } else {

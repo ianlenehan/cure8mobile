@@ -2,6 +2,36 @@ import React from 'react'
 import { Text, View, TouchableWithoutFeedback } from 'react-native'
 import { Icon } from 'react-native-elements'
 
+const styles = {
+  card: {
+    backgroundColor: 'white',
+    padding: 12,
+    borderColor: '#ddd',
+    borderBottomWidth: 1,
+  },
+  title: {
+    fontSize: 16,
+    paddingTop: 3,
+    paddingRight: 5,
+  },
+  subtitle: {
+    fontSize: 12,
+    color: '#ddd',
+  },
+  details: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  rightTitle: {
+    fontSize: 12,
+    color: '#ddd',
+    marginTop: 5,
+    alignItems: 'flex-end',
+  },
+}
+
 const getRightTitle = (props) => {
   if (props.editMode && props.group) {
     return (
@@ -44,7 +74,7 @@ const getRightTitle = (props) => {
 const formatName = (props) => {
   if (props.title && props.isMember) {
     return (
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: 'row' }}>
         <Text style={styles.title}>{props.title || ''}</Text>
         <Icon
           name="check-circle"
@@ -74,33 +104,3 @@ const ContactRow = (props) => {
 }
 
 export default ContactRow
-
-const styles = {
-  card: {
-    backgroundColor: 'white',
-    padding: 12,
-    borderColor: '#ddd',
-    borderBottomWidth: 1,
-  },
-  title: {
-    fontSize: 16,
-    paddingTop: 3,
-    paddingRight: 5
-  },
-  subtitle: {
-    fontSize: 12,
-    color: '#ddd',
-  },
-  details: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  rightTitle: {
-    fontSize: 12,
-    color: '#ddd',
-    marginTop: 5,
-    alignItems: 'flex-end'
-  }
-}

@@ -1,6 +1,15 @@
 import React from 'react'
 import { List, ListItem } from 'react-native-elements'
 
+const styles = {
+  container: {
+    marginBottom: 20,
+  },
+  subtitle: {
+    fontSize: 12,
+  },
+}
+
 const getSubtitle = (contact, props) => {
   if (props.subtitle) {
     return `${contact.members.length} members`
@@ -19,9 +28,9 @@ const ContactList = (props) => {
   return (
     <List containerStyle={styles.container}>
       {
-        props.contacts.map((contact, i) => (
+        props.contacts.map((contact) => (
           <ListItem
-            key={i}
+            key={contact.phone}
             title={contact.name}
             rightTitle={contact.phone}
             onPress={onPressEvent(contact, props)}
@@ -36,12 +45,3 @@ const ContactList = (props) => {
 }
 
 export default ContactList
-
-const styles = {
-  container: {
-    marginBottom: 20,
-  },
-  subtitle: {
-    fontSize: 12,
-  },
-}

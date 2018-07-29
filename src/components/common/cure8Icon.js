@@ -1,5 +1,18 @@
 import React from 'react'
-import { Text, TouchableWithoutFeedback, Image } from 'react-native'
+import { TouchableWithoutFeedback, Image } from 'react-native'
+
+const styles = {
+  text: {
+    fontSize: 8,
+    color: 'grey',
+  },
+  header: {
+    alignSelf: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    flex: 1,
+  },
+}
 
 const Cure8Icon = () => {
   return (
@@ -14,16 +27,3 @@ const Cure8Icon = () => {
 }
 
 export default Cure8Icon
-
-const styles = {
-  text: {
-    fontSize: 8,
-    color: 'grey',
-  },
-  header: {
-    alignSelf: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    flex: 1,
-  },
-}
