@@ -23,12 +23,32 @@ import { updateUser } from '../redux/user/actions'
 import Card from './common/card'
 import Tag from './common/tag'
 
+const styles = {
+  container: {
+    flex: 1,
+    backgroundColor: '#ecf0f1',
+  },
+  links: {
+    alignItems: 'center',
+  },
+  noLinks: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tagList: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+  },
+}
+
 class LinkView extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      links: [],
+      links: null,
+      filteredLinks: null,
       readerMode: 'on',
       filterTerms: [],
       tags: [],
@@ -37,13 +57,8 @@ class LinkView extends Component {
     }
   }
 
-  async componentDidMount() {
-    const membership = await AsyncStorage.getItem('membership')
-    this.setState({ isMember: !!membership })
+  componentDidMount() {
     this.checkReaderMode()
-    if (!membership && this.props.links.length === 5 && !__DEV__) {
-      this.membershipAlert()
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,11 +77,8 @@ class LinkView extends Component {
     await this.props.refresh()
   }
 
-  async checkReaderMode() {
-    const readerMode = await AsyncStorage.getItem('readerMode')
-    if (readerMode) {
-      this.setState({ readerMode })
-    }
+  onArchivePress = (curation, action) => {
+    this.props.setArchiveMode(curation, action)
   }
 
   onSaveLinkPress = () => {
@@ -74,8 +86,19 @@ class LinkView extends Component {
     this.props.createLink({ url, link_type, comment, numbers, userPhone })
   }
 
-  onArchivePress = (curation, action) => {
-    this.props.setArchiveMode(curation, action)
+  async _setMembershipStatus() {
+    const membership = await AsyncStorage.getItem('membership')
+    this.setState({ isMember: !!membership })
+    if (!membership && this.props.links.length === 5 && !__DEV__) { // eslint-disable-line
+      this.membershipAlert()
+    }
+  }
+
+  async checkReaderMode() {
+    const readerMode = await AsyncStorage.getItem('readerMode')
+    if (readerMode) {
+      this.setState({ readerMode })
+    }
   }
 
   restorePurchase = () => {
@@ -134,7 +157,7 @@ class LinkView extends Component {
 
   shareLink(link) {
     const atMaxLinks = this.state.links.length >= 5
-    if (!this.state.isMember && atMaxLinks && !__DEV__) {
+    if (!this.state.isMember && atMaxLinks && !__DEV__) { //eslint-disable-line
       this.membershipAlertDialog()
     } else {
       this.props.navigate('addLink', { url: link.url })
@@ -148,22 +171,26 @@ class LinkView extends Component {
       newFilterTerms = filterTerms.filter(term => term !== tag)
     }
     await this.setState({ filterTerms: newFilterTerms })
-    this.filterLinks(this.props.links)
+    this.filterByTags()
   }
 
-  filterByTags(links) {
+  filterByTags() {
     const { filterTerms } = this.state
+    const { links } = this.props
+    if (filterTerms.length) {
+      const mappedLinks = links.map(link => {
+        const tags = link.tags.map(tag => tag.name)
 
-    const mappedLinks = links.map(link => {
-      const tags = link.tags.map(tag => tag.name)
-
-      const filteredLinks = filterTerms.every(term => {
-        return tags.includes(term)
+        const filteredLinks = filterTerms.every(term => {
+          return tags.includes(term)
+        })
+        if (filteredLinks) { return link }
+        return null
       })
-      if (filteredLinks) { return link }
-    })
-
-    return mappedLinks.filter(mappedLink => !!mappedLink)
+      const filteredLinks = mappedLinks.filter(mappedLink => !!mappedLink)
+      return this.setState({ filteredLinks })
+    }
+    return this.setState({ filteredLinks: null })
   }
 
   filterTagList() {
@@ -176,7 +203,7 @@ class LinkView extends Component {
         <Tag
           key={tag}
           tag={tag}
-          onPress={this.filterByTag.bind(this)}
+          onPress={this.filterByTag}
           style={{ backgroundColor: tagColour, borderColor: fontColour, borderWidth: 1 }}
           tagStyle={{ color: fontColour }}
         />
@@ -189,8 +216,7 @@ class LinkView extends Component {
   }
 
   resetLinks = async () => {
-    await this.setState({ filterTerms: [] })
-    this.filterLinks(this.props.links)
+    await this.setState({ filterTerms: [], filteredLinks: null })
   }
 
   addTags = (curationId, tags) => {
@@ -227,12 +253,12 @@ class LinkView extends Component {
         onSharePress={(link) => this.shareLink(link)}
         status={this.props.status}
         archiveMode={this.props.archiveMode}
-        archiveLink={this.archiveLink.bind(this)}
-        justArchive={this.archiveWithoutRating.bind(this)}
+        archiveLink={this.archiveLink}
+        justArchive={this.archiveWithoutRating}
         loading={this.props.loading}
         readerMode={this.state.readerMode}
         tags={this.state.tags}
-        addTags={this.addTags.bind(this)}
+        addTags={this.addTags}
         userPhone={this.props.userInfo.phone}
         navigate={this.props.navigate}
         token={this.props.token}
@@ -242,12 +268,13 @@ class LinkView extends Component {
   }
 
   render() {
+    const links = this.state.filteredLinks || this.props.links
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         {this.renderTagFilterList()}
         <FlatList
-          data={this.props.links}
+          data={links}
           extraData={this.props}
           renderItem={this.renderItem}
           keyExtractor={item => item.curation_id.toString()}
@@ -263,25 +290,6 @@ class LinkView extends Component {
       </View>
     )
   }
-}
-
-const styles = {
-  container: {
-    flex: 1,
-    backgroundColor: '#ecf0f1',
-  },
-  links: {
-    alignItems: 'center',
-  },
-  noLinks: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tagList: {
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-  },
 }
 
 const mapStateToProps = ({ link, user, contact }) => {
