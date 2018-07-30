@@ -243,6 +243,8 @@ class Card extends Component {
   _isAlertNecessary() {
     const { owner, shared_with: sharedWith, users_shared_with: usersSharedWith } = this.props.link
 
+    if (owner.phone === this.state.phone) return false
+
     if (sharedWith > 2) { return true }
     const userIds = usersSharedWith.map(user => user.id)
     const ownerSharedWithThemself = userIds.includes(owner.id)
@@ -282,7 +284,7 @@ class Card extends Component {
   }
 
   conversationAlert() {
-    const { name: ownerName } = this.props.link.owner
+    const { name: ownerName, phone } = this.props.link.owner
     if (this._isAlertNecessary()) {
       Alert.alert(
         'Chat',
@@ -292,6 +294,8 @@ class Card extends Component {
           { text: 'Group', onPress: () => this.startConversation('group') },
         ],
       )
+    } else if (phone === this.state.phone) {
+      this.startConversation('group')
     } else {
       this.startConversation('single')
     }
