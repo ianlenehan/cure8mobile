@@ -46,6 +46,8 @@ export const getConversations = (token) => {
 
 export const createConversation = ({ link_id, userIds, chatType, token }) => {
   return async (dispatch) => {
+    dispatch({ type: types.CREATING_CONVERSATION })
+
     const res = await axios.post(`${apiUrl}conversations`, {
       conversation: {
         link_id,

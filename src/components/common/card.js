@@ -242,13 +242,12 @@ class Card extends Component {
 
   _isAlertNecessary() {
     const { owner, shared_with: sharedWith, users_shared_with: usersSharedWith } = this.props.link
-
     if (owner.phone === this.state.phone) return false
 
-    if (sharedWith > 2) { return true }
+    if (sharedWith >= 2) { return true }
+
     const userIds = usersSharedWith.map(user => user.id)
     const ownerSharedWithThemself = userIds.includes(owner.id)
-
     if (sharedWith === 2 && ownerSharedWithThemself) { return true }
 
     return false
@@ -394,7 +393,7 @@ class Card extends Component {
 
   renderMainIcons(curation, owner, rating) {
     if (this.props.status === 'new' && this.props.morePressed === curation) {
-      if (this.props.loading) {
+      if (this.props.loading || this.props.conversationLoading) {
         return <Spinner size="small" />
       }
       return (
@@ -425,7 +424,7 @@ class Card extends Component {
         </View>
       )
     } else if (this.props.morePressed === curation) {
-      if (this.props.loading) {
+      if (this.props.loading || this.props.conversationLoading) {
         return <Spinner size="small" />
       }
       return (
@@ -570,8 +569,9 @@ class Card extends Component {
   }
 }
 
-const mapStateToProps = () => {
-  return {}
+const mapStateToProps = ({ conversation }) => {
+  const { loading: conversationLoading } = conversation
+  return { conversationLoading }
 }
 
 export default connect(mapStateToProps, {
