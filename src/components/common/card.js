@@ -291,6 +291,7 @@ class Card extends Component {
         [
           { text: '1-on-1', onPress: () => this.startConversation('single') },
           { text: 'Group', onPress: () => this.startConversation('group') },
+          { text: 'Cancel', onPress: () => {}, style: 'cancel' },
         ],
       )
     } else if (phone === this.state.phone) {
