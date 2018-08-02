@@ -34,6 +34,8 @@ export default (state = initialState, action) => {
       return { ...state, linkCurated: null }
     case types.REQUESTED_LINKS:
       return { ...state, loading: true, authorized: true }
+    case types.QUIETLY_REQUESTED_LINKS:
+      return { ...state, authorized: true }
     case types.CREATE_LINK:
       return { ...state, links: action.payload, authorized: true }
     case types.NO_LINKS:

@@ -31,7 +31,7 @@ class Navigators extends Component {
       main: { screen: mainTabNavigator },
     }, {
       navigationOptions: { tabBarVisible: false },
-      lazy: false,
+      lazy: true,
     })
 
     return <MainNavigator />

@@ -42,9 +42,11 @@ class OldLinks extends Component {
   }
 
   getUserData = async () => {
-    const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
-    this.props.getLinks(token)
+    if (!this.state.token) {
+      const token = await AsyncStorage.getItem('token')
+      await this.setState({ token })
+    }
+    this.props.getLinks(this.state.token)
   }
 
   async _loadStoredData() {

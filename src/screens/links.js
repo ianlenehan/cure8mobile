@@ -93,7 +93,7 @@ class Links extends Component {
     })
 
     this.subs = [
-      this.props.navigation.addListener('didFocus', () => this.getUserData()),
+      this.props.navigation.addListener('didFocus', () => this.getLinksAndChats()),
     ]
   }
 
@@ -118,18 +118,34 @@ class Links extends Component {
 
   getUserData = async () => {
     const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
-    this.props.getLinks(token)
-    this.props.getContacts(token)
-    this.props.getUserInfo(token)
-    this.props.getUserActivity(token)
-    this.props.getConversations(token)
+    if (token) {
+      this.setState({ token })
+      this.props.getLinks(token)
+      this.props.getContacts(token)
+      this.props.getUserInfo(token)
+      this.props.getUserActivity(token)
+      this.props.getConversations(token)
+    }
+  }
+
+  getLinksAndChats = () => {
+    if (this.state.token) {
+      const showLoadingIndicator = false
+      this.props.getLinks(this.state.token, showLoadingIndicator)
+      this.props.getConversations(this.state.token, showLoadingIndicator)
+    }
+  }
+
+  refreshLinks = () => {
+    this.props.getLinks(this.state.token)
   }
 
   _handleAppStateChange = async (nextAppState) => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      const token = await AsyncStorage.getItem('token')
-      this.props.getLinks(token)
+      if (this.state.token) {
+        const showLoadingIndicator = false
+        this.props.getLinks(this.state.token, showLoadingIndicator)
+      }
     }
     this.setState({ appState: nextAppState })
   }
@@ -213,7 +229,7 @@ class Links extends Component {
       <LinkView
         status="new"
         navigate={this.props.navigation.navigate}
-        refresh={this.getUserData}
+        refresh={this.refreshLinks}
         links={links}
         token={this.state.token}
         clearCache={this.clearCache}

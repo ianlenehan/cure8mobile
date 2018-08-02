@@ -134,9 +134,13 @@ export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => 
   }
 }
 
-export const getLinks = (token) => {
+export const getLinks = (token, showLoadingIndicator = true) => {
   return (dispatch) => {
-    dispatch({ type: types.REQUESTED_LINKS })
+    if (showLoadingIndicator) {
+      dispatch({ type: types.REQUESTED_LINKS })
+    } else {
+      dispatch({ type: types.QUIETLY_REQUESTED_LINKS })
+    }
 
     axios.post(`${apiUrl}links/fetch`, { user: { token } })
       .then((res) => {
