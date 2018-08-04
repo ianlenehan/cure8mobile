@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { StackNavigator } from 'react-navigation'
 import { Icon } from 'react-native-elements'
 import { primaryGreen } from '../../variables'
@@ -22,11 +22,3 @@ export default StackNavigator({
     },
   },
 })
-
-// class LinksNav extends Component {
-//   render() {
-//     return linksNav
-//   }
-// }
-
-// export default LinksNav
