@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, AsyncStorage, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { Button, CheckBox, SearchBar } from 'react-native-elements'
+import { Button, CheckBox, SearchBar, Divider, ButtonGroup } from 'react-native-elements'
 import _ from 'lodash'
 import {
   createLink,
@@ -25,6 +25,7 @@ class AddLink extends Component {
     contacts: [],
     selectedContacts: [],
     enteredNumber: '',
+    sortIndex: 0,
   }
 
   async componentDidMount() {
@@ -99,6 +100,7 @@ class AddLink extends Component {
   }
 
   contactSearch = (text) => {
+    this.setState({ searchText: text })
     if (text.length >= 1 && !_.isNaN(Number(text))) {
       this.validateNumber(text)
     } else if (text.length >= 2) {
@@ -124,10 +126,31 @@ class AddLink extends Component {
         />
       )
     }
+    return <Divider style={{ margin: 10, marginTop: 20 }} />
+  }
+
+  switchButton = () => {
+    const { contacts } = this.state
+    if (this.state.sortIndex === 0) {
+      const sortedContacts = contacts.sort((a, b) => {
+        return new Date(b.updated_at) - new Date(a.updated_at)
+      })
+      this.setState({ contacts: sortedContacts, sortIndex: 1 })
+    } else {
+      const sortedContacts = contacts.sort((a, b) => {
+        var nameA = a.name.toUpperCase()
+        var nameB = b.name.toUpperCase()
+        if (nameA < nameB) { return -1 }
+        if (nameA > nameB) { return 1 }
+        return 0
+      })
+      this.setState({ contacts: sortedContacts, sortIndex: 0 })
+    }
   }
 
   render() {
     const buttonDisabled = this.buttonStatus()
+    const sortButtons = ['Alphabetical', 'Recent']
     return (
       <View style={styles.container}>
           <View style={styles.form}>
@@ -148,13 +171,22 @@ class AddLink extends Component {
           {this.renderCheckBox()}
           </View>
           <View style={{ flex: 3, marginTop: 0 }}>
+            <ButtonGroup
+              buttons={sortButtons}
+              selectedIndex={this.state.sortIndex}
+              onPress={this.switchButton}
+              containerStyle={styles.sortButtons}
+              textStyle={styles.sortButtonText}
+              selectedTextStyle={styles.selectedText}
+            />
             <SearchBar
               lightTheme
               placeholder='Search contacts or type number'
-              containerStyle={{ backgroundColor: 'white', borderTopWidth: 0 }}
-              inputStyle={{ backgroundColor: '#f3f3f3' }}
+              containerStyle={{ backgroundColor: '#f3f3f3', borderTopWidth: 0 }}
+              inputStyle={{ backgroundColor: '#ffffff', fontSize: 14 }}
               clearIcon={{ color: '#86939e', name: 'clear' }}
               onChangeText={(text) => this.contactSearch(text)}
+              value={this.state.searchText}
             />
             <ContactPickList
               contacts={this.state.contacts}
@@ -189,6 +221,15 @@ const styles = {
   },
   padding: {
     flex: 0.1
+  },
+  sortButtons: {
+    height: 30,
+  },
+  sortButtonText: {
+    fontSize: 12,
+  },
+  selectedText: {
+    color: '#27ae60',
   },
 }
 

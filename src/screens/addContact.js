@@ -33,7 +33,7 @@ class AddContact extends Component {
   }
 
   getUserLocation() {
-    const url = 'https://freegeoip.net/json/'
+    const url = 'http://api.ipstack.com/check?access_key=20b4e66a4f515700a5e0f39fdd34474d'
     axios.get(url)
       .then((res) => {
         this.setState({

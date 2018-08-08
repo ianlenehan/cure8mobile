@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   Text,
   LayoutAnimation,
-  ScrollView
+  ScrollView,
+  Alert,
 } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -42,6 +43,7 @@ class NewContact extends Component {
         this.getPhoneContact()
       }
       if (permission === 'denied') {
+        Alert.alert('Contacts Permission', 'You have not granted Cure8 access to your address book. Please enable this in your settings to add your contacts.')
       }
     })
   }
