@@ -7,6 +7,22 @@ import { getLinks } from '../redux/link/actions'
 import LinkView from '../components/linkView'
 import Spinner from '../components/common/spinner'
 
+const styles = {
+  noLinks: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    borderColor: '#fff',
+    borderWidth: 2,
+  },
+}
+
 class OldLinks extends Component {
   static navigationOptions = () => {
     return {
@@ -14,22 +30,38 @@ class OldLinks extends Component {
       headerTitle: 'Archived Links',
       tabBarIcon: ({ tintColor }) => {
         return <Icon name="archive" size={24} color={tintColor} />
-      }
+      },
     }
   }
 
-  async getUserData() {
-    const token = await AsyncStorage.getItem('token')
-    this.props.getLinks(token)
+  state = { cachedLinks: null, token: null }
+
+  componentDidMount() {
+    this._loadStoredData()
+    this.getUserData()
+  }
+
+  getUserData = async () => {
+    if (!this.state.token) {
+      const token = await AsyncStorage.getItem('token')
+      await this.setState({ token })
+    }
+    this.props.getLinks(this.state.token)
+  }
+
+  async _loadStoredData() {
+    const links = await AsyncStorage.getItem('cachedArchivedLinks')
+    this.setState({ cachedLinks: JSON.parse(links) })
   }
 
   render() {
-    const { loading, links } = this.props
+    const { loading } = this.props
+    const links = this.props.archivedLinks || this.state.cachedLinks
     if (!links) {
       if (loading) {
         return (
           <View style={styles.loading}>
-            <Spinner size='large' text='Loading archived links...' />
+            <Spinner size="large" text="Loading archived links..." />
           </View>
         )
       }
@@ -41,33 +73,19 @@ class OldLinks extends Component {
     }
     return (
       <LinkView
-        status='archived'
+        status="archived"
         navigate={this.props.navigation.navigate}
-        refresh={this.getUserData.bind(this)}
+        refresh={this.getUserData}
+        links={links}
+        token={this.state.token}
       />
     )
   }
 }
 
-const styles = {
-  noLinks: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1
-  },
-  loading: {
-    flex: 1,
-    justifyContent: 'center'
-  },
-  headerTitle: {
-    borderColor: '#fff',
-    borderWidth: 2
-  }
-}
-
 const mapStateToProps = ({ link }) => {
-  const { links, loading } = link
-  return { links, loading }
+  const { archivedLinks, loading } = link
+  return { archivedLinks, loading }
 }
 
 export default connect(mapStateToProps, { getLinks })(OldLinks)

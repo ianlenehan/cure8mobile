@@ -1,11 +1,22 @@
 import React, { Component } from 'react'
-import { AsyncStorage, FlatList, View, KeyboardAvoidingView } from 'react-native'
+import { AsyncStorage, FlatList, KeyboardAvoidingView } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import ContactRow from '../components/contactRow'
 import NewContact from '../components/newContact'
 import Spinner from '../components/common/spinner'
 import { deleteContact, setEditMode } from '../redux/contact/actions'
+
+const styles = {
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  button: {
+    margin: 10,
+  },
+}
 
 class Contacts extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -18,7 +29,7 @@ class Contacts extends Component {
         <Button
           fontSize={14}
           title={params.editMode ? 'Done' : 'Edit'}
-          backgroundColor='rgba(0,0,0,0)'
+          backgroundColor="rgba(0,0,0,0)"
           onPress={() => params.setEditMode()}
         />
       ),
@@ -27,20 +38,19 @@ class Contacts extends Component {
           fontSize={14}
           icon={{ name: 'users', type: 'font-awesome' }}
           iconLeft
-          backgroundColor='rgba(0,0,0,0)'
+          backgroundColor="rgba(0,0,0,0)"
           onPress={() => navigate('myGroups')}
         />
-      )
+      ),
     }
   }
 
   async componentDidMount() {
     this.props.navigation.setParams({
       setEditMode: this.setEditMode.bind(this),
-      editMode: false
+      editMode: false,
     })
-    const token = await AsyncStorage.getItem('token')
-    this.setState({ token })
+    this._setToken()
   }
 
   onDeletePress = (contact) => {
@@ -50,18 +60,23 @@ class Contacts extends Component {
   setEditMode = async () => {
     await this.props.setEditMode(this.props.editMode)
     this.props.navigation.setParams({
-      editMode: this.props.editMode
+      editMode: this.props.editMode,
     })
   }
 
-  renderItem({ item }) {
+  async _setToken() {
+    const token = await AsyncStorage.getItem('token')
+    this.setState({ token })
+  }
+
+  renderItem = ({ item }) => {
     return (
       <ContactRow
         contact={item}
         title={item.name}
         isMember={item.member}
         rightTitle={item.phone}
-        onPress={() => console.log(item)}
+        onPress={() => {}}
         editMode={this.props.editMode}
         onDeletePress={() => this.onDeletePress(item)}
       />
@@ -70,12 +85,12 @@ class Contacts extends Component {
 
   renderContent() {
     if (this.props.loading) {
-      return <Spinner size='large' text='Loading contacts...' />
+      return <Spinner size="large" text="Loading contacts..." />
     }
     return (
       <FlatList
         data={this.props.contacts}
-        renderItem={this.renderItem.bind(this)}
+        renderItem={this.renderItem}
         editMode={this.props.editMode}
         keyExtractor={item => item.id.toString()}
         removeClippedSubviews={false}
@@ -97,17 +112,6 @@ class Contacts extends Component {
         />
       </KeyboardAvoidingView>
     )
-  }
-}
-
-const styles = {
-  container: {
-    backgroundColor: 'white',
-    flex: 1,
-    justifyContent: 'space-between'
-  },
-  button: {
-    margin: 10
   }
 }
 

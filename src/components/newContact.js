@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import {
-  AsyncStorage,
-  FlatList,
   View,
   TouchableOpacity,
   Text,
@@ -12,14 +10,42 @@ import {
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import Contacts from 'react-native-contacts'
-import ContactRow from '../components/contactRow'
-import Spinner from '../components/common/spinner'
 import Input from '../components/common/input'
-import Title from '../components/common/title'
 import { nameChanged } from '../redux/contact/actions'
+
+const styles = {
+  searchContainer: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    paddingTop: 5,
+  },
+  button: {
+    margin: 10,
+  },
+  name: {
+    fontSize: 18,
+    padding: 10,
+    fontWeight: 'bold',
+  },
+}
 
 class NewContact extends Component {
   state = { searchMode: false, contacts: [] }
+
+  onButtonPress = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    this.setState({
+      searchMode: !this.state.searchMode,
+      contacts: [],
+    })
+    this.props.nameChanged('')
+  }
+
+  onContactPress = (contact) => {
+    const { navigate, key } = this.props
+    navigate('addContact', { contact, key })
+  }
 
   getPhoneContact() {
     Contacts.getContactsMatchingString(this.props.name, (err, contacts) => {
@@ -34,9 +60,9 @@ class NewContact extends Component {
   getPhonePermissions() {
     // Keyboard.dismiss()
     Contacts.checkPermission((err, permission) => {
-      // Contacts.PERMISSION_AUTHORIZED || Contacts.PERMISSION_UNDEFINED || Contacts.PERMISSION_DENIED
       if (permission === 'undefined') {
-        Contacts.requestPermission((err, permission) => {
+        Contacts.requestPermission((error, perm) => {
+          console.log('contacts request', error, perm)
         })
       }
       if (permission === 'authorized') {
@@ -48,15 +74,6 @@ class NewContact extends Component {
     })
   }
 
-  onButtonPress = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    this.setState({
-      searchMode: !this.state.searchMode,
-      contacts: []
-    })
-    this.props.nameChanged('')
-  }
-
   contactNameChanged = (text) => {
     this.props.nameChanged(text)
     if (text.length > 2) {
@@ -64,11 +81,6 @@ class NewContact extends Component {
     } else {
       this.setState({ contacts: [] })
     }
-  }
-
-  onContactPress = (contact) => {
-    const { navigate, key } = this.props
-    navigate('addContact', { contact, key })
   }
 
   renderNames() {
@@ -90,18 +102,18 @@ class NewContact extends Component {
       return (
         <View style={{ height: 250 }}>
           <Input
-            placeholder={'Type a name'}
+            placeholder="Type a name"
             value={this.props.name}
             onChangeText={this.contactNameChanged}
-            returnKeyType={'done'}
+            returnKeyType="done"
             disableReturnKey={false}
-            />
+          />
           <Button
             icon={{ name: 'chevron-down', type: 'font-awesome' }}
-            backgroundColor='#27ae60'
+            backgroundColor="#27ae60"
             onPress={this.onButtonPress}
             buttonStyle={styles.button}
-            />
+          />
           <ScrollView>
             {this.renderNames()}
           </ScrollView>
@@ -111,8 +123,8 @@ class NewContact extends Component {
     return (
       <Button
         icon={{ name: 'plus', type: 'font-awesome' }}
-        title='New Contact'
-        backgroundColor='#27ae60'
+        title="New Contact"
+        backgroundColor="#27ae60"
         onPress={this.onButtonPress}
         buttonStyle={styles.button}
       />
@@ -125,23 +137,6 @@ class NewContact extends Component {
         {this.renderButton()}
       </View>
     )
-  }
-}
-
-const styles = {
-  searchContainer: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderBottomWidth: 0,
-    paddingTop: 5
-  },
-  button: {
-    margin: 10
-  },
-  name: {
-    fontSize: 18,
-    padding: 10,
-    fontWeight: 'bold'
   }
 }
 

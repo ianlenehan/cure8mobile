@@ -1,14 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
 
-const CardSection = (props) => {
-  return (
-    <View style={[props.style, styles.container]}>
-      {props.children}
-    </View>
-  )
-}
-
 const styles = {
   container: {
     backgroundColor: 'white',
@@ -26,6 +18,14 @@ const styles = {
     shadowRadius: 2,
     elevation: 1,
   },
+}
+
+const CardSection = (props) => {
+  return (
+    <View style={[props.style, styles.container]}>
+      {props.children}
+    </View>
+  )
 }
 
 export default CardSection

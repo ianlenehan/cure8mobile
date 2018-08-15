@@ -8,7 +8,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         countryName: action.payload.countryName,
-        callingCode: action.payload.callingCode
+        callingCode: action.payload.callingCode,
       }
     case COUNTRY_NAME:
       return { ...state, countryName: action.payload }

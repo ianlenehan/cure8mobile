@@ -1,6 +1,26 @@
+import React, { Component } from 'react';
 import {
   AppRegistry,
-} from 'react-native';
-import App from './src/main'
+} from 'react-native'
+import RNActionCable from 'react-native-actioncable'
+import ActionCableProvider from 'react-actioncable-provider'
+import OneSignal from 'react-native-onesignal'
+import Main from './src/main'
+
+const cable = RNActionCable.createConsumer('wss://cure8.herokuapp.com/cable')
+
+export default class App extends Component {
+  componentWillMount() {
+    OneSignal.init('5a76b673-d57e-423e-92b0-e1375989bcb0', { kOSSettingsKeyInFocusDisplayOption: 2 })
+  }
+
+  render() {
+    return (
+      <ActionCableProvider cable={cable}>
+        <Main />
+      </ActionCableProvider>
+    )
+  }
+}
 
 AppRegistry.registerComponent('cure8mobile', () => App);

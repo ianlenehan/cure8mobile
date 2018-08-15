@@ -2,6 +2,16 @@ import React, { Component } from 'react'
 import { Text, SectionList } from 'react-native'
 import ContactRow from './contactRow'
 
+const styles = {
+  sectionHeader: {
+    backgroundColor: '#f3f3f3',
+    padding: 5,
+  },
+  contactsHint: {
+    padding: 20,
+  },
+}
+
 class ContactPickList extends Component {
   constructor(...args) {
     super(...args);
@@ -36,7 +46,7 @@ class ContactPickList extends Component {
 
   render() {
     const { contacts, groups } = this.props
-    if (contacts.length) {
+    if (contacts && contacts.length) {
       return (
         <SectionList
           sections={[{ data: groups, key: 'Groups' }, { data: contacts, key: 'Contacts' }]}
@@ -48,22 +58,14 @@ class ContactPickList extends Component {
         />
       )
     }
+    const text = 'No contacts here? Add contacts from your phone using the app\'s contacts' +
+      ' section if you\'d like to share this link with anyone.'
     return (
       <Text style={styles.contactsHint}>
-        No contacts here? Add contacts from your phone using the app&apos;s contacts section if you&apos;d like to share this link with anyone.
+        {text}
       </Text>
     )
   }
 }
 
 export default ContactPickList
-
-const styles = {
-  sectionHeader: {
-    backgroundColor: '#f3f3f3',
-    padding: 5,
-  },
-  contactsHint: {
-    padding: 20,
-  },
-}

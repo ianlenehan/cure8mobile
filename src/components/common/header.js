@@ -1,14 +1,6 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 
-const Header = (props) => {
-  return (
-    <View style={[styles.header, props.style]}>
-      <Text style={[styles.headerText, props.textStyle]}>Cure8</Text>
-    </View>
-  )
-}
-
 const styles = {
   header: {
     height: 50,
@@ -21,12 +13,20 @@ const styles = {
     marginBottom: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#27ae60'
+    backgroundColor: '#27ae60',
   },
   headerText: {
     fontSize: 18,
-    color: 'white'
+    color: 'white',
   },
+}
+
+const Header = (props) => {
+  return (
+    <View style={[styles.header, props.style]}>
+      <Text style={[styles.headerText, props.textStyle]}>Cure8</Text>
+    </View>
+  )
 }
 
 export default Header

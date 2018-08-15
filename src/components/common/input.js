@@ -1,6 +1,28 @@
 import React from 'react'
 import { TextInput, Platform } from 'react-native'
 
+const styles = {
+  white: {
+    height: 40,
+    padding: 4,
+    marginTop: 5,
+    backgroundColor: Platform.OS === 'android' ? 'rgba(0,0,0,0)' : '#f3f3f3',
+    marginLeft: 20,
+    marginRight: 20,
+    borderRadius: 5,
+  },
+  green: {
+    height: 40,
+    padding: 4,
+    marginTop: 5,
+    backgroundColor: Platform.OS === 'android' ? 'rgba(0,0,0,0)' : '#219452',
+    color: '#fff',
+    marginLeft: 20,
+    marginRight: 20,
+    borderRadius: 5,
+  },
+}
+
 const Input = (props) => {
   const {
     value,
@@ -40,25 +62,3 @@ const Input = (props) => {
 }
 
 export default Input
-
-const styles = {
-  white: {
-    height: 40,
-    padding: 4,
-    marginTop: 5,
-    backgroundColor: Platform.OS === 'android' ? 'rgba(0,0,0,0)' : '#f3f3f3',
-    marginLeft: 20,
-    marginRight: 20,
-    borderRadius: 5,
-  },
-  green: {
-    height: 40,
-    padding: 4,
-    marginTop: 5,
-    backgroundColor: Platform.OS === 'android' ? 'rgba(0,0,0,0)' : '#219452',
-    color: '#fff',
-    marginLeft: 20,
-    marginRight: 20,
-    borderRadius: 5,
-  },
-}
