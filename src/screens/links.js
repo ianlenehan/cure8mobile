@@ -81,12 +81,12 @@ class Links extends Component {
 
   state = { cachedLinks: null, token: null, appState: AppState.currentState }
 
-  componentDidMount() {
+  async componentDidMount() {
     AppState.addEventListener('change', this._handleAppStateChange)
     this._loadStoredData()
     this.getUserData()
     this.requestNotificationPermissions()
-    this.updateUserOs()
+    await this.updateUserOs()
 
     OneSignal.getPermissionSubscriptionState((status) => {
       this.checkNotificationStatus(status)
