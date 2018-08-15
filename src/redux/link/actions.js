@@ -33,19 +33,29 @@ export const setArchiveMode = (curation, action) => {
   }
 }
 
+export const organiseLinks = (links, status) => {
+  const filteredLinks = links.filter((link) => {
+    return link.status === status
+  })
+  return filteredLinks.sort((a, b) => {
+    return new Date(b.date_added) - new Date(a.date_added)
+  })
+}
+
 export const archiveLink = ({ id, rating, action, token, tags }) => {
   return (dispatch) => {
     dispatch({ type: types.REQUESTED_LINKS })
-
     axios.post(`${apiUrl}links/archive`, {
       curation: { id, rating, action, tags },
       user: { token },
     })
       .then((res) => {
         if (res.status === 200) {
+          const newLinks = organiseLinks(res.data, 'new')
+          const archivedLinks = organiseLinks(res.data, 'archived')
           dispatch({
             type: types.GET_LINKS,
-            payload: res.data,
+            payload: { newLinks, archivedLinks },
           })
         } else if (res.status === 401) {
           dispatch({ type: types.NOT_AUTHORIZED })
@@ -73,9 +83,11 @@ export const addTags = (id, tags, token) => {
     })
       .then((res) => {
         if (res.status === 200) {
+          const newLinks = organiseLinks(res.data, 'new')
+          const archivedLinks = organiseLinks(res.data, 'archived')
           dispatch({
             type: types.GET_LINKS,
-            payload: res.data,
+            payload: { newLinks, archivedLinks },
           })
         } else if (res.status === 401) {
           dispatch({ type: types.NOT_AUTHORIZED })
@@ -122,16 +134,22 @@ export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => 
   }
 }
 
-export const getLinks = (token) => {
+export const getLinks = (token, showLoadingIndicator = true) => {
   return (dispatch) => {
-    dispatch({ type: types.REQUESTED_LINKS })
+    if (showLoadingIndicator) {
+      dispatch({ type: types.REQUESTED_LINKS })
+    } else {
+      dispatch({ type: types.QUIETLY_REQUESTED_LINKS })
+    }
 
     axios.post(`${apiUrl}links/fetch`, { user: { token } })
       .then((res) => {
         if (res.status === 200) {
+          const newLinks = organiseLinks(res.data, 'new')
+          const archivedLinks = organiseLinks(res.data, 'archived')
           dispatch({
             type: types.GET_LINKS,
-            payload: res.data,
+            payload: { newLinks, archivedLinks },
           })
         } else if (res.status === 204) {
           dispatch({ type: types.NO_LINKS })

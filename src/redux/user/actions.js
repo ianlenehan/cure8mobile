@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Platform, AsyncStorage } from 'react-native'
 import * as types from '../types'
 import rootURL from '../../../environment'
 
@@ -12,7 +11,6 @@ export const updateUser = (token, value, field, userInfo = {}) => {
   switch (field) {
     case 'getRatingNotifications':
       fieldName = 'notifications_new_rating'
-      newInfo.notifications.rating = value
       break
     case 'getCurationNotifications':
       fieldName = 'notifications_new_link'
@@ -29,14 +27,14 @@ export const updateUser = (token, value, field, userInfo = {}) => {
   return (dispatch) => {
     dispatch({
       type: types.GOT_INFO,
-      payload: newInfo
+      payload: newInfo,
     })
     axios.post(`${apiUrl}user/update`, { user: { token, field: fieldName, value } })
       .then(res => {
         if (res.data.status === 200) {
           dispatch({
             type: types.GOT_INFO,
-            payload: res.data
+            payload: res.data,
           })
         }
       })
@@ -52,7 +50,7 @@ export const getUserInfo = (token) => {
         if (res.data.status === 200) {
           dispatch({
             type: types.GOT_INFO,
-            payload: res.data
+            payload: res.data,
           })
         }
       })
@@ -71,7 +69,7 @@ export const getUserActivity = (token) => {
         if (res.data.status === 200) {
           dispatch({
             type: types.GOT_ACTIVITY,
-            payload: res.data.data
+            payload: res.data.data,
           })
         }
       })

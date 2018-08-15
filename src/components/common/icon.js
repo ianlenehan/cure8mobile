@@ -2,6 +2,13 @@ import React from 'react'
 import { Text, View } from 'react-native'
 import { Icon } from 'react-native-elements'
 
+const styles = {
+  text: {
+    fontSize: 8,
+    color: 'grey',
+  },
+}
+
 const MyIcon = (props) => {
   return (
     <View>
@@ -20,10 +27,3 @@ const MyIcon = (props) => {
 }
 
 export default MyIcon
-
-const styles = {
-  text: {
-    fontSize: 8,
-    color: 'grey',
-  },
-}

@@ -4,7 +4,7 @@ export const ratings = {
   joy: 3,
   cry: 4,
   angry: 5,
-  wow: 6,
+  astonished: 6,
 }
 
 export const ratingValues = {

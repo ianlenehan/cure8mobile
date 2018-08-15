@@ -1,6 +1,22 @@
 import React from 'react'
 import { Text } from 'react-native'
 
+const styles = {
+  large: {
+    fontSize: 24,
+    padding: 5,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#27ae60',
+  },
+  small: {
+    fontSize: 16,
+    padding: 5,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+}
+
 const Title = (props) => {
   if (props.size === 'large') {
     return (
@@ -17,19 +33,3 @@ const Title = (props) => {
 }
 
 export default Title
-
-const styles = {
-  large: {
-    fontSize: 24,
-    padding: 5,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#27ae60',
-  },
-  small: {
-    fontSize: 16,
-    padding: 5,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  }
-}
