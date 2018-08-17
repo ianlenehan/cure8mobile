@@ -36,6 +36,10 @@ const styles = {
     height: 200,
     paddingBottom: 5,
   },
+  placeholderImage: {
+    height: 200,
+    width: 400,
+  },
   subtitle: {
     flexDirection: 'row',
     margin: 5,
@@ -150,15 +154,6 @@ class Card extends Component {
     } else {
       this.props.onArchivePress(curation, action)
     }
-  }
-
-  getBillMurray() {
-    const sizes = [150, 160, 170, 180, 190, 200]
-    const min = Math.ceil(0)
-    const max = Math.floor(5)
-    const number = Math.floor(Math.random() * (max - min)) + min
-    const size = sizes[number]
-    return `http://fillmurray.com/300/${size}`
   }
 
   getSharedWithNames(contacts, phone) {
@@ -324,11 +319,13 @@ class Card extends Component {
 
   showSharedWith = () => {
     const { sharedWithNames } = this.state
-    let message = 'This has only been shared with with you.'
-    if (sharedWithNames.length) {
-      message = `This has also been shared with ${sharedWithNames.join(', ')}.`
+    if (sharedWithNames) {
+      let message = 'This has only been shared with with you.'
+      if (sharedWithNames.length) {
+        message = `This has also been shared with ${sharedWithNames.join(', ')}.`
+      }
+      Alert.alert('Shared With', message)
     }
-    Alert.alert('Shared With', message)
   }
 
   renderUpdateButton(status) {
@@ -541,13 +538,14 @@ class Card extends Component {
     } = this.props.link
 
     const formattedComment = comment ? `"${comment}"` : ''
-    const placeholder = this.getBillMurray()
-    const image = this.props.link.image || placeholder
+    const placeholder = <Image source={require('../../../assets/images/no_image_placeholder.png')} style={styles.placeholderImage} />
+    const image = <Image source={{ uri: this.props.link.image }} style={styles.image} />
+    const picture = this.props.link.image ? image : placeholder
     return (
       <CardSection style={{ flex: 1 }}>
         <TouchableOpacity key={id} onPress={() => this.openInWebBrowser(url)}>
           <Title title={title.trim()} size="small" />
-          <Image source={{ uri: image }} style={styles.image} />
+          {picture}
         </TouchableOpacity>
         <View style={styles.subtitle}>
           <TouchableOpacity style={{ flexDirection: 'row', flex: 1 }} onPress={this.showSharedWith}>
