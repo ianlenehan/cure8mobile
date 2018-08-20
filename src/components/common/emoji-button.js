@@ -9,7 +9,7 @@ const EmojiButton = (props) => {
         onPress={props.onPress}
       >
         <View>
-          <Text style={{ fontSize: 26 }}><Emoji name={props.name} /></Text>
+          <Text style={{ fontSize: props.size || 26 }}><Emoji name={props.name} /></Text>
         </View>
       </TouchableWithoutFeedback>
     )

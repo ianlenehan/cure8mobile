@@ -62,14 +62,14 @@ export const getUserInfo = (token) => {
 
 export const getUserActivity = (token) => {
   return (dispatch) => {
-    axios.post(`${apiUrl}user/activity`, {
+    axios.post(`${apiUrl}user/user_activity`, {
       user: { token },
     })
       .then(res => {
-        if (res.data.status === 200) {
+        if (res.status === 200) {
           dispatch({
             type: types.GOT_ACTIVITY,
-            payload: res.data.data,
+            payload: res.data,
           })
         }
       })

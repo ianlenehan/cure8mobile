@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  Alert,
 } from 'react-native'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -17,32 +18,36 @@ import EmojiButton from '../components/common/emoji-button'
 import { ratingValues } from '../../helpers/ratings'
 
 const styles = {
-  activityView: {
-    flexDirection: 'row',
+  container: {
+    padding: 10,
     backgroundColor: 'white',
-    marginBottom: 0.5,
-    marginTop: 0.5,
-    borderRadius: 2,
-    borderColor: '#ccc',
-    borderBottomWidth: 0,
-    padding: 3,
-    paddingRight: 10,
+    marginBottom: 2,
+  },
+  titleView: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  activityTitle: {
-    fontSize: 14,
+  titleText: {
+    flex: 6,
+    fontSize: 16,
   },
-  friendName: {
-    fontSize: 10,
-    flex: 2,
+  drawerContainer: {
+    backgroundColor: 'white',
+    paddingTop: 15,
+  },
+  ratingView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
+  },
+  ratingText: {
     color: 'grey',
   },
-  bottomText: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flex: 1,
-    marginTop: 3,
-    alignItems: 'flex-end',
+  cure8Icon: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    margin: 5,
   },
   date: {
     fontSize: 8,
@@ -70,15 +75,28 @@ class Activity extends Component {
   constructor() {
     super()
     this.ratingValues = ratingValues
+
+    this.state = {
+      openDrawerTitle: null,
+    }
   }
 
-  getRatingIcon(item) {
-    const name = this.ratingValues[item.rating]
-
+  getRatingIcon(rating) {
+    if (rating.rating) {
+      const name = this.ratingValues[rating.rating]
+      return (
+        <EmojiButton
+          name={name}
+          render
+          size={16}
+        />
+      )
+    }
     return (
-      <EmojiButton
-        name={name}
-        render
+      <Image
+        style={styles.cure8Icon}
+        resizeMode="contain"
+        source={require('../../assets/icons/app.png')}
       />
     )
   }
@@ -100,46 +118,77 @@ class Activity extends Component {
     }
   }
 
+  openDrawer(item) {
+    if (item.ratings.length === 0) {
+      Alert.alert('Nothing to See', "We've no activity to show you here, looks like you haven't curated this link for anyone.")
+    } else {
+      this.setState({ openDrawerTitle: item.title })
+    }
+  }
+
+  closeDrawer = () => {
+    this.setState({ openDrawerTitle: null })
+  }
+
+  renderDrawer(item) {
+    if (this.state.openDrawerTitle === item.title) {
+      return (
+        <View style={styles.drawerContainer}>
+          {
+            item.ratings.map(rating => {
+              return (
+                <View key={rating.user} style={styles.ratingView}>
+                  {this.getRatingIcon(rating)}
+                  <Text style={styles.ratingText}>{rating.user}</Text>
+                </View>
+              )
+            })
+          }
+        </View>
+      )
+    }
+    return null
+  }
+
+  renderMoreIcon(item) {
+    const ratingsExist = item.ratings.length > 0
+    if (this.state.openDrawerTitle === item.title && ratingsExist) {
+      return (
+        <Icon
+          size={32}
+          name="expand-less"
+          color="#27ae60"
+          onPress={this.closeDrawer}
+        />
+      )
+    }
+    return (
+      <Icon
+        size={32}
+        name="expand-more"
+        color="#27ae60"
+        onPress={() => this.openDrawer(item)}
+      />
+    )
+  }
+
   renderItems() {
     const { activity } = this.props
     return activity.map((item) => {
-      if (item.type === 'rating') {
-        return (
+      return (
+        <View
+          key={item.created_at}
+          style={styles.container}
+        >
           <TouchableOpacity
-            key={`${item.id}${item.type}`}
-            style={styles.activityView}
+            style={styles.titleView}
             onPress={() => this.openInWebBrowser(item.url)}
           >
-            {this.getRatingIcon(item)}
-            <View style={{ flex: 1 }}>
-              <Text style={styles.activityTitle}>{item.title.trim()}</Text>
-              <View style={styles.bottomText}>
-                <Text style={styles.friendName}>{item.friend}</Text>
-                <Text style={styles.date}>{this.formatDate(item.date)}</Text>
-              </View>
-            </View>
+            <Text style={styles.titleText}>{item.title}</Text>
+            {this.renderMoreIcon(item)}
           </TouchableOpacity>
-        )
-      }
-      return (
-        <TouchableOpacity
-          key={`${item.id}${item.type}`}
-          style={styles.activityView}
-          onPress={() => this.openInWebBrowser(item.url)}
-        >
-          <Image
-            style={{ width: 22, height: 22, borderRadius: 11, margin: 5 }}
-            resizeMode="contain"
-            source={require('../../assets/icons/app.png')}
-          />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.activityTitle}>{item.title.trim()}</Text>
-            <View style={styles.bottomText}>
-              <Text style={styles.friendName}>{item.friends.join(', ')}</Text>
-              <Text style={styles.date}>{this.formatDate(item.date)}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+          {this.renderDrawer(item)}
+        </View>
       )
     })
   }
