@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
   Platform,
-  Alert,
 } from 'react-native'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -38,22 +37,31 @@ const styles = {
   ratingView: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 5,
+    marginTop: 5,
   },
   ratingText: {
     color: 'grey',
   },
-  cure8Icon: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    margin: 5,
+  userNames: {
+    color: 'grey',
+    fontSize: 12,
+    flex: 1,
   },
   date: {
-    fontSize: 8,
+    fontSize: 12,
     color: 'grey',
-    flex: 1,
-    textAlign: 'right',
+  },
+  dateAndNamesView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 5,
+  },
+  cure8Icon: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    marginRight: 10,
+    marginBottom: 5,
   },
   loading: {
     flex: 1,
@@ -88,7 +96,7 @@ class Activity extends Component {
         <EmojiButton
           name={name}
           render
-          size={16}
+          style={{ fontSize: 16, marginRight: 5 }}
         />
       )
     }
@@ -99,11 +107,6 @@ class Activity extends Component {
         source={require('../../assets/icons/app.png')}
       />
     )
-  }
-
-  formatDate(date) {
-    const currentDate = moment()
-    return moment(date).local().from(currentDate)
   }
 
   openInWebBrowser = (url) => {
@@ -119,15 +122,17 @@ class Activity extends Component {
   }
 
   openDrawer(item) {
-    if (item.ratings.length === 0) {
-      Alert.alert('Nothing to See', "We've no activity to show you here, looks like you haven't curated this link for anyone.")
-    } else {
-      this.setState({ openDrawerTitle: item.title })
-    }
+    this.setState({ openDrawerTitle: item.title })
   }
 
   closeDrawer = () => {
     this.setState({ openDrawerTitle: null })
+  }
+
+  renderDate(item) {
+    const currentDate = moment()
+    const formattedDate = moment(item.created_at).local().from(currentDate)
+    return <Text style={styles.date}>{formattedDate}</Text>
   }
 
   renderDrawer(item) {
@@ -150,26 +155,37 @@ class Activity extends Component {
     return null
   }
 
+  renderSharedWith(item) {
+    if (this.state.openDrawerTitle !== item.title) {
+      const names = item.ratings.map(rating => rating.user).join(', ')
+      return <Text style={styles.userNames}>{names}</Text>
+    }
+    return null
+  }
+
   renderMoreIcon(item) {
     const ratingsExist = item.ratings.length > 0
-    if (this.state.openDrawerTitle === item.title && ratingsExist) {
+    if (ratingsExist) {
+      if (this.state.openDrawerTitle === item.title) {
+        return (
+          <Icon
+            size={32}
+            name="expand-less"
+            color="#27ae60"
+            onPress={this.closeDrawer}
+          />
+        )
+      }
       return (
         <Icon
           size={32}
-          name="expand-less"
+          name="expand-more"
           color="#27ae60"
-          onPress={this.closeDrawer}
+          onPress={() => this.openDrawer(item)}
         />
       )
     }
-    return (
-      <Icon
-        size={32}
-        name="expand-more"
-        color="#27ae60"
-        onPress={() => this.openDrawer(item)}
-      />
-    )
+    return null
   }
 
   renderItems() {
@@ -187,6 +203,10 @@ class Activity extends Component {
             <Text style={styles.titleText}>{item.title}</Text>
             {this.renderMoreIcon(item)}
           </TouchableOpacity>
+          <View style={styles.dateAndNamesView}>
+            {this.renderSharedWith(item)}
+            {this.renderDate(item)}
+          </View>
           {this.renderDrawer(item)}
         </View>
       )
