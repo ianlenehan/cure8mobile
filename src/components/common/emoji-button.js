@@ -2,6 +2,10 @@ import React from 'react'
 import { TouchableWithoutFeedback, Text, View } from 'react-native'
 import Emoji from '@ardentlabs/react-native-emoji'
 
+const style = {
+  fontSize: 26,
+}
+
 const EmojiButton = (props) => {
   if (props.render) {
     return (
@@ -9,7 +13,7 @@ const EmojiButton = (props) => {
         onPress={props.onPress}
       >
         <View>
-          <Text style={{ fontSize: props.size || 26 }}><Emoji name={props.name} /></Text>
+          <Text style={props.style || style}><Emoji name={props.name} /></Text>
         </View>
       </TouchableWithoutFeedback>
     )
