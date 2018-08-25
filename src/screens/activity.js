@@ -6,6 +6,8 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  AsyncStorage,
+  LayoutAnimation,
 } from 'react-native'
 import moment from 'moment'
 import { connect } from 'react-redux'
@@ -15,6 +17,7 @@ import { Icon } from 'react-native-elements'
 import Spinner from '../components/common/spinner'
 import EmojiButton from '../components/common/emoji-button'
 import { ratingValues } from '../../helpers/ratings'
+import { getUserActivity } from '../redux/user/actions'
 
 const styles = {
   container: {
@@ -50,6 +53,7 @@ const styles = {
   date: {
     fontSize: 12,
     color: 'grey',
+    marginLeft: 10,
   },
   dateAndNamesView: {
     flexDirection: 'row',
@@ -86,7 +90,20 @@ class Activity extends Component {
 
     this.state = {
       openDrawerTitle: null,
+      token: null,
     }
+  }
+
+  componentDidMount() {
+    this._setToken()
+
+    this.subs = [
+      this.props.navigation.addListener('didFocus', () => this._getActivity()),
+    ]
+  }
+
+  componentWillUnmount() {
+    this.subs.forEach(sub => sub.remove())
   }
 
   getRatingIcon(rating) {
@@ -109,6 +126,18 @@ class Activity extends Component {
     )
   }
 
+  async _getActivity() {
+    const token = this.state.token || await AsyncStorage.getItem('token')
+    if (token) {
+      this.props.getUserActivity(this.state.token)
+    }
+  }
+
+  async _setToken() {
+    const token = await AsyncStorage.getItem('token')
+    this.setState({ token })
+  }
+
   openInWebBrowser = (url) => {
     if (Platform.OS === 'ios') {
       SafariView.show({
@@ -122,10 +151,12 @@ class Activity extends Component {
   }
 
   openDrawer(item) {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     this.setState({ openDrawerTitle: item.title })
   }
 
   closeDrawer = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     this.setState({ openDrawerTitle: null })
   }
 
@@ -234,4 +265,4 @@ const mapStateToProps = ({ user }) => {
   return { activity }
 }
 
-export default connect(mapStateToProps, { })(Activity)
+export default connect(mapStateToProps, { getUserActivity })(Activity)

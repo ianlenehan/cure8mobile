@@ -8,6 +8,7 @@ import {
   Platform,
   AsyncStorage,
   Alert,
+  LayoutAnimation,
 } from 'react-native'
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -264,11 +265,13 @@ class Card extends Component {
   }
 
   expandLess = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     this.props.onDrawerPress(null)
     this.props.onArchivePress(null)
   }
 
   expandMore = async (curation) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     const expandMoreAlerted = await AsyncStorage.getItem('expandMoreAlerted')
     if (!expandMoreAlerted) {
       Alert.alert('How does this work?', 'Pressing on Delete or Archive will ask you to rate the curation for your friend. Add a tag when Archiving if you wish, and then press the Thumbs Up or any other emoji to finish deleting or archiving the curation.')
