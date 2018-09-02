@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This is not used.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Cure8</string>
 	<key>CFBundleExecutable</key>
@@ -15,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>11.0.0</string>
+	<string>10.1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>47</string>
+	<string>50</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -44,7 +46,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Cure8 requires access to your address book to allow you to add contacts to share content with.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We do not use your location</string>
+	<string>We require your location only to suggest the correct country code when you log in.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>We do not require access to speech recognition</string>
 	<key>UIAppFonts</key>

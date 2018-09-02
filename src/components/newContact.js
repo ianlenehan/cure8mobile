@@ -6,6 +6,8 @@ import {
   LayoutAnimation,
   ScrollView,
   Alert,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -57,8 +59,14 @@ class NewContact extends Component {
     })
   }
 
-  getPhonePermissions() {
-    // Keyboard.dismiss()
+  async getPhonePermissions() {
+    if (Platform.OS === 'android') {
+      await this._getAndroidPermissions()
+    }
+    this._getPermissions()
+  }
+
+  _getPermissions() {
     Contacts.checkPermission((err, permission) => {
       if (permission === 'undefined') {
         Contacts.requestPermission((error, perm) => {
@@ -72,6 +80,26 @@ class NewContact extends Component {
         Alert.alert('Contacts Permission', 'You have not granted Cure8 access to your address book. Please enable this in your settings to add your contacts.')
       }
     })
+  }
+
+  async _getAndroidPermissions() {
+    try {
+      const permission = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+        {
+          title: 'Your Contacts',
+          message: 'Cure8 needs access to your contacts ' +
+                     'so you can share cool content with them.',
+        },
+      )
+      if (permission === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Android contacts permission granted.')
+      } else {
+        console.log('Android contacts permission denied')
+      }
+    } catch (err) {
+      console.log('error', err)
+    }
   }
 
   contactNameChanged = (text) => {

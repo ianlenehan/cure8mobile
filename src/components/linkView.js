@@ -85,14 +85,6 @@ class LinkView extends Component {
     this.props.createLink({ url, link_type, comment, numbers, userPhone })
   }
 
-  async _setMembershipStatus() {
-    const membership = await AsyncStorage.getItem('membership')
-    this.setState({ isMember: !!membership })
-    if (!membership && this.props.links.length === 5 && !__DEV__) { // eslint-disable-line
-      this.membershipAlert()
-    }
-  }
-
   async checkReaderMode() {
     const readerMode = await AsyncStorage.getItem('readerMode')
     if (readerMode) {
@@ -155,12 +147,7 @@ class LinkView extends Component {
   }
 
   shareLink(link) {
-    const atMaxLinks = this.props.links.length >= 5
-    if (!this.state.isMember && atMaxLinks && !__DEV__) { //eslint-disable-line
-      this.membershipAlertDialog()
-    } else {
-      this.props.navigate('addLink', { url: link.url })
-    }
+    this.props.navigate('addLink', { url: link.url })
   }
 
   filterByTag = async (tag) => {
