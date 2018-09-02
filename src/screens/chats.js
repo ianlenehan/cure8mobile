@@ -77,11 +77,11 @@ class Chats extends Component {
     this.setState({ enable })
   }
 
-  swipeSuccess = (shouldDeleteOnSwipe, itemId) => {
+  swipeSuccess = (shouldDelete, itemId) => {
     this.props.deleteConversation(
       this.props.conversations,
       itemId,
-      shouldDeleteOnSwipe,
+      shouldDelete,
       this.state.token,
     )
   }
