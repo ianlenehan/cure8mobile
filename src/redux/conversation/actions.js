@@ -31,9 +31,9 @@ export const getConversations = (token) => {
     const res = await axios.post(`${apiUrl}user_conversations`, {
       user: { token },
     })
-    const sortedConversations = _sortConversations(res.data)
-    const unreadMessages = _getUnreadMessages(sortedConversations)
     if (res.status === 200) {
+      const sortedConversations = _sortConversations(res.data)
+      const unreadMessages = _getUnreadMessages(sortedConversations)
       dispatch({
         type: types.CONVERSATIONS_SET,
         payload: { conversations: sortedConversations, unreadMessages },
@@ -63,7 +63,7 @@ export const createConversation = ({ link_id, userIds, chatType, token }) => {
   }
 }
 
-export const deleteConversation = (conversations, conversationId) => {
+export const deleteConversation = (conversations, conversationId, shouldDelete, token) => {
   const payload = conversations.filter(conversation => {
     return conversation.id !== conversationId
   })
@@ -72,8 +72,21 @@ export const deleteConversation = (conversations, conversationId) => {
       type: types.CONVERSATION_DELETED,
       payload,
     })
+    const res = await axios.post(`${apiUrl}conversations/delete`, {
+      user: { token },
+      conversation: { id: conversationId, should_delete: shouldDelete },
+    })
+    if (res.status === 200) {
+      const sortedConversations = _sortConversations(res.data)
+      const unreadMessages = _getUnreadMessages(sortedConversations)
+      dispatch({
+        type: types.CONVERSATIONS_SET,
+        payload: { conversations: sortedConversations, unreadMessages },
+      })
+    } else {
+      console.log('get conversations error', res.status)
+    }
   }
-  // TODO: make DELETE request
 }
 
 export const setConversations = (conversations) => {

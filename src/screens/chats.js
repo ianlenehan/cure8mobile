@@ -55,7 +55,8 @@ class Chats extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.setToken()
     AppState.addEventListener('change', this._handleAppStateChange)
     this.subs = [
       this.props.navigation.addListener('didFocus', () => this._getConversations()),
@@ -65,6 +66,24 @@ class Chats extends Component {
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange)
     this.subs.forEach(sub => sub.remove())
+  }
+
+  async setToken() {
+    const token = await AsyncStorage.getItem('token')
+    this.setState({ token })
+  }
+
+  setScrollEnabled(enable) {
+    this.setState({ enable })
+  }
+
+  swipeSuccess = (shouldDeleteOnSwipe, itemId) => {
+    this.props.deleteConversation(
+      this.props.conversations,
+      itemId,
+      shouldDeleteOnSwipe,
+      this.state.token,
+    )
   }
 
   async _loadStoredData() {
@@ -83,9 +102,8 @@ class Chats extends Component {
     this.setState({ appState: nextAppState })
   }
 
-  _getConversations = async () => {
-    const token = await AsyncStorage.getItem('token')
-    this.props.getConversations(token)
+  _getConversations = () => {
+    this.props.getConversations(this.state.token)
   }
 
   handleReceivedConversation = response => {
@@ -110,9 +128,8 @@ class Chats extends Component {
     this.props.setConversationMessages(conversationMessages)
   }
 
-  resetUnreadMessages = async (conversationId) => {
-    const token = await AsyncStorage.getItem('token')
-    this.props.resetUnreadMessageCount(conversationId, token)
+  resetUnreadMessages = (conversationId) => {
+    this.props.resetUnreadMessageCount(conversationId, this.state.token)
   }
 
   goToConversation = (conversation) => {
@@ -120,16 +137,6 @@ class Chats extends Component {
     this.props.setConversationMessages(conversation.messages)
     this.resetUnreadMessages(conversation.id)
     this.props.navigation.navigate('chat', { title: conversation.title })
-  }
-
-  swipeSuccess = (shouldDeleteOnSwipe, itemId) => {
-    this.props.deleteConversation(this.props.conversations, itemId)
-  }
-
-  setScrollEnabled(enable) {
-    this.setState({
-      enable,
-    });
   }
 
   renderItem = ({ item }) => {

@@ -59,6 +59,9 @@ const styles = {
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
+  absoluteCellText: {
+    fontWeight: 'bold',
+  },
   innerCell: {
     width,
     marginRight: 100,
@@ -133,8 +136,9 @@ class ChatListItem extends Component {
   render() {
     const { item, goToConversation } = this.props
     const deleteOnSwipe = this.shouldDeleteOnSwipe()
-    const cellText = deleteOnSwipe ? 'DELETE CHAT' : 'LEAVE CHAT'
+    const cellText = deleteOnSwipe ? 'Delete Chat' : 'Leave Chat'
     const cellColour = deleteOnSwipe ? 'red' : 'orange'
+    const cellTextColour = deleteOnSwipe ? 'white' : 'black'
     return (
       <View style={[styles.listItem, { backgroundColor: cellColour }]}>
         <Animated.View
@@ -160,7 +164,7 @@ class ChatListItem extends Component {
             </TouchableWithoutFeedback>
           </View>
           <View style={styles.absoluteCell}>
-            <Text style={styles.absoluteCellText}>{cellText}</Text>
+            <Text style={{ color: cellTextColour, fontWeight: 'bold' }}>{cellText}</Text>
           </View>
         </Animated.View>
       </View>
