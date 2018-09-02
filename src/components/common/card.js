@@ -260,7 +260,7 @@ class Card extends Component {
     const userIds = users.map(user => user.id)
 
     await this.props.createConversation({ link_id, userIds, chatType, token })
-    await this.props.getConversations(token)
+    this.props.getConversations(token)
     this.props.navigate('chat', { title })
   }
 
@@ -464,16 +464,21 @@ class Card extends Component {
   }
 
   renderConversationIcon() {
-    return (
-      <MyIcon
-        size={24}
-        name="comment"
-        type="font-awesome"
-        color="#27ae60"
-        onPress={() => this.conversationAlert()}
-        text="Discuss"
-      />
-    )
+    const { shared_with: sharedWith } = this.props.link
+
+    if (sharedWith > 0) {
+      return (
+        <MyIcon
+          size={24}
+          name="comment"
+          type="font-awesome"
+          color="#27ae60"
+          onPress={() => this.conversationAlert()}
+          text="Discuss"
+        />
+      )
+    }
+    return null
   }
 
   renderAllIcons(owner) {
