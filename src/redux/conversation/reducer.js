@@ -29,6 +29,8 @@ export default (state = initialState, action) => {
         conversationMessages: [],
         loading: false,
       }
+    case types.CONVERSATION_DELETED:
+      return { ...state, conversations: action.payload }
     default:
       return state
   }

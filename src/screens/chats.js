@@ -14,6 +14,7 @@ import {
   getConversations,
   setConversationMessages,
   resetUnreadMessageCount,
+  deleteConversation,
 } from '../redux/conversation/actions'
 import Spinner from '../components/common/spinner'
 import ChatListItem from '../components/chatListItem'
@@ -50,6 +51,7 @@ class Chats extends Component {
     this.state = {
       conversations: null,
       appState: AppState.currentState,
+      enable: true,
     }
   }
 
@@ -120,11 +122,23 @@ class Chats extends Component {
     this.props.navigation.navigate('chat', { title: conversation.title })
   }
 
+  swipeSuccess = (shouldDeleteOnSwipe, itemId) => {
+    this.props.deleteConversation(this.props.conversations, itemId)
+  }
+
+  setScrollEnabled(enable) {
+    this.setState({
+      enable,
+    });
+  }
+
   renderItem = ({ item }) => {
     return (
       <ChatListItem
         item={item}
         goToConversation={this.goToConversation}
+        swipeSuccess={this.swipeSuccess}
+        setScrollEnabled={enable => this.setScrollEnabled(enable)}
       />
     )
   }
@@ -136,6 +150,7 @@ class Chats extends Component {
         renderItem={this.renderItem}
         keyExtractor={item => item.id.toString()}
         removeClippedSubviews={false}
+        scrollEnabled={this.state.enable}
       />
     )
   }
@@ -179,4 +194,5 @@ export default connect(mapStateToProps, {
   getConversations,
   setConversationMessages,
   resetUnreadMessageCount,
+  deleteConversation,
 })(Chats)

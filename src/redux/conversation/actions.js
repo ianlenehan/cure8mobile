@@ -63,6 +63,19 @@ export const createConversation = ({ link_id, userIds, chatType, token }) => {
   }
 }
 
+export const deleteConversation = (conversations, conversationId) => {
+  const payload = conversations.filter(conversation => {
+    return conversation.id !== conversationId
+  })
+  return async (dispatch) => {
+    dispatch({
+      type: types.CONVERSATION_DELETED,
+      payload,
+    })
+  }
+  // TODO: make DELETE request
+}
+
 export const setConversations = (conversations) => {
   const sortedConversations = _sortConversations(conversations)
   const unreadMessages = _getUnreadMessages(sortedConversations)
