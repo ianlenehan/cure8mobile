@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
-import moment from 'moment'
 import {
-  Text,
   View,
-  TouchableWithoutFeedback,
   FlatList,
   AsyncStorage,
   AppState,
@@ -19,6 +16,7 @@ import {
   resetUnreadMessageCount,
 } from '../redux/conversation/actions'
 import Spinner from '../components/common/spinner'
+import ChatListItem from '../components/chatListItem'
 import { primaryGreen } from '../variables'
 
 const styles = {
@@ -26,24 +24,6 @@ const styles = {
     backgroundColor: 'white',
     flex: 1,
     justifyContent: 'space-between',
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: 12,
-    borderColor: '#ddd',
-    borderBottomWidth: 1,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flex: 10,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 16,
-    paddingTop: 3,
-    paddingRight: 5,
-    flex: 1,
   },
   unreadContainer: {
     backgroundColor: primaryGreen,
@@ -56,21 +36,6 @@ const styles = {
     fontSize: 12,
     color: 'white',
     textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 12,
-    color: 'grey',
-  },
-  details: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  subtitleAndDate: {
-    marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   loading: {
     flex: 1,
@@ -116,11 +81,6 @@ class Chats extends Component {
     this.setState({ appState: nextAppState })
   }
 
-  formatDate(date) {
-    const currentDate = moment()
-    return moment(date).local().from(currentDate)
-  }
-
   _getConversations = async () => {
     const token = await AsyncStorage.getItem('token')
     this.props.getConversations(token)
@@ -162,24 +122,10 @@ class Chats extends Component {
 
   renderItem = ({ item }) => {
     return (
-      <TouchableWithoutFeedback onPress={() => this.goToConversation(item)}>
-        <View style={styles.card}>
-          <View style={styles.details}>
-            <View style={styles.titleRow}>
-              <Text style={styles.title}>{item.title || ''}</Text>
-              {item.unread_messages > 0 ? (
-                <View style={styles.unreadContainer}>
-                  <Text style={styles.unreadCount}>{item.unread_messages}</Text>
-                </View>
-              ) : null}
-            </View>
-            <View style={styles.subtitleAndDate}>
-              <Text style={styles.subtitle}>{item.members.join(', ')}</Text>
-              <Text style={styles.subtitle}>{this.formatDate(item.updated_at)}</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
+      <ChatListItem
+        item={item}
+        goToConversation={this.goToConversation}
+      />
     )
   }
 
