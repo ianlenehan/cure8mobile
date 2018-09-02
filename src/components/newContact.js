@@ -59,15 +59,14 @@ class NewContact extends Component {
     })
   }
 
-  getPhonePermissions() {
-    if (Platform.OS === 'ios') {
-      this._getIosPermissions()
-    } else {
-      this._getAndroidPermissions()
+  async getPhonePermissions() {
+    if (Platform.OS === 'android') {
+      await this._getAndroidPermissions()
     }
+    this._getPermissions()
   }
 
-  _getIosPermissions() {
+  _getPermissions() {
     Contacts.checkPermission((err, permission) => {
       if (permission === 'undefined') {
         Contacts.requestPermission((error, perm) => {
@@ -85,7 +84,7 @@ class NewContact extends Component {
 
   async _getAndroidPermissions() {
     try {
-      const granted = await PermissionsAndroid.request(
+      const permission = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
         {
           title: 'Your Contacts',
@@ -93,13 +92,13 @@ class NewContact extends Component {
                      'so you can share cool content with them.',
         },
       )
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      if (permission === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Android contacts permission granted.')
       } else {
         console.log('Android contacts permission denied')
       }
     } catch (err) {
-      console.warn(err)
+      console.log('error', err)
     }
   }
 
