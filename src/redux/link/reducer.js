@@ -25,21 +25,21 @@ export default (state = initialState, action) => {
     case types.LINK_CURATED:
       return {
         ...state,
-        links: action.payload,
+        newLinks: action.payload,
         loading: false,
         authorized: true,
         linkCurated: true,
       }
     case types.TOAST_DISPLAYED:
       return { ...state, linkCurated: null }
+    case types.CREATING_LINK:
+      return { ...state, newLinks: [action.payload, ...state.newLinks] }
     case types.REQUESTED_LINKS:
-      return { ...state, loading: true, authorized: true }
-    case types.QUIETLY_REQUESTED_LINKS:
-      return { ...state, authorized: true }
-    case types.CREATE_LINK:
-      return { ...state, links: action.payload, authorized: true }
+      return { ...state, loading: action.payload, authorized: true }
+    case types.ARCHIVING_LINK:
+      return { ...state, newLinks: action.payload }
     case types.NO_LINKS:
-      return { ...state, links: [], loading: false, authorized: true }
+      return { ...state, loading: false, authorized: true }
     case types.URL_CHANGED:
       return { ...state, url: action.payload, authorized: true }
     case types.COMMENT_CHANGED:

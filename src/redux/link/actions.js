@@ -42,9 +42,10 @@ export const organiseLinks = (links, status) => {
   })
 }
 
-export const archiveLink = ({ id, rating, action, token, tags }) => {
+export const archiveLink = ({ id, rating, action, token, tags, links }) => {
+  const temporaryLinks = links.filter(link => link.curation_id !== id)
   return (dispatch) => {
-    dispatch({ type: types.REQUESTED_LINKS })
+    dispatch({ type: types.ARCHIVING_LINK, payload: temporaryLinks })
     axios.post(`${apiUrl}links/archive`, {
       curation: { id, rating, action, tags },
       user: { token },
@@ -105,9 +106,29 @@ export const shareLink = () => {
   }
 }
 
+const _createTemporaryCuration = (url, comment) => {
+  return {
+    comment,
+    curation_id: 0,
+    date_added: new Date(),
+    link_id: 0,
+    rating: null,
+    status: 'new',
+    title: url,
+    url,
+    owner: { name: '', phone: '', id: '' },
+    tags: [],
+    users_shared_with: [],
+  }
+}
+
 export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => {
+  let newCuration = {}
+  if (saveToMyLinks) {
+    newCuration = _createTemporaryCuration(url, comment)
+  }
   return (dispatch) => {
-    dispatch({ type: types.REQUESTED_LINKS })
+    dispatch({ type: types.CREATING_LINK, payload: newCuration })
 
     axios.post(`${apiUrl}links/create`, {
       link: {
@@ -120,9 +141,10 @@ export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => 
     })
       .then((res) => {
         if (res.status === 200) {
+          const receivedNewLinks = organiseLinks(res.data, 'new')
           dispatch({
             type: types.LINK_CURATED,
-            payload: res.data,
+            payload: receivedNewLinks,
           })
         } else if (res.status === 401) {
           dispatch({ type: types.NOT_AUTHORIZED })
@@ -134,13 +156,9 @@ export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => 
   }
 }
 
-export const getLinks = (token, showLoadingIndicator = true) => {
+export const getLinks = (token, showLoadingIndicator = false) => {
   return (dispatch) => {
-    if (showLoadingIndicator) {
-      dispatch({ type: types.REQUESTED_LINKS })
-    } else {
-      dispatch({ type: types.QUIETLY_REQUESTED_LINKS })
-    }
+    dispatch({ type: types.REQUESTED_LINKS, payload: showLoadingIndicator })
 
     axios.post(`${apiUrl}links/fetch`, { user: { token } })
       .then((res) => {

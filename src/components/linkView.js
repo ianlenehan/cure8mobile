@@ -12,7 +12,6 @@ import {
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
 import {
-  createLink,
   archiveLink,
   shareLink,
   setArchiveMode,
@@ -80,11 +79,6 @@ class LinkView extends Component {
     this.props.setArchiveMode(curation, action)
   }
 
-  onSaveLinkPress = () => {
-    const { url, link_type, comment, numbers, userPhone } = this.props
-    this.props.createLink({ url, link_type, comment, numbers, userPhone })
-  }
-
   async checkReaderMode() {
     const readerMode = await AsyncStorage.getItem('readerMode')
     if (readerMode) {
@@ -135,15 +129,15 @@ class LinkView extends Component {
 
   archiveLink = (id, rating, tags = []) => {
     const { action } = this.props.archiveMode
-    const { token } = this.props
+    const { token, links } = this.props
     this.props.clearCache()
-    this.props.archiveLink({ id, rating, action, token, tags })
+    this.props.archiveLink({ id, rating, action, token, tags, links })
     this.onArchivePress(null)
   }
 
   archiveWithoutRating = (id, rating, action) => {
-    const { token } = this.props
-    this.props.archiveLink({ id, rating, action, token })
+    const { token, links } = this.props
+    this.props.archiveLink({ id, rating, action, token, links })
   }
 
   shareLink(link) {
@@ -288,7 +282,6 @@ const mapStateToProps = ({ link, user, contact }) => {
 
 export default connect(mapStateToProps, {
   getLinks,
-  createLink,
   archiveLink,
   shareLink,
   setArchiveMode,

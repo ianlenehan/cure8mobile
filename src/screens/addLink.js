@@ -238,10 +238,10 @@ class AddLink extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { url, comment, category } = state.link
-  const { contacts, groups } = state.contact
-  return { url, comment, category, contacts, groups }
+const mapStateToProps = ({ link, contact }) => {
+  const { url, comment, category, newLinks } = link
+  const { contacts, groups } = contact
+  return { url, comment, newLinks, category, contacts, groups }
 }
 
 export default connect(mapStateToProps, {

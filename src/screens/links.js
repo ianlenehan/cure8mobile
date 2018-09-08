@@ -6,7 +6,6 @@ import {
   Image,
   StatusBar,
   Platform,
-  Alert,
   AppState,
 } from 'react-native'
 import { Button } from 'react-native-elements'
@@ -121,14 +120,14 @@ class Links extends Component {
 
   getLinksAndChats = () => {
     if (this.state.token) {
-      const showLoadingIndicator = false
-      this.props.getLinks(this.state.token, showLoadingIndicator)
-      this.props.getConversations(this.state.token, showLoadingIndicator)
+      this.props.getLinks(this.state.token)
+      this.props.getConversations(this.state.token)
     }
   }
 
   refreshLinks = () => {
-    this.props.getLinks(this.state.token)
+    const showLoadingIndicator = true
+    this.props.getLinks(this.state.token, showLoadingIndicator)
   }
 
   _handleAppStateChange = async (nextAppState) => {
