@@ -123,12 +123,11 @@ const _createTemporaryCuration = (url, comment) => {
 }
 
 export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => {
-  let newCuration = {}
-  if (saveToMyLinks) {
-    newCuration = _createTemporaryCuration(url, comment)
-  }
   return (dispatch) => {
-    dispatch({ type: types.CREATING_LINK, payload: newCuration })
+    if (saveToMyLinks) {
+      const newCuration = _createTemporaryCuration(url, comment)
+      dispatch({ type: types.CREATING_LINK, payload: newCuration })
+    }
 
     axios.post(`${apiUrl}links/create`, {
       link: {

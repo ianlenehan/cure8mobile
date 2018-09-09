@@ -171,9 +171,9 @@ class Activity extends Component {
       return (
         <View style={styles.drawerContainer}>
           {
-            item.ratings.map(rating => {
+            item.ratings.map((rating, i) => {
               return (
-                <View key={rating.user} style={styles.ratingView}>
+                <View key={i} style={styles.ratingView}>
                   {this.getRatingIcon(rating)}
                   <Text style={styles.ratingText}>{rating.user}</Text>
                 </View>

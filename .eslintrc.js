@@ -23,5 +23,6 @@ module.exports = {
     "react/prefer-stateless-function": 0,
     "class-methods-use-this": 0,
     "global-require": 0,
+    "react/no-array-index-key": 0,
     }
   }
