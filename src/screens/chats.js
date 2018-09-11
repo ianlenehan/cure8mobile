@@ -4,6 +4,7 @@ import {
   FlatList,
   AsyncStorage,
   AppState,
+  LayoutAnimation,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { ActionCable } from 'react-actioncable-provider'
@@ -18,25 +19,12 @@ import {
 } from '../redux/conversation/actions'
 import Spinner from '../components/common/spinner'
 import ChatListItem from '../components/chatListItem'
-import { primaryGreen } from '../variables'
 
 const styles = {
   container: {
     backgroundColor: 'white',
     flex: 1,
     justifyContent: 'space-between',
-  },
-  unreadContainer: {
-    backgroundColor: primaryGreen,
-    height: 18,
-    width: 18,
-    borderRadius: 9,
-    justifyContent: 'center',
-  },
-  unreadCount: {
-    fontSize: 12,
-    color: 'white',
-    textAlign: 'center',
   },
   loading: {
     flex: 1,
@@ -78,6 +66,7 @@ class Chats extends Component {
   }
 
   swipeSuccess = (shouldDelete, itemId) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
     this.props.deleteConversation(
       this.props.conversations,
       itemId,

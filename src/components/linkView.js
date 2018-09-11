@@ -8,6 +8,7 @@ import {
   AsyncStorage,
   Alert,
   NativeModules,
+  LayoutAnimation,
 } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
@@ -131,12 +132,14 @@ class LinkView extends Component {
     const { action } = this.props.archiveMode
     const { token, links } = this.props
     this.props.clearCache()
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
     this.props.archiveLink({ id, rating, action, token, tags, links })
     this.onArchivePress(null)
   }
 
   archiveWithoutRating = (id, rating, action) => {
     const { token, links } = this.props
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
     this.props.archiveLink({ id, rating, action, token, links })
   }
 
