@@ -6,6 +6,7 @@ import {
 } from 'react-native'
 import moment from 'moment'
 import Swipe from './swipe'
+import { primaryGreen } from '../variables'
 
 const styles = {
   card: {
@@ -40,6 +41,18 @@ const styles = {
   subtitle: {
     fontSize: 12,
     color: 'grey',
+  },
+  unreadContainer: {
+    backgroundColor: primaryGreen,
+    height: 18,
+    width: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+  },
+  unreadCount: {
+    fontSize: 12,
+    color: 'white',
+    textAlign: 'center',
   },
 }
 
