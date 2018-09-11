@@ -120,13 +120,14 @@ const styles = {
 class Card extends Component {
   constructor(props) {
     super(props)
+    const sharedWithNames = props.link.users_shared_with.map(u => u.phone)
 
     this.state = {
       phone: null,
       tags: [],
       selectedTags: [],
       tagSearchQuery: '',
-      sharedWithNames: null,
+      sharedWithNames,
     }
   }
 
