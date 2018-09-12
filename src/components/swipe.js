@@ -41,15 +41,17 @@ class Swipe extends Component {
   constructor(props) {
     super(props)
 
-    this.gestureDelay = -35
+    this.gestureDelay = 35
 
     const position = new Animated.ValueXY()
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        return gestureState.dx !== 0 && gestureState.dy !== 0
+      },
       onPanResponderTerminationRequest: () => false,
       onPanResponderMove: (evt, gestureState) => {
-        if (gestureState.dx < -35) {
+        if (gestureState.dx < -15) {
           this.props.setScrollViewEnabled(false)
           const newX = gestureState.dx + this.gestureDelay
           position.setValue({ x: newX, y: 0 })
