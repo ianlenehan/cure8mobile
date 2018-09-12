@@ -142,9 +142,11 @@ export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => 
         if (res.status === 200) {
           const receivedNewLinks = organiseLinks(res.data, 'new')
           dispatch({
-            type: types.LINK_CURATED,
+            type: types.LINK_CURATED_WITH_LINKS,
             payload: receivedNewLinks,
           })
+        } else if (res.status === 201) {
+          dispatch({ type: types.LINK_CURATED })
         } else if (res.status === 401) {
           dispatch({ type: types.NOT_AUTHORIZED })
         }

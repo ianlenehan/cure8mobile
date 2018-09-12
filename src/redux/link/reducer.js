@@ -22,14 +22,15 @@ export default (state = initialState, action) => {
         loading: false,
         authorized: true,
       }
-    case types.LINK_CURATED:
+    case types.LINK_CURATED_WITH_LINKS:
       return {
         ...state,
         newLinks: action.payload,
-        loading: false,
         authorized: true,
         linkCurated: true,
       }
+    case types.LINK_CURATED:
+      return { ...state, linkCurated: true }
     case types.TOAST_DISPLAYED:
       return { ...state, linkCurated: null }
     case types.CREATING_LINK:
