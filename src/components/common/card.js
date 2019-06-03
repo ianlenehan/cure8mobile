@@ -133,6 +133,9 @@ class Card extends Component {
 
   componentDidMount() {
     this._setTags()
+    if (this.props.contacts.length > 0 && this.props.userPhone) {
+      this.getSharedWithNames(this.props.contacts, this.props.userPhone)
+    } 
   }
 
   componentWillReceiveProps(nextProps) {

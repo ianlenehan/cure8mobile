@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Toast } from 'native-base'
 import * as types from '../types'
 import rootURL from '../../../environment'
 
@@ -122,7 +123,17 @@ const _createTemporaryCuration = (url, comment) => {
   }
 }
 
+const toastAlert = (text) => {
+  Toast.show({
+    text,
+    position: 'top',
+    buttonText: 'OK',
+    duration: 3000,
+  })
+}
+
 export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => {
+  toastAlert('Curating...')
   return (dispatch) => {
     if (saveToMyLinks) {
       const newCuration = _createTemporaryCuration(url, comment)
@@ -141,6 +152,7 @@ export const createLink = ({ url, comment, contacts, token, saveToMyLinks }) => 
       .then((res) => {
         if (res.status === 200) {
           const receivedNewLinks = organiseLinks(res.data, 'new')
+          toastAlert('Your curation has been saved!')
           dispatch({
             type: types.LINK_CURATED_WITH_LINKS,
             payload: receivedNewLinks,
